@@ -10,7 +10,9 @@
 
 SymbolListItem::SymbolListItem(StockSymbol *symbol)
 	:BListItem()
-	,fStockSymbol(symbol) {
+	,fStockSymbol(symbol)
+	,fTextOffset(14)
+	,fFontSize(14) {
 	
 	//fCompany->PrintToStream();
 }
@@ -36,23 +38,23 @@ SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	parent->SetDrawingMode(B_OP_OVER);
 	
 	BFont font(be_bold_font);
-	font.SetSize(13);
+	font.SetSize(fFontSize);
 	parent->SetFont(&font);
 	
 	font_height fh;
 	font.GetHeight(&fh);
-	float centerY = (frame.Height() - fh.ascent) / 2;
+	float centerY = fh.ascent * 2;
 	
-	parent->MovePenTo( 12, frame.LeftBottom().y - centerY);
+	
+	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY + 2));
 	const char *symbol = fStockSymbol->symbol.String();
 	parent->DrawString( symbol ); 
-	const float symbolWidth = font.StringWidth(symbol);
 	
 	font = BFont(be_plain_font);
-	font.SetSize(13);
+	font.SetSize(fFontSize);
 	parent->SetFont(&font);
 
-	parent->MovePenTo( 14 + symbolWidth, frame.LeftBottom().y - centerY);
+	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY - 1) / 2);
 	parent->SetHighColor(30,30,30);
 	parent->DrawString( fStockSymbol->name.String() ); 
 }
@@ -64,5 +66,5 @@ SymbolListItem::Update(BView *view, const BFont *font) {
 	font->GetHeight(&fh);
 	const float height = fh.ascent + fh.descent + fh.leading + 2;
 	
-	SetHeight(21);
+	SetHeight(48);
 }

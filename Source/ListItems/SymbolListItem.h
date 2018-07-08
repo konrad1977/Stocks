@@ -19,6 +19,8 @@ public:
 								
 private:
 	StockSymbol *fStockSymbol;
+	float fTextOffset;
+	float fFontSize;
 };
 
 #endif
