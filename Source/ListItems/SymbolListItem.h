@@ -2,25 +2,23 @@
  * Copyright 2015 Your Name <your@email.address>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-#ifndef COMPANYLISTITEM_H
-#define COMPANYLISTITEM_H
-
+#ifndef _H
+#define _H
 
 #include <SupportDefs.h>
 #include <ListItem.h>
-#include "Company.h"
+#include "StockSymbol.h"
 
-class CompanyListItem : public BListItem {
+class SymbolListItem : public BListItem {
 public:
-	CompanyListItem(Company *company);
-	~CompanyListItem();
+	SymbolListItem(StockSymbol *symbol);
+	~SymbolListItem();
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
 	virtual void Update(BView *view, const BFont *font);
 								
 private:
-	Company *fCompany;
+	StockSymbol *fStockSymbol;
 };
 
-
-#endif // _H
+#endif

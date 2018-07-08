@@ -9,13 +9,14 @@
 #include <SupportDefs.h>
 #include <Application.h>
 
+class StockSymbolWindow;
 class MainWindow;
 class App: public BApplication {
 public:
 	App(void);			
 private:
 	MainWindow *fWindow;
-
+	StockSymbolWindow *fStockSymbolWindow;
 };
 
 

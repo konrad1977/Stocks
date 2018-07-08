@@ -40,6 +40,19 @@ StockRequester::AddStockSymbol(const char *symbol) {
 	fSymbolList.AddItem((void*)symbol);
 }
 
+void 
+StockRequester::DownloadSymbols() {
+	
+	NetRequester requester(fHandler, STOCK_SYMBOLS);		
+	BUrl url = BUrl("https://api.iextrading.com/1.0/ref-data/symbols");
+		
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
+
+	thread_id thread = request->Run();
+	wait_for_thread(thread, NULL);
+	delete request;
+}
+
 void
 StockRequester::_RequestCompanyInformation() {
 	
@@ -47,7 +60,7 @@ StockRequester::_RequestCompanyInformation() {
 	
 	for (int i = 0; i<items; i++) {
 		
-		NetRequester requester(fHandler);
+		NetRequester requester(fHandler, COMPANY_INFORMATION);
 		
 		const char *symbol = (const char *)fSymbolList.ItemAt(i);
 		

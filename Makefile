@@ -21,15 +21,18 @@ APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
 #	so that Pe and Eddie can fill them in for you.
 #%{
 SRCS = \
-	 Source/ListItems/CompanyListItem.cpp  \
 	 Source/App.cpp  \
-	 Source/MainWindow.cpp  \
+	 Source/ListItems/CompanyListItem.cpp  \
 	 Source/Models/Company.cpp  \
+	 Source/Models/StockSymbol.cpp  \
 	 Source/Requesters/NetRequester.cpp  \
 	 Source/StockRequester.cpp  \
 	 Source/UrlBuilder.cpp  \
-	 Source/Views/StockView.cpp  \
 	 Source/Views/StockListView.cpp  \
+	 Source/Views/StockView.cpp  \
+	 Source/Windows/MainWindow.cpp  \
+	 Source/Windows/StockSymbolWindow.cpp  \
+	 Source/ListItems/SymbolListItem.cpp  \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
@@ -42,6 +45,10 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
+#%}
+
 #%}
 
 #%}
@@ -78,7 +85,8 @@ LIBPATHS =
 #	Additional paths to look for system headers. These use the form
 #	"#include <header>". Directories that contain the files in SRCS are
 #	NOT auto-included here.
-SYSTEM_INCLUDE_PATHS = /system/develop/headers/private/shared
+SYSTEM_INCLUDE_PATHS = /system/develop/headers/private/shared \
+						/system/develop/headers/private/interface
 
 #	Additional paths paths to look for local headers. These use the form
 #	#include "header". Directories that contain the files in SRCS are

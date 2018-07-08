@@ -17,6 +17,7 @@ public:
 	~StockRequester();
 	
 	void RequestData();
+	void DownloadSymbols();
 	void AddStockSymbol(const char *symbol);
 								
 private:

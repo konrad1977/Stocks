@@ -11,10 +11,15 @@
 #include <UrlProtocolListener.h>
 #include <String.h>
 
+enum StockRequestType {
+	STOCK_SYMBOLS = 0,
+	COMPANY_INFORMATION,
+};
+
 class BHandler;
 class NetRequester: public BUrlProtocolListener {
 public:
-	NetRequester(BHandler *handler);
+	NetRequester(BHandler *handler, StockRequestType type);
 	virtual ~NetRequester();
 	virtual	void ResponseStarted(BUrlRequest* caller);
 	virtual	void DataReceived(BUrlRequest* caller, const char* data, off_t position, ssize_t size);
@@ -24,6 +29,7 @@ private:
 
 	BHandler 	*fHandler;
 	BMallocIO	fResponseData;
+	StockRequestType fType;
 };
 
 

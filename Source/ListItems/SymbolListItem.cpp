@@ -4,23 +4,23 @@
  */
 
 
-#include "CompanyListItem.h"
+#include "SymbolListItem.h"
 #include <ListView.h>
 #include <stdio.h>
 
-CompanyListItem::CompanyListItem(Company *company)
+SymbolListItem::SymbolListItem(StockSymbol *symbol)
 	:BListItem()
-	,fCompany(company) {
+	,fStockSymbol(symbol) {
 	
 	//fCompany->PrintToStream();
 }
 
-CompanyListItem::~CompanyListItem() {
-	delete fCompany;
+SymbolListItem::~SymbolListItem() {
+	delete fStockSymbol;
 }	
 
 void 
-CompanyListItem::DrawItem(BView *view, BRect rect, bool complete) {
+SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	
 	BListView *parent = dynamic_cast<BListView *>(view);
 	const int32 index = parent->IndexOf(this);
@@ -47,14 +47,11 @@ CompanyListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	parent->SetFont(&font);
 	
 	parent->MovePenTo( 12, frame.LeftBottom().y - center);	
-	parent->DrawString( fCompany->name.String() ); 
-	printf("%s\n", fCompany->name.String());
+	parent->DrawString( fStockSymbol->name.String() ); 
 }
 
-
-
 void
-CompanyListItem::Update(BView *view, const BFont *font) {
+SymbolListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
@@ -62,4 +59,3 @@ CompanyListItem::Update(BView *view, const BFont *font) {
 	
 	SetHeight(34);
 }
-

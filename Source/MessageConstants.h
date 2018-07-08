@@ -6,6 +6,7 @@
 #define MESSAGECONSTANTS_H
 
 const uint32 kUpdateCompanyMessage = 'Updc';
+const uint32 kUpdateSymbolMessage = 'Upds';
 
 
 #endif // _H

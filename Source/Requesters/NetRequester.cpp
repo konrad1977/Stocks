@@ -10,15 +10,17 @@
 #include <Application.h>
 
 #include <Messenger.h>
-#include <Json.h>
 #include <Looper.h>
 #include <stdio.h>
+#include <Json.h>
 
 
-NetRequester::NetRequester(BHandler *handler)
-	: BUrlProtocolListener() 	
+
+NetRequester::NetRequester(BHandler *handler, StockRequestType type)
+	: BUrlProtocolListener()
+	,fType(type) 	
 	,fHandler(handler) {
-	
+		
 }
 
 NetRequester::~NetRequester() {
@@ -51,11 +53,27 @@ NetRequester::_HandleData(BString data) {
 		//messenger.SendMessage(message);
 		return;
 	}
+	
+	switch (fType) {
+		case COMPANY_INFORMATION: {
+			BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
+			objectUpdatedMessage->AddMessage("Company", &parsedData);
+			messenger.SendMessage(objectUpdatedMessage);
+			delete objectUpdatedMessage;
+		}
+		break;
 		
-	BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
-	objectUpdatedMessage->AddMessage("Company", &parsedData);
-	messenger.SendMessage(objectUpdatedMessage);
-	delete objectUpdatedMessage;
+		case STOCK_SYMBOLS: { 
+			BMessage *objectUpdatedMessage = new BMessage(kUpdateSymbolMessage);
+			objectUpdatedMessage->AddMessage("Symbols", &parsedData);
+			messenger.SendMessage(objectUpdatedMessage);
+			delete objectUpdatedMessage;
+		}
+		break;
+		
+		default:
+			break;
+	}	
 }
 
 void

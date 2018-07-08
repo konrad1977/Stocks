@@ -7,11 +7,16 @@ const char *kSignature = "application/x-vnd.konradsson.HaikuStocks";
 
 #include "App.h"
 #include "MainWindow.h"
+#include "StockSymbolWindow.h"
 
 App::App(void): 
 	BApplication(kSignature) {
-	fWindow = new MainWindow(BRect(150,150,480,320));
-	fWindow->Show();
+	
+	fStockSymbolWindow = new StockSymbolWindow(BRect(200,200,800,600));	
+	fStockSymbolWindow->Show();
+	
+	//fWindow = new MainWindow(BRect(150,150,640,480));
+	//fWindow->Show();
 }
 
 int main() {
