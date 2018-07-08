@@ -15,10 +15,13 @@
 
 
 StockSymbolWindow::StockSymbolWindow(BRect rect)
-	:BWindow(rect, "MainWindow", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0) {
+	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0) {
 	
-	fSymbolListView = new BListView(Bounds(), "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
-	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, B_FRAME_EVENTS, true, true);
+	BRect frame = Bounds();
+	frame.right -= B_H_SCROLL_BAR_HEIGHT;
+	
+	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
+	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, 0, true, true);
 	AddChild(fScrollView);
 	
 	fStockRequester = new StockRequester(this);
@@ -48,11 +51,7 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 						fSymbolListView->AddItem(new SymbolListItem(symbol));
 					}
 				}
-			}	
-			//StockSymbol *symbol = new StockSymbol(symbolMessage);
-			//symbol->PrintToStream();
-			//printf("Symbol %s", symbol->name.String());
-			//fSymbolListView->AddItem(new SymbolListItem(symbol));
+			}
 		}
 		break;
 		
