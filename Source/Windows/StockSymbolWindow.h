@@ -12,6 +12,7 @@
 #include <ScrollView.h>
 
 class StockRequester;
+class SearchView;
 class StockSymbolWindow: public BWindow {
 public:
 	StockSymbolWindow(BRect rect);	
@@ -20,6 +21,7 @@ public:
 	virtual void MessageReceived(BMessage *message);							
 private:
 	StockRequester *fStockRequester;
+	SearchView *fSearchView;
 	BListView *fSymbolListView;
 	BScrollView *fScrollView;
 	

@@ -10,7 +10,7 @@
 #include "MessageConstants.h"
 #include "SymbolListItem.h"
 #include "StockSymbol.h"
-
+#include "SearchView.h"
 #include <stdio.h>
 
 
@@ -18,7 +18,15 @@ StockSymbolWindow::StockSymbolWindow(BRect rect)
 	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0) {
 	
 	BRect frame = Bounds();
-	frame.right -= B_H_SCROLL_BAR_HEIGHT;
+	float height = frame.Height();
+	frame.bottom = 100;
+	
+	fSearchView = new SearchView(frame);
+	AddChild(fSearchView);
+	
+	frame.top = 100;
+	frame.bottom = height - B_H_SCROLL_BAR_HEIGHT;
+	frame.right -=B_H_SCROLL_BAR_HEIGHT;
 	
 	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
 	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, 0, true, true);

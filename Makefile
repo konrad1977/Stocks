@@ -21,8 +21,10 @@ APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
 #	so that Pe and Eddie can fill them in for you.
 #%{
 SRCS = \
+	 Source/Views/SearchView.cpp  \
 	 Source/App.cpp  \
 	 Source/ListItems/CompanyListItem.cpp  \
+	 Source/ListItems/SymbolListItem.cpp  \
 	 Source/Models/Company.cpp  \
 	 Source/Models/StockSymbol.cpp  \
 	 Source/Requesters/NetRequester.cpp  \
@@ -32,7 +34,6 @@ SRCS = \
 	 Source/Views/StockView.cpp  \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
-	 Source/ListItems/SymbolListItem.cpp  \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
@@ -45,6 +46,8 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
 #%}
 
 #%}
