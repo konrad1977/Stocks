@@ -9,14 +9,18 @@
 #include <SupportDefs.h>
 #include <Window.h>
 
-class StockView;
+class StockListView;
+class StockRequester;
 class MainWindow: public BWindow {
 public:
 	MainWindow(BRect rect);	
 	~MainWindow();
+	
+	virtual void MessageReceived(BMessage *message);
 private:
 	void _RequestData();	
-	StockView *fStockView;		
+	StockListView *fStockListView;	
+	StockRequester *fStockRequester;	
 };
 
 #endif
