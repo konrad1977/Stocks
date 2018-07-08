@@ -9,6 +9,7 @@
 #include <SupportDefs.h>
 #include <Window.h>
 #include <ListView.h>
+#include <ScrollView.h>
 
 class StockRequester;
 class StockSymbolWindow: public BWindow {
@@ -20,6 +21,8 @@ public:
 private:
 	StockRequester *fStockRequester;
 	BListView *fSymbolListView;
+	BScrollView *fScrollView;
+	
 };
 
 #endif // _H

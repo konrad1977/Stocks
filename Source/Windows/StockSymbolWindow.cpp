@@ -17,8 +17,9 @@
 StockSymbolWindow::StockSymbolWindow(BRect rect)
 	:BWindow(rect, "MainWindow", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0) {
 	
-	fSymbolListView = new BListView(Bounds(), "Symbols");
-	AddChild(fSymbolListView);
+	fSymbolListView = new BListView(Bounds(), "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
+	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, B_FRAME_EVENTS, true, true);
+	AddChild(fScrollView);
 	
 	fStockRequester = new StockRequester(this);
 	fStockRequester->DownloadSymbols();	
