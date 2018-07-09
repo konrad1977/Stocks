@@ -21,7 +21,8 @@ public:
 	virtual void MessageReceived(BMessage *message);							
 private:
 			void SetItems(BList *listItems);
-			BList * Filtered(const char *filter);
+			void ApplyFilter(BString filter);
+			BList * Filtered(BString filter);
 			
 	StockRequester *fStockRequester;
 	SearchView *fSearchView;

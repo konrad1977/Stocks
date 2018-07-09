@@ -45,9 +45,9 @@ StockSymbolWindow::~StockSymbolWindow() {
 }
 
 BList *
-StockSymbolWindow::Filtered(const char *filter) {
+StockSymbolWindow::Filtered(BString filter) {
 	
-	if (fStockSymbolListItems == NULL || strlen(filter) == 0) {
+	if (fStockSymbolListItems == NULL || filter.Length() == 0) {
 		return NULL;
 	}
 	
@@ -65,9 +65,11 @@ StockSymbolWindow::Filtered(const char *filter) {
 	for (int32 i = 0; i<count; i++) {
 		SymbolListItem *symbol = (SymbolListItem*)fStockSymbolListItems->ItemAt(i);
 		if (symbol != NULL) {
-			if (symbol->CurrentStockSymbol()->name.FindFirst(filter) != B_ERROR ){
+			if (symbol->CurrentStockSymbol()->name.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
 				fCurrentFilter->AddItem(symbol);
-			}
+			} else if (symbol->CurrentStockSymbol()->symbol.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
+				fCurrentFilter->AddItem(symbol);
+			} 
 		}
 	}
 	return fCurrentFilter;
@@ -85,6 +87,18 @@ StockSymbolWindow::SetItems(BList *listItems) {
 	fSymbolListView->AddList(listItems);
 }
 
+void 
+StockSymbolWindow::ApplyFilter(BString filter) {
+	if (filter.Length() > 2) {
+		BList *filtered = Filtered(filter);
+		SetItems(filtered);
+		fHasFilter = true;
+	} else if (fHasFilter == true) {
+		SetItems(fStockSymbolListItems);
+		fHasFilter = false;
+	}
+}
+
 void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
@@ -92,15 +106,7 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 		case kSearchTextChangedMessage: {
 			BString searchString;
 			if (message->FindString("searchText", &searchString) == B_OK ) {
-				printf("%s\n", searchString.String());
-			}
-			if (searchString.Length() > 2) {
-				BList *filtered = Filtered(searchString.String());
-				SetItems(filtered);
-				fHasFilter = true;
-			} else if (fHasFilter == true) {
-				SetItems(fStockSymbolListItems);
-				fHasFilter = false;
+				ApplyFilter(searchString);
 			}
 		}
 		break;
