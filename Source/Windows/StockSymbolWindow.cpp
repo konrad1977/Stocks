@@ -6,25 +6,29 @@
 
 #include "StockSymbolWindow.h"
 #include "StockRequester.h"
-#include <ColumnListView.h>
 #include "MessageConstants.h"
 #include "SymbolListItem.h"
 #include "StockSymbol.h"
 #include "SearchView.h"
+
 #include <stdio.h>
+#include <List.h>
 
 
 StockSymbolWindow::StockSymbolWindow(BRect rect)
-	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0) {
+	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_ASYNCHRONOUS_CONTROLS | B_QUIT_ON_WINDOW_CLOSE)
+	,fStockSymbolListItems(NULL)
+	,fHasFilter(false) {
 	
 	BRect frame = Bounds();
 	float height = frame.Height();
-	frame.bottom = 100;
+	frame.bottom = 46;
 	
 	fSearchView = new SearchView(frame);
+	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
 	
-	frame.top = 100;
+	frame.top = 46;
 	frame.bottom = height - B_H_SCROLL_BAR_HEIGHT;
 	frame.right -=B_H_SCROLL_BAR_HEIGHT;
 	
@@ -37,14 +41,70 @@ StockSymbolWindow::StockSymbolWindow(BRect rect)
 }
 
 StockSymbolWindow::~StockSymbolWindow() {
+	
+}
+
+BList *
+StockSymbolWindow::Filtered(const char *filter) {
+	
+	if (fStockSymbolListItems == NULL || strlen(filter) == 0) {
+		return NULL;
+	}
+	
+	printf("Filter == %s\n", filter);
+	
+	if (fCurrentFilter) {
+		fCurrentFilter->MakeEmpty();
+	}
+	
+	delete fCurrentFilter;
+	fCurrentFilter = new BList();
+	
+	const int32 count = fStockSymbolListItems->CountItems();
+	
+	for (int32 i = 0; i<count; i++) {
+		SymbolListItem *symbol = (SymbolListItem*)fStockSymbolListItems->ItemAt(i);
+		if (symbol != NULL) {
+			if (symbol->CurrentStockSymbol()->name.FindFirst(filter) != B_ERROR ){
+				fCurrentFilter->AddItem(symbol);
+			}
+		}
+	}
+	return fCurrentFilter;
+}
+
+void 
+StockSymbolWindow::SetItems(BList *listItems) {
+	
+	if (listItems == NULL) 
+		return;
+		
+	const int32 items = listItems->CountItems();
+	
+	fSymbolListView->MakeEmpty();
+	fSymbolListView->AddList(listItems);
 }
 
 void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
+		case kSearchTextChangedMessage: {
+			BString searchString;
+			if (message->FindString("searchText", &searchString) == B_OK ) {
+				printf("%s\n", searchString.String());
+			}
+			if (searchString.Length() > 2) {
+				BList *filtered = Filtered(searchString.String());
+				SetItems(filtered);
+				fHasFilter = true;
+			} else if (fHasFilter == true) {
+				SetItems(fStockSymbolListItems);
+				fHasFilter = false;
+			}
+		}
+		break;
 		case kUpdateSymbolMessage: {
-			printf("Got data\n");
 			BMessage symbolMessage;
 			
 			if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {
@@ -52,14 +112,19 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 				uint32 type;
 				int32 count;
 				
+				delete fStockSymbolListItems;
+				fStockSymbolListItems = new BList();
+				
 				for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
 					BMessage currentMessage;
 					if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
 						StockSymbol *symbol = new StockSymbol(currentMessage);
-						fSymbolListView->AddItem(new SymbolListItem(symbol));
+						SymbolListItem* symbolListItem = new SymbolListItem(symbol);
+						fStockSymbolListItems->AddItem(symbolListItem);
 					}
 				}
 			}
+			SetItems(fStockSymbolListItems);
 		}
 		break;
 		

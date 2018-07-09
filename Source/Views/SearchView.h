@@ -11,16 +11,24 @@
 
 class BTextControl;
 class BButton;
+class BMessenger;
 class SearchView: public BView {
 public:
 	SearchView(BRect rect);
 	~SearchView();
+	
+	virtual void MessageReceived(BMessage *message);
+	virtual void AttachedToWindow();
+			void SetTarget(BHandler *handler);
 private:
+	
+	BTextControl *TextControl();
 	
 	void _LayoutChildren();
 
 	BTextControl *fSearchTextControl;
-	BButton *fSearchButton;		
+	BButton *fSearchButton;	
+	BMessenger *fMessenger;	
 };
 
 

@@ -20,11 +20,16 @@ public:
 	
 	virtual void MessageReceived(BMessage *message);							
 private:
+			void SetItems(BList *listItems);
+			BList * Filtered(const char *filter);
+			
 	StockRequester *fStockRequester;
 	SearchView *fSearchView;
 	BListView *fSymbolListView;
 	BScrollView *fScrollView;
-	
+	BList *fStockSymbolListItems;
+	BList *fCurrentFilter;
+	bool fHasFilter;
 };
 
 #endif // _H

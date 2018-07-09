@@ -21,6 +21,11 @@ SymbolListItem::~SymbolListItem() {
 	delete fStockSymbol;
 }	
 
+StockSymbol*
+SymbolListItem::CurrentStockSymbol() {
+	return fStockSymbol;
+}
+
 void 
 SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	

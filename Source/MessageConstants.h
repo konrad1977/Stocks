@@ -8,6 +8,6 @@
 const uint32 kUpdateCompanyMessage = 'Updc';
 const uint32 kUpdateSymbolMessage = 'Upds';
 const uint32 kSearchButtonPressedMessage = 'SBPm';
-
+const uint32 kSearchTextChangedMessage = 'STCm';
 
 #endif // _H
