@@ -18,6 +18,7 @@
 StockSymbolWindow::StockSymbolWindow(BRect rect)
 	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_ASYNCHRONOUS_CONTROLS | B_QUIT_ON_WINDOW_CLOSE)
 	,fStockSymbolListItems(NULL)
+	,fCurrentFilter(NULL)
 	,fHasFilter(false) {
 	
 	BRect frame = Bounds();
@@ -50,8 +51,6 @@ StockSymbolWindow::Filtered(BString filter) {
 	if (fStockSymbolListItems == NULL || filter.Length() == 0) {
 		return NULL;
 	}
-	
-	printf("Filter == %s\n", filter);
 	
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();

@@ -33,13 +33,17 @@ SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
 	
-	if (index % 2 == 0) {
-		parent->SetHighColor(255, 255, 255);
+	rgb_color backgroundColor = ui_color(B_LIST_BACKGROUND_COLOR);
+	
+	if (IsSelected()) {
+		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
+	} else if (index % 2 == 0) {
+		parent->SetHighColor(backgroundColor);
 	} else {
-		parent->SetHighColor(248, 248, 248);
+		parent->SetHighColor(tint_color(backgroundColor, 1.02));
 	}
 	parent->FillRect(frame);
-	parent->SetHighColor(60,60,60);
+	parent->SetHighColor(ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR));
 	parent->SetDrawingMode(B_OP_OVER);
 	
 	BFont font(be_bold_font);
@@ -50,7 +54,6 @@ SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	font.GetHeight(&fh);
 	float centerY = fh.ascent * 2;
 	
-	
 	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY + 2));
 	const char *symbol = fStockSymbol->symbol.String();
 	parent->DrawString( symbol ); 
@@ -60,7 +63,6 @@ SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	parent->SetFont(&font);
 
 	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY - 1) / 2);
-	parent->SetHighColor(30,30,30);
 	parent->DrawString( fStockSymbol->name.String() ); 
 }
 
