@@ -53,6 +53,24 @@ StockRequester::DownloadSymbols() {
 	delete request;
 }
 
+void 
+StockRequester::RequestStockInformation(const char *symbol) {
+	
+	NetRequester requester(fHandler, COMPANY_INFORMATION);	
+	fBuilder->SetCompany(symbol);
+		
+	printf("Symbol: %s\n", fBuilder->CreatePath(Company));
+		
+	BUrl url = BUrl(fBuilder->CreatePath(Company));
+		
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
+
+	thread_id thread = request->Run();
+	wait_for_thread(thread, NULL);
+		
+	delete request;
+}							
+
 void
 StockRequester::_RequestCompanyInformation() {
 	

@@ -13,6 +13,7 @@
 
 class StockRequester;
 class SearchView;
+class StockListExtendedView;
 class StockSymbolWindow: public BWindow {
 public:
 	StockSymbolWindow(BRect rect);	
@@ -20,12 +21,20 @@ public:
 	
 	virtual void MessageReceived(BMessage *message);							
 private:
+			void InitLayout();
 			void SetItems(BList *listItems);
 			void ApplyFilter(BString filter);
+			
+			void HandleSelection(BMessage *message);
+			void HandleUpdate(BMessage *message);
+			void HandleSearch(BMessage *message);
+			
 			BList * Filtered(BString filter);
+			
 			
 	StockRequester *fStockRequester;
 	SearchView *fSearchView;
+	StockListExtendedView *fStockListExtendedView;
 	BListView *fSymbolListView;
 	BScrollView *fScrollView;
 	BList *fStockSymbolListItems;

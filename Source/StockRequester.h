@@ -19,8 +19,9 @@ public:
 	void RequestData();
 	void DownloadSymbols();
 	void AddStockSymbol(const char *symbol);
-								
+	void RequestStockInformation(const char *symbol);							
 private:
+	
 	void _RequestCompanyInformation();
 	void _RequestNews();
 	

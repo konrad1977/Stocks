@@ -34,6 +34,7 @@ SRCS = \
 	 Source/Views/StockView.cpp  \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
+	 Source/Views/StockListExtendedView.cpp  \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
@@ -46,6 +47,8 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
 #%}
 
 #%}

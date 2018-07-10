@@ -10,6 +10,7 @@
 #include "SymbolListItem.h"
 #include "StockSymbol.h"
 #include "SearchView.h"
+#include "StockListExtendedView.h"
 
 #include <stdio.h>
 #include <List.h>
@@ -17,9 +18,30 @@
 
 StockSymbolWindow::StockSymbolWindow(BRect rect)
 	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_ASYNCHRONOUS_CONTROLS | B_QUIT_ON_WINDOW_CLOSE)
+	,fStockRequester(NULL)
+	,fSearchView(NULL)
+	,fStockListExtendedView(NULL)
+	,fSymbolListView(NULL)
 	,fStockSymbolListItems(NULL)
 	,fCurrentFilter(NULL)
 	,fHasFilter(false) {
+	
+	InitLayout();
+	
+	fStockRequester = new StockRequester(this);
+	fStockRequester->DownloadSymbols();	
+}
+
+StockSymbolWindow::~StockSymbolWindow() {
+	if (fCurrentFilter) {
+		fCurrentFilter->MakeEmpty();
+	}
+	delete fCurrentFilter;
+	delete fStockRequester;
+}
+
+void
+StockSymbolWindow::InitLayout() {
 	
 	BRect frame = Bounds();
 	float height = frame.Height();
@@ -29,20 +51,24 @@ StockSymbolWindow::StockSymbolWindow(BRect rect)
 	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
 	
-	frame.top = 46;
-	frame.bottom = height - B_H_SCROLL_BAR_HEIGHT;
+	const float extendedHeight = 80.0;
+	
+	frame.top = frame.bottom;
+	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
 	frame.right -=B_H_SCROLL_BAR_HEIGHT;
 	
 	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
+	fSymbolListView->SetSelectionMessage(new BMessage(kSymbolListSelectionChanged));
+	fSymbolListView->SetTarget(this);
+	
 	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, 0, true, true);
 	AddChild(fScrollView);
 	
-	fStockRequester = new StockRequester(this);
-	fStockRequester->DownloadSymbols();	
-}
-
-StockSymbolWindow::~StockSymbolWindow() {
-	
+	frame.right = Bounds().right;
+	frame.top = Bounds().bottom - extendedHeight;
+	frame.bottom = Bounds().bottom;
+	fStockListExtendedView = new StockListExtendedView(frame);
+	AddChild(fStockListExtendedView);
 }
 
 BList *
@@ -98,41 +124,81 @@ StockSymbolWindow::ApplyFilter(BString filter) {
 	}
 }
 
+
+void 
+StockSymbolWindow::HandleSelection(BMessage *message) {
+	
+	int32 index;
+	if (message->FindInt32("index", &index) == B_OK) {
+		printf("Index found %d\n", index);
+		
+		SymbolListItem *listItem = static_cast<SymbolListItem *>(fSymbolListView->ItemAt(index));
+		if (listItem == NULL) {
+			return;
+		}
+		
+		const char *symbol = listItem->CurrentStockSymbol()->symbol.String();
+		
+		if (strlen(symbol) == 0 || symbol == NULL) 			
+			return;
+
+		fStockRequester->RequestStockInformation(symbol);
+	}
+}
+			
+void 
+StockSymbolWindow::HandleUpdate(BMessage *message) {
+	BMessage symbolMessage;
+			
+	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
+		char *name;
+		uint32 type;
+		int32 count;
+				
+		delete fStockSymbolListItems;
+		fStockSymbolListItems = new BList();
+				
+		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
+			BMessage currentMessage;
+			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
+				StockSymbol *symbol = new StockSymbol(currentMessage);
+				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
+				fStockSymbolListItems->AddItem(symbolListItem);
+			}
+		}
+	}
+	SetItems(fStockSymbolListItems);
+}
+			
+void 
+StockSymbolWindow::HandleSearch(BMessage *message) {
+	BString searchString;
+	if (message->FindString("searchText", &searchString) == B_OK ) {
+		ApplyFilter(searchString);
+	}
+}
+
 void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
-		case kSearchTextChangedMessage: {
-			BString searchString;
-			if (message->FindString("searchText", &searchString) == B_OK ) {
-				ApplyFilter(searchString);
-			}
-		}
-		break;
-		case kUpdateSymbolMessage: {
-			BMessage symbolMessage;
-			
-			if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {
-				char *name;
-				uint32 type;
-				int32 count;
-				
-				delete fStockSymbolListItems;
-				fStockSymbolListItems = new BList();
-				
-				for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
-					BMessage currentMessage;
-					if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
-						StockSymbol *symbol = new StockSymbol(currentMessage);
-						SymbolListItem* symbolListItem = new SymbolListItem(symbol);
-						fStockSymbolListItems->AddItem(symbolListItem);
-					}
-				}
-			}
-			SetItems(fStockSymbolListItems);
-		}
-		break;
 		
+		case kUpdateCompanyMessage:
+			message->PrintToStream();
+			break;
+
+		case kSymbolListSelectionChanged: 
+			HandleSelection(message);
+			break;
+		
+		case kSearchTextChangedMessage: 
+			HandleSearch(message);
+			break;
+		
+		case kUpdateSymbolMessage: 
+			HandleUpdate(message);
+			break;
+			
 		default:
 			break;	
 	}
