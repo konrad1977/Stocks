@@ -33,6 +33,7 @@ SearchView::AttachedToWindow() {
 
 void
 SearchView::MessageReceived(BMessage *message) {
+	
 	switch (message->what) {
 		case kSearchTextChangedMessage: {
 			const char *text = TextControl()->Text();		
@@ -55,7 +56,7 @@ SearchView::SetTarget(BHandler *handler) {
 BTextControl *
 SearchView::TextControl() {
 	if (fSearchTextControl == NULL) {
-		fSearchTextControl = new BTextControl("Search", "Search", "Type here", NULL);
+		fSearchTextControl = new BTextControl("Filter", "Filter", "Name or Symbol", NULL);
 		fSearchTextControl->SetModificationMessage(new BMessage(kSearchTextChangedMessage));
 		fSearchTextControl->SetTarget(this);
 	}
@@ -66,12 +67,12 @@ void
 SearchView::_LayoutChildren() {
 	
 	BGridView *gridView = new BGridView();
-	fSearchButton = new BButton("Search", new BMessage(kSearchButtonPressedMessage));
+	//fSearchButton = new BButton("Search", new BMessage(kSearchButtonPressedMessage));
 	
 	BLayoutBuilder::Grid<>(gridView)
 		.SetInsets(10,10,10,10)
-		.Add(TextControl(),0,0)
-		.Add(fSearchButton,1,0);
+		.Add(TextControl(),0,0);
+		//.Add(fSearchButton,1,0);
 	
 	AddChild(gridView);
 	

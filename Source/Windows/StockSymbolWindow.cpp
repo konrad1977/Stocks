@@ -11,6 +11,7 @@
 #include "StockSymbol.h"
 #include "SearchView.h"
 #include "StockListExtendedView.h"
+#include "Company.h"
 
 #include <stdio.h>
 #include <List.h>
@@ -51,7 +52,7 @@ StockSymbolWindow::InitLayout() {
 	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
 	
-	const float extendedHeight = 80.0;
+	const float extendedHeight = 120.0;
 	
 	frame.top = frame.bottom;
 	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
@@ -179,12 +180,22 @@ StockSymbolWindow::HandleSearch(BMessage *message) {
 }
 
 void
+StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
+	message->PrintToStream();
+	BMessage companyMessage;
+	if (message->FindMessage("Company", &companyMessage) == B_OK) {
+		Company *company = new Company(companyMessage);
+		fStockListExtendedView->SetCompany(company);
+	}
+}
+
+void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
 		
 		case kUpdateCompanyMessage:
-			message->PrintToStream();
+			HandleCompanyInformation(message);
 			break;
 
 		case kSymbolListSelectionChanged: 

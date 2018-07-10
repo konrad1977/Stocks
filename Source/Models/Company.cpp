@@ -11,6 +11,7 @@ Company::Company(BMessage message) {
 	message.FindString("companyName", &name);
 	message.FindString("symbol", &symbol);
 	message.FindString("exchange", &exchange);
+	message.FindString("industry", &industry);
 	message.FindString("website", &website);
 	message.FindString("description", &description);
 	message.FindString("CEO", &CEO);

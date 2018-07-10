@@ -18,6 +18,7 @@ public:
 	BString name;
 	BString symbol;
 	BString exchange;
+	BString industry;
 	BString website;
 	BString description;
 	BString CEO;

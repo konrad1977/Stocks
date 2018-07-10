@@ -26,6 +26,7 @@ private:
 			void ApplyFilter(BString filter);
 			
 			void HandleSelection(BMessage *message);
+			void HandleCompanyInformation(BMessage *message);
 			void HandleUpdate(BMessage *message);
 			void HandleSearch(BMessage *message);
 			
