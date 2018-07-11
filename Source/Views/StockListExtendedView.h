@@ -8,6 +8,7 @@
 
 #include <SupportDefs.h>
 #include <View.h>
+#include <TextView.h>
 
 class Company;
 class StockListExtendedView : public BView {
@@ -19,6 +20,7 @@ public:
 	virtual void Draw(BRect rect);
 private:
 	Company *fCompany;
+	BTextView *fDescriptionTextView;
 };
 
 #endif // _H

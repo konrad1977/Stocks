@@ -8,10 +8,20 @@
 #include "Company.h"
 
 StockListExtendedView::StockListExtendedView(BRect rect)
-	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, B_WILL_DRAW)
+	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, B_WILL_DRAW | B_FRAME_EVENTS)
 	,fCompany(NULL) {
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	
+	BRect r = Bounds();
+	r.InsetBy(10,10);
+	r.OffsetBy(0, 17);
+	r.left = 280;
+	r.PrintToStream();
+	fDescriptionTextView = new BTextView(r, "TextView", BRect(0,0,r.Width(), r.Height()), B_FOLLOW_RIGHT | B_FOLLOW_BOTTOM);
+	fDescriptionTextView->MakeEditable(false);
+	fDescriptionTextView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	AddChild(fDescriptionTextView);
 }
 	
 StockListExtendedView::~StockListExtendedView() {
@@ -22,6 +32,7 @@ void
 StockListExtendedView::SetCompany(Company *company) {
 	delete fCompany;
 	fCompany = company;
+	fDescriptionTextView->SetText(fCompany->description.String());
 	Invalidate();
 }
 
@@ -56,10 +67,5 @@ StockListExtendedView::Draw(BRect rect) {
 	
 	r.OffsetBy(0, r.Height());
 	MovePenTo( r.left, r.top);
-	DrawString( fCompany->industry.String() ); 
-	
-	r.OffsetBy(0, r.Height());
-	r.bottom += 17;
-	MovePenTo( r.left, r.top);
-	DrawString( fCompany->description.String() ); 
+	DrawString( fCompany->industry.String() );  
 }

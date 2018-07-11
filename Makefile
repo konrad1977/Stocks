@@ -27,14 +27,14 @@ SRCS = \
 	 Source/Models/Company.cpp  \
 	 Source/Models/StockSymbol.cpp  \
 	 Source/Requesters/NetRequester.cpp  \
-	 Source/StockRequester.cpp  \
-	 Source/UrlBuilder.cpp  \
 	 Source/Views/SearchView.cpp  \
+	 Source/Views/StockListExtendedView.cpp  \
 	 Source/Views/StockListView.cpp  \
 	 Source/Views/StockView.cpp  \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
-	 Source/Views/StockListExtendedView.cpp  \
+	 Source/Requesters/StockRequester.cpp  \
+	 Source/Utils/UrlBuilder.cpp  \
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
@@ -47,6 +47,8 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
 #%}
 
 #%}

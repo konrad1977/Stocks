@@ -12,7 +12,7 @@ const char *kSignature = "application/x-vnd.konradsson.HaikuStocks";
 App::App(void): 
 	BApplication(kSignature) {
 	
-	fStockSymbolWindow = new StockSymbolWindow(BRect(200,200,800,600));	
+	fStockSymbolWindow = new StockSymbolWindow(BRect(200,200,900,720));	
 	fStockSymbolWindow->Show();
 	
 	//fWindow = new MainWindow(BRect(150,150,640,480));

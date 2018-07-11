@@ -18,7 +18,7 @@
 
 
 StockSymbolWindow::StockSymbolWindow(BRect rect)
-	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_ASYNCHRONOUS_CONTROLS | B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(rect, "Stock symbols", B_DOCUMENT_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_QUIT_ON_WINDOW_CLOSE)
 	,fStockRequester(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
@@ -52,7 +52,7 @@ StockSymbolWindow::InitLayout() {
 	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
 	
-	const float extendedHeight = 120.0;
+	const float extendedHeight = 180.0;
 	
 	frame.top = frame.bottom;
 	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
