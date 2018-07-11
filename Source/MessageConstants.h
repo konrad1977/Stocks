@@ -7,7 +7,7 @@
 
 const uint32 kUpdateCompanyMessage = 'Updc';
 const uint32 kUpdateSymbolMessage = 'Upds';
-const uint32 kSearchButtonPressedMessage = 'SBPm';
+const uint32 kAddSymbolButtonPressedMessage = 'ASBm';
 const uint32 kSearchTextChangedMessage = 'STCm';
 const uint32 kSymbolListSelectionChanged = 'SLSc';
 

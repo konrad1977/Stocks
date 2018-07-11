@@ -13,9 +13,7 @@ SymbolListItem::SymbolListItem(StockSymbol *symbol)
 	,fStockSymbol(symbol)
 	,fTextOffset(14)
 	,fFontSize(14) {
-	
-	//fCompany->PrintToStream();
-}
+	}
 
 SymbolListItem::~SymbolListItem() {
 	delete fStockSymbol;

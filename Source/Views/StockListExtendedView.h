@@ -8,9 +8,12 @@
 
 #include <SupportDefs.h>
 #include <View.h>
-#include <TextView.h>
 
 class Company;
+class BMessenger;
+class BHandler;
+class BButton;
+class BTextView;
 class StockListExtendedView : public BView {
 public:
 		StockListExtendedView(BRect rect);
@@ -18,9 +21,16 @@ public:
 		
 			void SetCompany(Company *company);
 	virtual void Draw(BRect rect);
+			void SetTarget(BHandler *handler);
 private:
-	Company *fCompany;
-	BTextView *fDescriptionTextView;
+		BTextView *DescriptionTextView();
+			void InitLayout();
+
+	BTextView 	*fDescriptionTextView;
+	BButton 	*fAddSymbolButton;
+			
+	Company 	*fCompany;
+	BMessenger 	*fMessenger;
 };
 
 #endif // _H
