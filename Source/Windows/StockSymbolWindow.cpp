@@ -109,6 +109,10 @@ StockSymbolWindow::SetItems(BList *listItems) {
 		
 	const int32 items = listItems->CountItems();
 	
+	if (fSearchView != NULL) {
+		fSearchView->SetNumberOfHits(items);
+	}	
+
 	fSymbolListView->MakeEmpty();
 	fSymbolListView->AddList(listItems);
 }

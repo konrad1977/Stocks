@@ -8,27 +8,32 @@
 #include <TextControl.h>
 #include <Button.h>
 #include <Messenger.h>
+#include <StringView.h>
 #include "MessageConstants.h"
 #include <LayoutBuilder.h>
 #include <GridView.h>
+#include <GridLayoutBuilder.h>
+#include <GroupLayoutBuilder.h>
+
 #include <string.h>
+#include <String.h>
 
 SearchView::SearchView(BRect rect)
 	:BView(rect, "SearchView", B_FOLLOW_TOP | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
 	,fSearchTextControl(NULL)
-	,fSearchButton(NULL)
+	,fHitsView(NULL)
 	,fMessenger(NULL) {
 		
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
 SearchView::~SearchView() {
-	
+	delete fMessenger;
 }
 
 void
 SearchView::AttachedToWindow() {
-	_LayoutChildren();
+	InitLayout();
 }
 
 void
@@ -45,6 +50,15 @@ SearchView::MessageReceived(BMessage *message) {
 		default:
 			break;
 	}
+}
+
+void SearchView::SetNumberOfHits(int32 hits) {
+	if (fHitsView == NULL) 
+		return;
+	
+	BString str;
+	str << "Stock symbols found: " << hits;	
+	fHitsView->SetText(str.String());
 }
 
 void
@@ -64,19 +78,28 @@ SearchView::TextControl() {
 }
 
 void
-SearchView::_LayoutChildren() {
+SearchView::InitLayout() {
 	
-	BGridView *gridView = new BGridView();
-	//fSearchButton = new BButton("Search", new BMessage(kSearchButtonPressedMessage));
+	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
+	SetLayout(group);
 	
-	BLayoutBuilder::Grid<>(gridView)
+	fHitsView = new BStringView("HitsView", "");
+	fHitsView->SetAlignment(B_ALIGN_RIGHT);
+	
+	BGridLayout *grid = BGridLayoutBuilder(25.0)
+		.Add(TextControl(), 0, 0)
+		.Add(fHitsView, 1, 0);
+		
+	grid->SetMaxColumnWidth(0, 150);
+	
+	BGroupView *groupView = new BGroupView(B_VERTICAL, 0.0);
+	
+	BView *view = BGroupLayoutBuilder(B_VERTICAL, 5)
+		.Add(grid->View())
 		.SetInsets(10,10,10,10)
-		.Add(TextControl(),0,0);
-		//.Add(fSearchButton,1,0);
+		.TopView();
 	
-	AddChild(gridView);
-	
-	BLayoutBuilder::Group<>(this)
-		.AddGlue();
+	groupView->AddChild(view);
+	AddChild(groupView);
 }
 
