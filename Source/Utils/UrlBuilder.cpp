@@ -21,7 +21,7 @@ UrlBuilder::CreatePath(RequestType type) {
 
 	switch (type) {
 		case Company:
-			fBuffer << "/company";
+			fBuffer << "/batch?types=quote,company?displayPercent=true";
 			break;
 		case Chart:
 			fBuffer << "/chart";

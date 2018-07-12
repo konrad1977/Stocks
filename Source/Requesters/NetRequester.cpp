@@ -56,10 +56,22 @@ NetRequester::_HandleData(BString data) {
 	
 	switch (fType) {
 		case COMPANY_INFORMATION: {
-			BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
-			objectUpdatedMessage->AddMessage("Company", &parsedData);
-			messenger.SendMessage(objectUpdatedMessage);
-			delete objectUpdatedMessage;
+			
+			BMessage company;
+			if (parsedData.FindMessage("company", &company) == B_OK) {
+				BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
+				objectUpdatedMessage->AddMessage("Company", &company);
+				messenger.SendMessage(objectUpdatedMessage);
+				delete objectUpdatedMessage;
+			}
+			
+			BMessage quote;
+			if (parsedData.FindMessage("quote", &quote) == B_OK) {
+				BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteMessage);
+				objectUpdatedMessage->AddMessage("Quote", &quote);
+				messenger.SendMessage(objectUpdatedMessage);
+				delete objectUpdatedMessage;
+			}	
 		}
 		break;
 		

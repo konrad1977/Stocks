@@ -6,6 +6,7 @@
 
 #include "StockListExtendedView.h"
 #include "Company.h"
+#include "Quote.h"
 #include "MessageConstants.h"
 
 #include <TextView.h>
@@ -14,11 +15,14 @@
 #include <LayoutBuilder.h>
 #include <GridView.h>
 
+#include <stdio.h>
+
 StockListExtendedView::StockListExtendedView(BRect rect)
 	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, B_WILL_DRAW ) 
 	,fDescriptionTextView(NULL)
 	,fAddSymbolButton(NULL)
 	,fCompany(NULL)
+	,fQuote(NULL)
 	,fMessenger(NULL) {
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
@@ -27,6 +31,7 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	
 StockListExtendedView::~StockListExtendedView() {
 	delete fCompany;
+	delete fQuote;
 	delete fMessenger;
 }
 
@@ -74,6 +79,13 @@ StockListExtendedView::SetCompany(Company *company) {
 	fCompany = company;
 	DescriptionTextView()->SetText(fCompany->description.String());
 	Invalidate();
+}
+
+void
+StockListExtendedView::SetQuote(Quote *quote) {
+	delete fQuote;
+	fQuote = quote;
+	printf("Quote %s\n", fQuote->symbol.String());
 }
 
 void

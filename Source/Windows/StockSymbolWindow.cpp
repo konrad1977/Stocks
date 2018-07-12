@@ -12,6 +12,7 @@
 #include "SearchView.h"
 #include "StockListExtendedView.h"
 #include "Company.h"
+#include "Quote.h"
 
 #include <stdio.h>
 #include <List.h>
@@ -183,9 +184,17 @@ StockSymbolWindow::HandleSearch(BMessage *message) {
 	}
 }
 
+void 
+StockSymbolWindow::HandleQuoteInformation(BMessage *message) {
+	BMessage quoteMessage;
+	if (message->FindMessage("Quote", &quoteMessage) == B_OK) {
+		Quote *quote = new Quote(quoteMessage);
+		fStockListExtendedView->SetQuote(quote);
+	}
+}
+
 void
 StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
-	message->PrintToStream();
 	BMessage companyMessage;
 	if (message->FindMessage("Company", &companyMessage) == B_OK) {
 		Company *company = new Company(companyMessage);
@@ -197,6 +206,10 @@ void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
+		
+		case kUpdateQuoteMessage:
+			HandleQuoteInformation(message);
+			break;
 		
 		case kUpdateCompanyMessage:
 			HandleCompanyInformation(message);

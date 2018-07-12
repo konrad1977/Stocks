@@ -10,6 +10,7 @@
 #include <View.h>
 
 class Company;
+class Quote;
 class BMessenger;
 class BHandler;
 class BButton;
@@ -20,6 +21,7 @@ public:
 		~StockListExtendedView();
 		
 			void SetCompany(Company *company);
+			void SetQuote(Quote *quote);
 	virtual void Draw(BRect rect);
 			void SetTarget(BHandler *handler);
 private:
@@ -30,6 +32,7 @@ private:
 	BButton 	*fAddSymbolButton;
 			
 	Company 	*fCompany;
+	Quote		*fQuote;
 	BMessenger 	*fMessenger;
 };
 

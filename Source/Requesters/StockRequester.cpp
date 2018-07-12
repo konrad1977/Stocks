@@ -43,9 +43,8 @@ StockRequester::AddStockSymbol(const char *symbol) {
 void 
 StockRequester::DownloadSymbols() {
 	
-	NetRequester requester(fHandler, STOCK_SYMBOLS);		
-	BUrl url = BUrl("https://api.iextrading.com/1.0/ref-data/symbols");
-		
+	NetRequester requester(fHandler, STOCK_SYMBOLS);
+	BUrl url = BUrl("https://api.iextrading.com/1.0/ref-data/symbols");	
 	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
 	thread_id thread = request->Run();
@@ -58,11 +57,8 @@ StockRequester::RequestStockInformation(const char *symbol) {
 	
 	NetRequester requester(fHandler, COMPANY_INFORMATION);	
 	fBuilder->SetCompany(symbol);
-		
-	printf("Symbol: %s\n", fBuilder->CreatePath(Company));
-		
+				
 	BUrl url = BUrl(fBuilder->CreatePath(Company));
-		
 	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
 	thread_id thread = request->Run();
@@ -87,10 +83,7 @@ StockRequester::_RequestCompanyInformation() {
 			
 		fBuilder->SetCompany(symbol);
 		
-		printf("Symbol: %s\n", fBuilder->CreatePath(Company));
-		
-		BUrl url = BUrl(fBuilder->CreatePath(Company));
-		
+		BUrl url = BUrl(fBuilder->CreatePath(Company));	
 		BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
 		thread_id thread = request->Run();

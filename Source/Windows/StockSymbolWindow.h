@@ -29,6 +29,7 @@ private:
 			void HandleCompanyInformation(BMessage *message);
 			void HandleUpdate(BMessage *message);
 			void HandleSearch(BMessage *message);
+			void HandleQuoteInformation(BMessage *message);
 			
 			BList * Filtered(BString filter);
 			
