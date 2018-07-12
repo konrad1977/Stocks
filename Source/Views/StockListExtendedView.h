@@ -14,6 +14,7 @@ class Quote;
 class BMessenger;
 class BHandler;
 class BButton;
+class BStringView;
 class BTextView;
 class StockListExtendedView : public BView {
 public:
@@ -22,14 +23,14 @@ public:
 		
 			void SetCompany(Company *company);
 			void SetQuote(Quote *quote);
-	virtual void Draw(BRect rect);
 			void SetTarget(BHandler *handler);
 private:
-		BTextView *DescriptionTextView();
 			void InitLayout();
 
 	BTextView 	*fDescriptionTextView;
+	BStringView *fTitleStringView;
 	BButton 	*fAddSymbolButton;
+	
 			
 	Company 	*fCompany;
 	Quote		*fQuote;

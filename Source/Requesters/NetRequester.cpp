@@ -56,7 +56,7 @@ NetRequester::_HandleData(BString data) {
 	
 	switch (fType) {
 		case COMPANY_INFORMATION: {
-			
+						
 			BMessage company;
 			if (parsedData.FindMessage("company", &company) == B_OK) {
 				BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);

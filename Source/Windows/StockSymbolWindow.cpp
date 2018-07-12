@@ -14,6 +14,8 @@
 #include "Company.h"
 #include "Quote.h"
 
+#include <ListView.h>
+#include <ScrollView.h>
 #include <stdio.h>
 #include <List.h>
 
@@ -59,7 +61,7 @@ StockSymbolWindow::InitLayout() {
 	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
 	frame.right -=B_H_SCROLL_BAR_HEIGHT;
 	
-	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL);
+	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL, B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW);
 	fSymbolListView->SetSelectionMessage(new BMessage(kSymbolListSelectionChanged));
 	fSymbolListView->SetTarget(this);
 	

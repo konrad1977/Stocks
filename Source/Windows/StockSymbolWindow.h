@@ -8,9 +8,11 @@
 
 #include <SupportDefs.h>
 #include <Window.h>
-#include <ListView.h>
-#include <ScrollView.h>
 
+
+class BScrollView;
+class BListView;
+class BList;
 class StockRequester;
 class SearchView;
 class StockListExtendedView;
