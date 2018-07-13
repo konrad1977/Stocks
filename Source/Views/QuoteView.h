@@ -9,6 +9,8 @@
 #include <SupportDefs.h>
 #include <View.h>
 
+class BStringView;
+class BBox;
 class Quote;
 class QuoteView : public BView {
 public:
@@ -17,6 +19,16 @@ public:
 		
 		void SetQuote(Quote *quote);							
 private:
+		const char * MakeText(const char * title, double value);
+		void SetChangePercent(float percent);
+		BBox *MakeSeparator() const; 
+		void InitLayout();
+		
+	BStringView *fTitle;
+	BStringView *f52High;
+	BStringView *f52Low;
+	BStringView *fChangePercent;
+	
 	Quote *fQuote;	
 };
 

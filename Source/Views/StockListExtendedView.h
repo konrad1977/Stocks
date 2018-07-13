@@ -11,6 +11,7 @@
 
 class Company;
 class Quote;
+class QuoteView;
 class BMessenger;
 class BHandler;
 class BButton;
@@ -33,7 +34,7 @@ private:
 	
 			
 	Company 	*fCompany;
-	Quote		*fQuote;
+	QuoteView 	*fQuoteView;
 	BMessenger 	*fMessenger;
 };
 

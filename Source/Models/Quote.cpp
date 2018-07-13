@@ -9,7 +9,6 @@
 Quote::Quote(BMessage message) {
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);
-	message.FindDouble("latestPrice", &latestPrice);
 	message.FindDouble("change", &change);
 	message.FindDouble("changePercent", &changePercent);
 	message.FindDouble("high", &high);

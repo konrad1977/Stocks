@@ -6,7 +6,7 @@
 
 #include "StockListExtendedView.h"
 #include "Company.h"
-#include "Quote.h"
+#include "QuoteView.h"
 #include "MessageConstants.h"
 
 #include <TextView.h>
@@ -27,10 +27,11 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	,fTitleStringView(NULL)
 	,fAddSymbolButton(NULL)
 	,fCompany(NULL)
-	,fQuote(NULL)
 	,fMessenger(NULL) {
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+
+	fQuoteView = new QuoteView();
 
 	fDescriptionTextView = new BTextView("TextView");
 	fDescriptionTextView->MakeEditable(false);
@@ -46,7 +47,6 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	
 StockListExtendedView::~StockListExtendedView() {
 	delete fCompany;
-	delete fQuote;
 	delete fMessenger;
 }
 
@@ -56,26 +56,20 @@ StockListExtendedView::InitLayout() {
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
 	SetLayout(group);
 				
-	BView *redView = new BView("Red", 0);
-	redView->SetViewColor(255,0,0);
-	
 	BView *leftGroup = BGroupLayoutBuilder(B_VERTICAL, 0)
 		.SetInsets(10,10,10,10)
 		.Add(fTitleStringView)
 		.Add(fDescriptionTextView)
 		.AddGlue()
 		.TopView();
+		
+	BGridLayout *grid = BGridLayoutBuilder(1)
+		.Add(leftGroup, 0, 0)
+		.Add(fQuoteView, 1, 0);
 	
-	BGridLayout *grid = BGridLayoutBuilder(25)
-		.Add(redView, 0, 0);		
-	grid->SetMaxColumnWidth(0, 120);
-	
-	BView *groupView = BGroupLayoutBuilder(B_HORIZONTAL, 0)
-		.Add(leftGroup)
-		.Add(grid->View())
-		.TopView();
-	
-	AddChild(groupView);
+	grid->SetMinColumnWidth(0, Bounds().right - 200);
+	grid->SetMaxColumnWidth(1, 200);
+	AddChild(grid->View());
 }
 
 void 
@@ -90,12 +84,12 @@ StockListExtendedView::SetCompany(Company *company) {
 	fCompany = company;
 	fTitleStringView->SetText(company->name.String());
 	fDescriptionTextView->SetText(fCompany->description.String());
-	Invalidate();
 }
 
 void
 StockListExtendedView::SetQuote(Quote *quote) {
-	delete fQuote;
-	fQuote = quote;
-	printf("Quote %s\n", fQuote->symbol.String());
+	if (fQuoteView == NULL)  
+		return;
+		
+	fQuoteView->SetQuote(quote);
 }
