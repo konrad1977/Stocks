@@ -7,20 +7,21 @@
 
 
 #include <SupportDefs.h>
-#include <View.h>
+#include <Box.h>
 
 class BStringView;
 class BBox;
 class Quote;
-class QuoteView : public BView {
+class QuoteView : public BBox {
 public:
 		QuoteView();
 		~QuoteView();
 		
 		void SetQuote(Quote *quote);							
 private:
+		BView * MakeTitleGroup(const char *title, BStringView *right);
 		const char * MakeText(const char * title, double value);
-		void SetChangePercent(float percent);
+		void SetChange(float percent, float dollars);
 		BBox *MakeSeparator() const; 
 		void InitLayout();
 		

@@ -6,9 +6,11 @@
 #include "QuoteView.h"
 #include "Quote.h"
 #include <StringView.h>
+#include <Button.h>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "MessageConstants.h"
 
 #include <GroupLayout.h>
 #include <GridLayout.h>
@@ -18,14 +20,14 @@
 #include <Box.h>
 
 QuoteView::QuoteView()
-	:BView("QuoteView", B_WILL_DRAW)
+	:BBox("QuoteView")
 	,fQuote(NULL)
 	,fTitle(NULL)
 	,f52High(NULL)
 	,f52Low(NULL)
 	,fChangePercent(NULL) {
 		
-	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	//SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
 	fTitle = new BStringView("Title", "");
 	f52High = new BStringView("52High", "");
@@ -47,22 +49,22 @@ QuoteView::MakeText(const char * title, double value) {
 }
 
 void 
-QuoteView::SetChangePercent(float percent) {
+QuoteView::SetChange(float percent, float dollars) {
 	
 	std::ostringstream text;
 
 	if (percent < 0 ) {
 		fChangePercent->SetHighColor(248,63,58);
-		text << percent * 100 << " %";
+		text << percent * 100 << "%" << " (" << "$" << dollars << ")";
 
 	} else {
-		fChangePercent->SetHighColor(80,195,175);
-		text << "+" << percent * 100 << " %";
+		fChangePercent->SetHighColor(75,130,253);
+		text << "+" << percent * 100 << " (" << "$" << dollars << ")";
 
 	}
-	BFont font(be_bold_font);
-	font.SetSize(14.0);
-	//fChangePercent->SetAlignment(B_ALIGN_RIGHT);
+	BFont font(be_plain_font);
+	font.SetSize(18.0);
+	fChangePercent->SetAlignment(B_ALIGN_RIGHT);
 	fChangePercent->SetFont(&font);
 	fChangePercent->SetText(text.str().c_str());
 }
@@ -72,10 +74,11 @@ QuoteView::SetQuote(Quote *quote) {
 	delete fQuote;
 	fQuote = quote;
 	
-	fTitle->SetText(MakeText("Latest price: $",  quote->latestPrice));
-	f52High->SetText(MakeText("52 Week high: $",  quote->week52High));
-	f52Low->SetText(MakeText("52 Week low: $",  quote->week52Low));
-	SetChangePercent(quote->changePercent);
+	fTitle->SetText(MakeText("$", quote->latestPrice));
+	
+	f52High->SetText(MakeText("$",  quote->week52High));
+	f52Low->SetText(MakeText("$",  quote->week52Low));
+	SetChange(quote->changePercent, quote->change);
 }
 
 BBox *
@@ -86,20 +89,45 @@ QuoteView::MakeSeparator() const {
 	return separator;
 }
 
+BView *
+QuoteView::MakeTitleGroup(const char *title, BStringView *right) {
+	if (right == NULL) 
+		return NULL;
+		
+	right->SetAlignment(B_ALIGN_RIGHT);
+	BFont font(be_bold_font);
+	right->SetFont(&font);
+	
+	BView *group = BGroupLayoutBuilder(B_HORIZONTAL, 0)
+		//.SetInsets(10,10,10,10)
+		.Add(new BStringView("title", title))
+		.AddGlue()
+		.Add(right)
+		.TopView();
+	return group;
+}
+
 void
 QuoteView::InitLayout() {
 	
 	BGroupLayout *groupLayout = new BGroupLayout(B_HORIZONTAL);
 	SetLayout(groupLayout);
-				
-	BView *group = BGroupLayoutBuilder(B_VERTICAL, 0)
-		.SetInsets(10,10,10,10)
-		.Add(fChangePercent)
-		.Add(fTitle)
-		.Add(MakeSeparator())
-		.Add(f52High)
-		.Add(f52Low)
+	
+	BView *buttonGroup = BGroupLayoutBuilder(B_HORIZONTAL, 0)
 		.AddGlue()
+		.Add(new BButton("Portfolio", "Add to portfolio", new BMessage(kAddSymbolButtonPressedMessage)))
+		.TopView();
+	
+	BView *group = BGroupLayoutBuilder(B_VERTICAL, 0)
+		.SetInsets(5,5,5,5)
+		.Add(fChangePercent)
+		.Add(MakeSeparator())
+		.Add(MakeTitleGroup("Latest price", fTitle))
+		.Add(MakeSeparator())
+		.Add(MakeTitleGroup("52 week high", f52High))
+		.Add(MakeTitleGroup("52 week low", f52Low))
+		.AddGlue()
+		.Add(buttonGroup)
 		.TopView();
 	
 	AddChild(group);
