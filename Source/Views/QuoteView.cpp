@@ -26,9 +26,7 @@ QuoteView::QuoteView()
 	,f52High(NULL)
 	,f52Low(NULL)
 	,fChangePercent(NULL) {
-		
-	//SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	
+			
 	fTitle = new BStringView("Title", "");
 	f52High = new BStringView("52High", "");
 	f52Low = new BStringView("52Low", "");
@@ -58,12 +56,12 @@ QuoteView::SetChange(float percent, float dollars) {
 		text << percent * 100 << "%" << " (" << "$" << dollars << ")";
 
 	} else {
-		fChangePercent->SetHighColor(75,130,253);
-		text << "+" << percent * 100 << " (" << "$" << dollars << ")";
+		fChangePercent->SetHighColor(44,104,233);
+		text << "+" << percent * 100 << "%" << " (" << "$" << dollars << ")";
 
 	}
 	BFont font(be_plain_font);
-	font.SetSize(18.0);
+	font.SetSize(14.0);
 	fChangePercent->SetAlignment(B_ALIGN_RIGHT);
 	fChangePercent->SetFont(&font);
 	fChangePercent->SetText(text.str().c_str());
@@ -99,7 +97,6 @@ QuoteView::MakeTitleGroup(const char *title, BStringView *right) {
 	right->SetFont(&font);
 	
 	BView *group = BGroupLayoutBuilder(B_HORIZONTAL, 0)
-		//.SetInsets(10,10,10,10)
 		.Add(new BStringView("title", title))
 		.AddGlue()
 		.Add(right)

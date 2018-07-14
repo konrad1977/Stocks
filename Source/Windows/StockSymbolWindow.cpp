@@ -55,7 +55,7 @@ StockSymbolWindow::InitLayout() {
 	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
 	
-	const float extendedHeight = 140.0;
+	const float extendedHeight = 160.0;
 	
 	frame.top = frame.bottom;
 	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
