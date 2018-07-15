@@ -9,7 +9,7 @@
 #include <SupportDefs.h>
 #include <Window.h>
 
-class StockListView;
+class BMenuBar;
 class StockRequester;
 class MainWindow: public BWindow {
 public:
@@ -18,9 +18,13 @@ public:
 	
 	virtual void MessageReceived(BMessage *message);
 private:
-	void _RequestData();	
-	StockListView *fStockListView;	
-	StockRequester *fStockRequester;	
+			void SetupMenu();
+
+	StockRequester *Requester();	
+	
+	BMenuBar *fMenuBar;		
+	StockRequester *fStockRequester;
+		
 };
 
 #endif

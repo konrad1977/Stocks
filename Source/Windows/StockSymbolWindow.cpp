@@ -20,8 +20,8 @@
 #include <List.h>
 
 
-StockSymbolWindow::StockSymbolWindow(BRect rect)
-	:BWindow(rect, "Stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_QUIT_ON_WINDOW_CLOSE)
+StockSymbolWindow::StockSymbolWindow()
+	:BWindow(BRect(200,200,900,720), "Stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_QUIT_ON_WINDOW_CLOSE)
 	,fStockRequester(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)

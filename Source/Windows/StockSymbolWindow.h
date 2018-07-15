@@ -18,7 +18,7 @@ class SearchView;
 class StockListExtendedView;
 class StockSymbolWindow: public BWindow {
 public:
-	StockSymbolWindow(BRect rect);	
+	StockSymbolWindow();	
 	~StockSymbolWindow();
 	
 	virtual void MessageReceived(BMessage *message);							
