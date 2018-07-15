@@ -10,6 +10,7 @@
 #include <Application.h>
 #include "StockSymbolWindow.h"
 
+class StockRequester;
 class StockSymbolWindow;
 class MainWindow;
 class App: public BApplication {
@@ -20,10 +21,15 @@ public:
 	virtual void MessageReceived(BMessage *message);
 		
 private:
+			void HandleUpdate(BMessage *message);
+
 	StockSymbolWindow *SymbolWindow();
 	
 	MainWindow *fWindow;
+	
+	StockRequester *fStockRequester;
 	StockSymbolWindow *fStockSymbolWindow;
+	BList *fSymbolList;
 };
 
 

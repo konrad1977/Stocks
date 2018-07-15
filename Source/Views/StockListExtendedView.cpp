@@ -32,6 +32,7 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	fQuoteView = new QuoteView();
+	fQuoteView->SetTarget(this);
 	fQuoteView->Hide();
 
 	fDescriptionTextView = new BTextView("TextView");
@@ -90,8 +91,10 @@ StockListExtendedView::SetCompany(Company *company) {
 
 void
 StockListExtendedView::SetQuote(Quote *quote) {
+	
 	if (fQuoteView == NULL)  
 		return;
+		
 	if (fQuoteView->IsHidden()) {
 		fQuoteView->Show();
 	}

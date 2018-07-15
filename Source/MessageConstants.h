@@ -14,6 +14,7 @@ const uint32 kAddSymbolButtonPressedMessage = 'ASBm';
 
 
 //GUID
+const uint32 kHideSearchWindowMessaage = 'SWCm';
 const uint32 kShowSearchWindowMessage = 'SSWm';
 const uint32 kSearchTextChangedMessage = 'STCm';
 const uint32 kSymbolListSelectionChanged = 'SLSc';

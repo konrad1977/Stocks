@@ -11,26 +11,32 @@
 
 class BStringView;
 class BBox;
+class BMessenger;
 class Quote;
 class QuoteView : public BBox {
 public:
 		QuoteView();
 		~QuoteView();
 		
-		void SetQuote(Quote *quote);							
+			void SetQuote(Quote *quote);
+			void SetTarget(BHandler *handler);
+	virtual void AttachedToWindow();
+							
 private:
+		void SetChange(float percent, float dollars);
+		void InitLayout();
+
 		BView * MakeTitleGroup(const char *title, BStringView *right);
 		const char * MakeText(const char * title, double value);
-		void SetChange(float percent, float dollars);
+		
 		BBox *MakeSeparator() const; 
-		void InitLayout();
 		
 	BStringView *fTitle;
 	BStringView *f52High;
 	BStringView *f52Low;
 	BStringView *fChangePercent;
-	
-	Quote *fQuote;	
+	Quote *fQuote;
+	BMessenger 	*fMessenger;
 };
 
 

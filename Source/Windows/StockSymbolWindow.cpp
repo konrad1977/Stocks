@@ -21,8 +21,8 @@
 
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(200,200,900,720), "Stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_QUIT_ON_WINDOW_CLOSE)
-	,fStockRequester(NULL)
+	:BWindow(BRect(200,200,900,720), "Stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
+	,fMessenger(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
 	,fSymbolListView(NULL)
@@ -30,18 +30,38 @@ StockSymbolWindow::StockSymbolWindow()
 	,fCurrentFilter(NULL)
 	,fHasFilter(false) {
 	
-	InitLayout();
-	
-	fStockRequester = new StockRequester(this);
-	fStockRequester->DownloadSymbols();	
+	InitLayout();	
 }
 
-StockSymbolWindow::~StockSymbolWindow() {
+StockSymbolWindow::~StockSymbolWindow() {	
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
 	delete fCurrentFilter;
-	delete fStockRequester;
+}
+
+void
+StockSymbolWindow::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
+}
+
+void
+StockSymbolWindow::SetStockSymbols(BList *symbols) {
+	fStockSymbolListItems = symbols;
+	SetItems(fStockSymbolListItems);
+}
+
+bool
+StockSymbolWindow::QuitRequested() {
+	printf("QuitRequested\n");
+	if (fMessenger == NULL) {
+		return true;
+	}
+	
+	BMessage message(kHideSearchWindowMessaage);
+	fMessenger->SendMessage(&message);
+	return true;
 }
 
 void
@@ -132,6 +152,23 @@ StockSymbolWindow::ApplyFilter(BString filter) {
 	}
 }
 
+const char*
+StockSymbolWindow::SymbolAtIndex(int32 index) {
+	if (fSymbolListView == NULL) {
+		return NULL;
+	}
+	
+	SymbolListItem *listItem = static_cast<SymbolListItem *>(fSymbolListView->ItemAt(index));
+	if (listItem == NULL) {
+		return NULL;
+	}
+		
+	const char *symbol = listItem->CurrentStockSymbol()->symbol.String();
+		
+	if (strlen(symbol) == 0 || symbol == NULL) 			
+		return NULL;
+	return symbol;
+}
 
 void 
 StockSymbolWindow::HandleSelection(BMessage *message) {
@@ -139,45 +176,13 @@ StockSymbolWindow::HandleSelection(BMessage *message) {
 	int32 index;
 	if (message->FindInt32("index", &index) == B_OK) {
 		printf("Index found %d\n", index);
-		
-		SymbolListItem *listItem = static_cast<SymbolListItem *>(fSymbolListView->ItemAt(index));
-		if (listItem == NULL) {
-			return;
-		}
-		
-		const char *symbol = listItem->CurrentStockSymbol()->symbol.String();
-		
-		if (strlen(symbol) == 0 || symbol == NULL) 			
-			return;
-
-		fStockRequester->RequestStockInformation(symbol);
-	}
-}
-			
-void 
-StockSymbolWindow::HandleUpdate(BMessage *message) {
-	BMessage symbolMessage;
-			
-	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
-		char *name;
-		uint32 type;
-		int32 count;
-				
-		delete fStockSymbolListItems;
-		fStockSymbolListItems = new BList();
-				
-		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
-			BMessage currentMessage;
-			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
-				StockSymbol *symbol = new StockSymbol(currentMessage);
-				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
-				fStockSymbolListItems->AddItem(symbolListItem);
-			}
+		if (const char *symbol = SymbolAtIndex(index)) {
+			StockRequester requester(this);
+			requester.RequestStockInformation(symbol);			
 		}
 	}
-	SetItems(fStockSymbolListItems);
 }
-			
+						
 void 
 StockSymbolWindow::HandleSearch(BMessage *message) {
 	BString searchString;
@@ -205,9 +210,27 @@ StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
 }
 
 void
+StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
+	if (fMessenger == NULL) {
+		return;
+	}
+	
+	const int32 selectedIndex = fSymbolListView->CurrentSelection();	
+	if (const char *symbol = SymbolAtIndex(selectedIndex)) {
+		BMessage message(kAddSymbolButtonPressedMessage);
+		message.AddString("symbol", symbol);
+		fMessenger->SendMessage(&message);
+	}	
+}
+
+void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
+		
+		case kAddSymbolButtonPressedMessage:
+			HandleAddToPortfolio(message);
+			break;
 		
 		case kUpdateQuoteMessage:
 			HandleQuoteInformation(message);
@@ -223,10 +246,6 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 		
 		case kSearchTextChangedMessage: 
 			HandleSearch(message);
-			break;
-		
-		case kUpdateSymbolMessage: 
-			HandleUpdate(message);
 			break;
 			
 		default:

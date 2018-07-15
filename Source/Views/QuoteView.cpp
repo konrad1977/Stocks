@@ -5,6 +5,7 @@
 
 #include "QuoteView.h"
 #include "Quote.h"
+#include <Messenger.h>
 #include <StringView.h>
 #include <Button.h>
 #include <string>
@@ -21,6 +22,7 @@
 
 QuoteView::QuoteView()
 	:BBox("QuoteView")
+	,fMessenger(NULL)
 	,fQuote(NULL)
 	,fTitle(NULL)
 	,f52High(NULL)
@@ -32,11 +34,16 @@ QuoteView::QuoteView()
 	f52Low = new BStringView("52Low", "");
 	fChangePercent = new BStringView("ChangePercent", "");
 	
-	InitLayout();
 }
 
 QuoteView::~QuoteView() {
 	delete fQuote;
+	delete fMessenger;
+}
+
+void
+QuoteView::AttachedToWindow() {
+	InitLayout();
 }
 
 const char * 
@@ -65,6 +72,12 @@ QuoteView::SetChange(float percent, float dollars) {
 	fChangePercent->SetAlignment(B_ALIGN_RIGHT);
 	fChangePercent->SetFont(&font);
 	fChangePercent->SetText(text.str().c_str());
+}
+
+void 
+QuoteView::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
 }
 
 void
@@ -110,9 +123,12 @@ QuoteView::InitLayout() {
 	BGroupLayout *groupLayout = new BGroupLayout(B_HORIZONTAL);
 	SetLayout(groupLayout);
 	
+	BButton *portfolioButton = new BButton("Portfolio", "Add to portfolio", new BMessage(kAddSymbolButtonPressedMessage));
+	portfolioButton->SetTarget(*fMessenger);
+	
 	BView *buttonGroup = BGroupLayoutBuilder(B_HORIZONTAL, 0)
 		.AddGlue()
-		.Add(new BButton("Portfolio", "Add to portfolio", new BMessage(kAddSymbolButtonPressedMessage)))
+		.Add(portfolioButton)
 		.TopView();
 	
 	BView *group = BGroupLayoutBuilder(B_VERTICAL, 0)
