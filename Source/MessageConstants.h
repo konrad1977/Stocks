@@ -12,6 +12,7 @@ const uint32 kUpdateQuoteMessage = 'Upqm';
 
 const uint32 kAddSymbolButtonPressedMessage = 'ASBm';
 
+const uint32 kSaveSettingsMessage = 'PREm';
 
 //GUID
 const uint32 kHideSearchWindowMessaage = 'SWCm';

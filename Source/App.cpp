@@ -26,10 +26,11 @@ App::App(void)
 	
 	fWindow = new MainWindow(BRect(150,150,640,480));
 	fWindow->Show();	
+		
 }
 
 App::~App() {
-
+	delete fStockRequester;
 }
 
 StockSymbolWindow *

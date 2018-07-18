@@ -22,6 +22,7 @@ public:
 		
 private:
 			void HandleUpdate(BMessage *message);
+			void SaveSettings(BMessage *message);
 
 	StockSymbolWindow *SymbolWindow();
 	

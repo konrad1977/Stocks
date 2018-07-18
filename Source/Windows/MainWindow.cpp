@@ -44,9 +44,9 @@ MainWindow::SetupMenu() {
 	
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
 		.AddMenu("Main")
-			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
-			.AddSeparator()
 			.AddItem("About...", B_ABOUT_REQUESTED, 'A')
+			.AddSeparator()
+			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
 		.End()
 		.AddMenu("Settings")
 			.AddItem("Add symbol...", kShowSearchWindowMessage, 'S')
@@ -74,7 +74,6 @@ MainWindow::MessageReceived(BMessage *message) {
 			BMessage companyMessage;
 			message->FindMessage("Company", &companyMessage);
 			Company *company = new Company(companyMessage);
-
 			break;
 		}
 		default:

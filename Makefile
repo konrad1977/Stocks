@@ -21,6 +21,7 @@ APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
 #	so that Pe and Eddie can fill them in for you.
 #%{
 SRCS = \
+	 Source/Utils/SettingsManager.cpp  \
 	 Source/App.cpp  \
 	 Source/ListItems/CompanyListItem.cpp  \
 	 Source/ListItems/SymbolListItem.cpp  \
@@ -48,6 +49,10 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
+#%}
+
 #%}
 
 #%}
