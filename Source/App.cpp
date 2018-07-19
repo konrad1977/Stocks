@@ -54,8 +54,12 @@ App::MessageReceived(BMessage *message) {
 			fStockSymbolWindow = NULL;
 			break;
 			
-		case kAddSymbolButtonPressedMessage:
-			message->PrintToStream();
+		case kAddSymbolButtonPressedMessage: {
+			BString symbol;
+			if (message->FindString("symbol", &symbol) == B_OK) {
+				fWindow->AddSymbol(symbol.String());
+			}
+		}
 			break;
 		
 		case kShowSearchWindowMessage:

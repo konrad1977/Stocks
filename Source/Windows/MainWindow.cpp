@@ -18,13 +18,22 @@
 #include <StringItem.h>
 #include <LayoutBuilder.h>
 #include <stdio.h>
+#include <ListView.h>
+#include <StringItem.h>
+
+#include <GroupLayout.h>
+#include <GridLayout.h>
+#include <LayoutBuilder.h>
+#include <GridLayoutBuilder.h>
+#include <GroupLayoutBuilder.h>
 
 MainWindow::MainWindow(BRect rect) 
 	:BWindow(rect, "MainWindow", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE )
 	,fMenuBar(NULL)
-	,fStockRequester(NULL) {
+	,fStockRequester(NULL) 
+	,fStockListView(NULL) {
 	
-	SetupMenu();
+	SetupViews();
 }
 
 MainWindow::~MainWindow() {
@@ -39,8 +48,17 @@ MainWindow::Requester() {
 	return fStockRequester;
 }
 
+void 
+MainWindow::AddSymbol(const char *symbol) {
+	Requester()->AddStockSymbol(symbol);
+	Requester()->RequestData();
+}
+
 void
-MainWindow::SetupMenu() {
+MainWindow::SetupViews() {
+
+	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
+	SetLayout(layout);
 	
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
 		.AddMenu("Main")
@@ -52,7 +70,15 @@ MainWindow::SetupMenu() {
 			.AddItem("Add symbol...", kShowSearchWindowMessage, 'S')
 		.End();
 	
-	AddChild(fMenuBar);
+	//AddChild(fMenuBar);	
+
+	fStockListView = new BListView();
+
+	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(fMenuBar)
+		.Add(fStockListView);
+	
+	//AddChild(fStockListView);	
 }
 
 void
@@ -74,6 +100,8 @@ MainWindow::MessageReceived(BMessage *message) {
 			BMessage companyMessage;
 			message->FindMessage("Company", &companyMessage);
 			Company *company = new Company(companyMessage);
+			printf("Company %s\n", company->name.String());
+			fStockListView->AddItem(new BStringItem(company->name.String()));
 			break;
 		}
 		default:
