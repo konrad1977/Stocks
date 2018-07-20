@@ -24,6 +24,44 @@ SymbolListItem::CurrentStockSymbol() {
 	return fStockSymbol;
 }
 
+void SymbolListItem::DrawName(BView *view, BRect frame) {
+
+	BFont font(be_plain_font);
+	font.SetSize(14);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+
+	rgb_color textColor = ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
+	
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
+	view->SetHighColor(textColor);
+	view->DrawString( fStockSymbol->name.String() ); 
+}
+
+void SymbolListItem::DrawSymbol(BView *view, BRect frame) {
+		
+	BFont font(be_bold_font);
+	font.SetSize(14);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+
+	rgb_color textColor = ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
+	
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
+	view->SetHighColor(textColor);
+	view->DrawString( fStockSymbol->symbol.String() ); 
+}
+
 void 
 SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	
@@ -42,30 +80,14 @@ SymbolListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	}
 		
 	parent->FillRect(frame);
-	
-	BFont font(be_bold_font);
-	font.SetSize(fFontSize);
-	parent->SetFont(&font);
-	
-	font_height fh;
-	font.GetHeight(&fh);
-	float centerY = fh.ascent * 2;
-
-	rgb_color textColor = ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
-
-	parent->SetHighColor(textColor);
 	parent->SetDrawingMode(B_OP_OVER);
-	
-	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY + 2));
-	parent->DrawString( fStockSymbol->symbol.String() ); 
-	
-	font.SetFace(B_REGULAR_FACE);
-	parent->SetFont(&font);
 
-	parent->SetHighColor(tint_color(textColor, 0.7));
-	parent->MovePenTo( fTextOffset, frame.LeftBottom().y - (centerY - 1) / 2);
-	parent->DrawString( fStockSymbol->name.String() ); 
-
+	BRect halfRect = frame.InsetBySelf(0,4);
+	halfRect.bottom -= frame.Height() / 2;
+	DrawSymbol(parent, halfRect);
+		
+	halfRect.OffsetBy(0, halfRect.Height());
+	DrawName(parent, halfRect);
 }
 
 void
@@ -73,7 +95,7 @@ SymbolListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
-	const float height = fh.ascent + fh.descent + fh.leading + 2;
+	const float height = fh.ascent + fh.descent + fh.leading + 30;
 	
-	SetHeight(48);
+	SetHeight(height);
 }

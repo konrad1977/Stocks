@@ -85,6 +85,8 @@ App::AddToPortfolio(const char *symbol) {
 		printf("Has item %s\n", symbol);
 		return;
 	}
+	
+	fWindow->AddSymbol(symbol);
 	fWindow->RequestData();
 	
 	fCurrentSymbols->AddItem((void*)symbol);

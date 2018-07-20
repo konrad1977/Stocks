@@ -20,13 +20,12 @@ QuoteListItem::~QuoteListItem() {
 	delete fQuote;
 }	
 
-void QuoteListItem::DrawChange(BView *view, BRect frame) {
-
+void QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
+		
 	view->SetDrawingMode(B_OP_COPY);
-	view->SetHighColor(71,66,71);	
 	
-	BFont font(be_plain_font);
-	font.SetSize(17);
+	BFont font(be_bold_font);
+	font.SetSize(15);
 	view->SetFont(&font);
 	
 	font_height fh;
@@ -44,9 +43,9 @@ void QuoteListItem::DrawChange(BView *view, BRect frame) {
 	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
 
 	if (fQuote->changePercent < 0)  {
-		view->SetHighColor(248,63,58);
+		view->SetHighColor(255,64,80);
 	} else {
-		view->SetHighColor(44,104,233);
+		view->SetHighColor(102,191,255);
 	}
 	view->DrawString( percent ); 
 }
@@ -58,7 +57,7 @@ QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
 	view->SetHighColor(71,66,71);	
 	
 	BFont font(be_plain_font);
-	font.SetSize(17);
+	font.SetSize(14);
 	view->SetFont(&font);
 	
 	font_height fh;
@@ -68,6 +67,60 @@ QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
 	
 	view->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
 	view->DrawString( fQuote->companyName.String() ); 
+}
+
+void 
+QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
+	
+	view->SetDrawingMode(B_OP_COPY);
+	view->SetHighColor(71,66,71);	
+	
+	BFont font(be_plain_font);
+	font.SetSize(15);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+
+	std::ostringstream changeStr;
+	changeStr << "$" << fQuote->change;
+
+	const char *change = changeStr.str().c_str();
+	const float width = font.StringWidth(change);
+	
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
+
+	view->SetHighColor(80,80,80);
+	view->DrawString( change ); 
+}
+
+void 
+QuoteListItem::DrawLatestPrice(BView *view, BRect frame) {
+	
+	view->SetDrawingMode(B_OP_COPY);
+	view->SetHighColor(71,66,71);	
+	
+	BFont font(be_bold_font);
+	font.SetSize(15);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+
+	std::ostringstream dollarStr;
+	dollarStr << "$" << fQuote->latestPrice;
+
+	const char *dollar = dollarStr.str().c_str();
+	
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
+	view->SetHighColor(44,38,44);
+	view->DrawString( dollar ); 
 }
 
 void 
@@ -84,8 +137,14 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	}
 	parent->FillRect(frame);
 	
-	DrawCompanyName(parent, frame);
-	DrawChange(parent, frame);
+	BRect halfRect = frame.InsetBySelf(0,10);
+	halfRect.bottom -= frame.Height() / 2;
+	DrawCompanyName(parent, halfRect);
+	DrawChangePercent(parent, halfRect);
+
+	halfRect.OffsetBy(0, halfRect.Height());
+	DrawLatestPrice(parent, halfRect);	
+	DrawChangeDollar(parent, halfRect);
 }
 
 void
@@ -93,7 +152,7 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
-	const float height = fh.ascent + fh.descent + fh.leading + 80;
+	const float height = fh.ascent + fh.descent + fh.leading + 50;
 	SetHeight(height);
 }
 

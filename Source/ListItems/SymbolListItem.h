@@ -20,6 +20,8 @@ public:
 	StockSymbol* CurrentStockSymbol();
 							
 private:
+			void DrawName(BView *view, BRect frame);
+			void DrawSymbol(BView *view, BRect frame);
 
 	StockSymbol *fStockSymbol;
 	float fTextOffset;

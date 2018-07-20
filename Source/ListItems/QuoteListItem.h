@@ -20,7 +20,10 @@ public:
 								
 private:
 			void DrawCompanyName(BView *view, BRect frame);
-			void DrawChange(BView *view, BRect frame);
+			void DrawChangePercent(BView *view, BRect frame);
+			void DrawChangeDollar(BView *view, BRect frame);
+			void DrawLatestPrice(BView *view, BRect frame);
+			
 	Quote *fQuote;
 };
 

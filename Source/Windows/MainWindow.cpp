@@ -85,6 +85,8 @@ MainWindow::SetupViews() {
 
 void
 MainWindow::HandleQuotes(BMessage message) {
+
+	fStockListView->MakeEmpty();
 	
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
