@@ -7,8 +7,9 @@
 #include "MainWindow.h"
 #include "StockRequester.h"
 #include "Company.h"
+#include "Quote.h"
 #include "MessageConstants.h"
-#include "CompanyListItem.h"
+#include "QuoteListItem.h"
 
 #include <Application.h>
 #include <MenuBar.h>
@@ -83,12 +84,39 @@ MainWindow::SetupViews() {
 }
 
 void
+MainWindow::HandleQuotes(BMessage message) {
+	
+	BMessage symbolMessage;			
+	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
+		char *name;
+		uint32 type;
+		int32 count;
+				
+		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
+			
+			BMessage currentMessage;
+			if (symbolMessage.FindMessage(name, &currentMessage) != B_OK) {
+				continue;
+			}
+				
+			BMessage quoteMsg;
+			if (currentMessage.FindMessage("quote", &quoteMsg) != B_OK) {
+				continue;
+			}			
+			Quote *quote = new Quote(quoteMsg);
+			fStockListView->AddItem(new QuoteListItem(quote));
+		}
+	}
+}
+
+void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
 			
-		case kUpdateQuoteBatchMessage:
-			message->PrintToStream();
+		case kUpdateQuoteBatchMessage: {
+			HandleQuotes(*message);
 			break;
+		}
 		
 		case kShowSearchWindowMessage: {
 			BMessage *showSearchWindowMessage = new BMessage(kShowSearchWindowMessage);
@@ -99,17 +127,15 @@ MainWindow::MessageReceived(BMessage *message) {
 		
 		case B_ABOUT_REQUESTED:
 			break;
-		case kUpdateCompanyMessage: {
 			
+		case kUpdateCompanyMessage: {			
 			BMessage companyMessage;
 			message->FindMessage("Company", &companyMessage);
 			Company *company = new Company(companyMessage);
-			printf("Company %s\n", company->name.String());
-			fStockListView->AddItem(new BStringItem(company->name.String()));
+			fStockListView->AddItem(new BStringItem(company->name));
 			break;
 		}
 		default:
-			message->PrintToStream();
 			break;
 	}
 }

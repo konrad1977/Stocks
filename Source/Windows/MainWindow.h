@@ -22,6 +22,7 @@ public:
 			void RequestData();
 private:
 			void SetupViews();
+			void HandleQuotes(BMessage message); 
 
 	StockRequester *Requester();	
 	

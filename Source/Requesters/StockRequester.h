@@ -23,7 +23,6 @@ public:
 	void RequestStockInformation(const char *symbol);							
 private:
 	
-	void _RequestCompanyInformation();
 	void _RequestNews();
 	
 	BHandler *fHandler;

@@ -4,23 +4,21 @@
  */
 
 
-#include "CompanyListItem.h"
+#include "QuoteListItem.h"
 #include <ListView.h>
 #include <stdio.h>
 
-CompanyListItem::CompanyListItem(Company *company)
+QuoteListItem::QuoteListItem(Quote *quote)
 	:BListItem()
-	,fCompany(company) {
-	
-	//fCompany->PrintToStream();
+	,fQuote(quote) {	
 }
 
-CompanyListItem::~CompanyListItem() {
-	delete fCompany;
+QuoteListItem::~QuoteListItem() {
+	delete fQuote;
 }	
 
 void 
-CompanyListItem::DrawItem(BView *view, BRect rect, bool complete) {
+QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	
 	BListView *parent = dynamic_cast<BListView *>(view);
 	const int32 index = parent->IndexOf(this);
@@ -38,28 +36,22 @@ CompanyListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	BFont font(be_plain_font);
 	font.SetSize(17);
 	parent->SetFont(&font);
-	//parent->GetFont(&font);
 	
 	font_height fh;
 	font.GetHeight(&fh);
 	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fh.ascent) / 2;
-	parent->SetFont(&font);
+	const float center = (frame.Height() - fontHeight) / 2;
 	
-	parent->MovePenTo( 12, frame.LeftBottom().y - center);	
-	parent->DrawString( fCompany->name.String() ); 
-	printf("%s\n", fCompany->name.String());
+	parent->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
+	parent->DrawString( fQuote->companyName.String() ); 
 }
 
-
-
 void
-CompanyListItem::Update(BView *view, const BFont *font) {
+QuoteListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
-	const float height = fh.ascent + fh.descent + fh.leading + 2;
-	
-	SetHeight(34);
+	const float height = fh.ascent + fh.descent + fh.leading + 20;
+	SetHeight(height);
 }
 

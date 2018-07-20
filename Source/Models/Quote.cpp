@@ -5,8 +5,11 @@
 
 
 #include "Quote.h"
+#include <stdio.h>
 
 Quote::Quote(BMessage message) {
+	
+	message.FindString("companyName", &companyName);
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);
 	message.FindDouble("change", &change);
@@ -17,9 +20,17 @@ Quote::Quote(BMessage message) {
 	message.FindDouble("latestPrice", &latestPrice);
 	message.FindDouble("week52High", &week52High);
 	message.FindDouble("week52Low", &week52Low);
+	PrintToStream();
 }
 
 Quote::~Quote() {
 
 }
 
+void
+Quote::PrintToStream() {
+	printf("Company: %s\n", companyName.String());
+	printf("symbol: %s\n", symbol.String());
+	printf("primaryExchange: %s\n", primaryExchange.String());
+	printf("%s\n", "-- ");
+}

@@ -21,15 +21,15 @@ APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
 #	so that Pe and Eddie can fill them in for you.
 #%{
 SRCS = \
-	 Source/Utils/SettingsManager.cpp  \
+	 Source/ListItems/QuoteListItem.cpp  \
 	 Source/App.cpp  \
-	 Source/ListItems/CompanyListItem.cpp  \
 	 Source/ListItems/SymbolListItem.cpp  \
 	 Source/Models/Company.cpp  \
 	 Source/Models/Quote.cpp  \
 	 Source/Models/StockSymbol.cpp  \
 	 Source/Requesters/NetRequester.cpp  \
 	 Source/Requesters/StockRequester.cpp  \
+	 Source/Utils/SettingsManager.cpp  \
 	 Source/Utils/UrlBuilder.cpp  \
 	 Source/Views/QuoteView.cpp  \
 	 Source/Views/SearchView.cpp  \
@@ -49,6 +49,8 @@ RSRCS = \
 
 # End Pe/Eddie support.
 # @<-src@
+#%}
+
 #%}
 
 #%}

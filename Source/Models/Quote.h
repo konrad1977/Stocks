@@ -15,6 +15,7 @@ public:
 	Quote(BMessage message);
 	~Quote();
 	
+	BString companyName;
 	BString symbol;
 	BString primaryExchange;
 	
@@ -27,7 +28,8 @@ public:
 	double latestPrice;
 	double week52High;
 	double week52Low;
-				
+	
+	void PrintToStream();
 private:
 
 };
