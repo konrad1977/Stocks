@@ -50,8 +50,9 @@ MainWindow::Requester() {
 
 void 
 MainWindow::AddSymbol(const char *symbol) {
-	Requester()->AddStockSymbol(symbol);
-	Requester()->RequestData();
+	printf("Request %s\n", symbol);
+	//Requester()->AddStockSymbol(symbol);
+	//Requester()->RequestData();
 }
 
 void

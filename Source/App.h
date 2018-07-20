@@ -10,6 +10,7 @@
 #include <Application.h>
 #include "StockSymbolWindow.h"
 
+class SettingsManager;
 class StockRequester;
 class StockSymbolWindow;
 class MainWindow;
@@ -23,6 +24,9 @@ public:
 private:
 			void HandleUpdate(BMessage *message);
 			void SaveSettings(BMessage *message);
+			void AddToPortfolio(const char *symbol);
+			bool HasSymbol(const char *symbol);
+
 
 	StockSymbolWindow *SymbolWindow();
 	
@@ -30,7 +34,9 @@ private:
 	
 	StockRequester *fStockRequester;
 	StockSymbolWindow *fStockSymbolWindow;
+	SettingsManager *fSettingsManager;
 	BList *fSymbolList;
+	BList *fCurrentSymbols;
 };
 
 

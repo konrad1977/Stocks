@@ -12,17 +12,15 @@
 class BList;
 class SettingsManager {
 public:
-	SettingsManager(const char *fileName);
+	SettingsManager();
 	~SettingsManager();
 
 	void SaveSymbols(BList *list);
-	BList *LoadSymbols() const;
+	BList *LoadSymbols();
 	
 private:
-
 	status_t LoadSettings(BMessage &message);
-	status_t SaveSettings();
-
+	status_t SaveSettings(BMessage message);
 	char *fFileName;
 };
 

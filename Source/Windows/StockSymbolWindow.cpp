@@ -175,7 +175,6 @@ StockSymbolWindow::HandleSelection(BMessage *message) {
 	
 	int32 index;
 	if (message->FindInt32("index", &index) == B_OK) {
-		printf("Index found %d\n", index);
 		if (const char *symbol = SymbolAtIndex(index)) {
 			StockRequester requester(this);
 			requester.RequestStockInformation(symbol);			
@@ -211,12 +210,15 @@ StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
 
 void
 StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
+	
 	if (fMessenger == NULL) {
 		return;
 	}
 	
 	const int32 selectedIndex = fSymbolListView->CurrentSelection();	
 	if (const char *symbol = SymbolAtIndex(selectedIndex)) {
+		printf("%s::%s %s\n", __FILE__, __FUNCTION__, symbol);
+		
 		BMessage message(kAddSymbolButtonPressedMessage);
 		message.AddString("symbol", symbol);
 		fMessenger->SendMessage(&message);
