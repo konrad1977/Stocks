@@ -19,6 +19,7 @@ public:
 	
 	virtual void MessageReceived(BMessage *message);
 			void AddSymbol(const char *symbol);
+			void RequestData();
 private:
 			void SetupViews();
 

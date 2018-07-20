@@ -49,10 +49,13 @@ MainWindow::Requester() {
 }
 
 void 
+MainWindow::RequestData() {
+	Requester()->RequestBatchData();
+}
+
+void 
 MainWindow::AddSymbol(const char *symbol) {
-	printf("Request %s\n", symbol);
-	//Requester()->AddStockSymbol(symbol);
-	//Requester()->RequestData();
+	Requester()->AddStockSymbol(symbol);
 }
 
 void
@@ -71,30 +74,30 @@ MainWindow::SetupViews() {
 			.AddItem("Add symbol...", kShowSearchWindowMessage, 'S')
 		.End();
 	
-	//AddChild(fMenuBar);	
 
 	fStockListView = new BListView();
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)
-		.Add(fStockListView);
-	
-	//AddChild(fStockListView);	
+		.Add(fStockListView);	
 }
 
 void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
+			
+		case kUpdateQuoteBatchMessage:
+			message->PrintToStream();
+			break;
 		
 		case kShowSearchWindowMessage: {
 			BMessage *showSearchWindowMessage = new BMessage(kShowSearchWindowMessage);
 			be_app_messenger.SendMessage(showSearchWindowMessage);
 			delete showSearchWindowMessage;
+			break;
 		}
-		break;
 		
 		case B_ABOUT_REQUESTED:
-			printf("Hello world\n");
 			break;
 		case kUpdateCompanyMessage: {
 			
@@ -106,6 +109,7 @@ MainWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		default:
+			message->PrintToStream();
 			break;
 	}
 }

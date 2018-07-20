@@ -14,6 +14,7 @@
 enum StockRequestType {
 	STOCK_SYMBOLS = 0,
 	COMPANY_INFORMATION,
+	QUOTE
 };
 
 class BHandler;
@@ -26,6 +27,10 @@ public:
 	virtual	void RequestCompleted(BUrlRequest* caller, bool success);					
 private:
 	void _HandleData(BString data);
+			void HandleQuoteBatch(BMessage message);
+			void HandleQuote(BMessage message);
+			void HandleStockSymbols(BMessage message);
+			void HandleCompanyInformation(BMessage message);
 
 	BHandler 	*fHandler;
 	BMallocIO	fResponseData;

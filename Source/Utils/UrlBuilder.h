@@ -15,15 +15,27 @@ enum RequestType {
 	Logo
 };	
 
+class BList;
 class UrlBuilder {
 public:
 	UrlBuilder(const char *base);
+	~UrlBuilder();
+	
+	void AddSymbol(const char *symbol);
+
+	const char *CreateBatchPath();	
+	
 	void SetCompany(const char*name);
-	const char *CreatePath(RequestType type);
+	const char *CreateCompanyPath(RequestType type);
 		
 private:
+
+	bool HasSymbolInList(const char *symbol);
+
+	BList *fSymbolList;
 	BString fBaseUrl;
 	BString fBuffer; 
+	BString fBatchBuffer;
 };
 
 #endif // _H

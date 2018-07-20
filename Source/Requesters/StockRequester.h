@@ -16,6 +16,7 @@ public:
 	StockRequester(BHandler *handler);
 	~StockRequester();
 	
+	void RequestBatchData();
 	void RequestData();
 	void DownloadSymbols();
 	void AddStockSymbol(const char *symbol);

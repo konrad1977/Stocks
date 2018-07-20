@@ -37,6 +37,7 @@ App::App(void)
 		fWindow->AddSymbol(symbol);
 	}
 	
+	fWindow->RequestData();
 	fWindow->Show();		
 }
 
@@ -62,7 +63,7 @@ App::HasSymbol(const char *symbol) {
 		return false;
 	
 	for (int32 i = 0; i<fCurrentSymbols->CountItems(); i++) {
-		char *sym = (char *)fCurrentSymbols->ItemAt(i);
+		char *sym = (char *)fCurrentSymbols->ItemAtFast(i);
 		if (strcasecmp(sym, symbol) == 0) {
 			return true;
 		}
@@ -84,13 +85,10 @@ App::AddToPortfolio(const char *symbol) {
 		printf("Has item %s\n", symbol);
 		return;
 	}
+	fWindow->RequestData();
 	
 	fCurrentSymbols->AddItem((void*)symbol);
-	
-	printf("items in list\n");
-
 	fSettingsManager->SaveSymbols(fCurrentSymbols);
-	//fWindow->AddSymbol(symbol);
 }
 
 void

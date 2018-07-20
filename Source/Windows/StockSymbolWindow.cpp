@@ -112,7 +112,7 @@ StockSymbolWindow::Filtered(BString filter) {
 	const int32 count = fStockSymbolListItems->CountItems();
 	
 	for (int32 i = 0; i<count; i++) {
-		SymbolListItem *symbol = (SymbolListItem*)fStockSymbolListItems->ItemAt(i);
+		SymbolListItem *symbol = (SymbolListItem*)fStockSymbolListItems->ItemAtFast(i);
 		if (symbol != NULL) {
 			if (symbol->CurrentStockSymbol()->name.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
 				fCurrentFilter->AddItem(symbol);

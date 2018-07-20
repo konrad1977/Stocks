@@ -38,15 +38,57 @@ NetRequester::DataReceived(BUrlRequest* caller, const char* data, off_t position
 	//printf("Data recieved (size: %d)\n", size);
 }
 
+void
+NetRequester::HandleQuoteBatch(BMessage message) {
+	BMessenger messenger(fHandler);
+	BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteBatchMessage);
+	objectUpdatedMessage->AddMessage("Quotes", &message);
+	messenger.SendMessage(objectUpdatedMessage);
+	delete objectUpdatedMessage;
+}
+
+void 
+NetRequester::HandleQuote(BMessage message) {
+	
+	BMessage quote;
+	if (message.FindMessage("quote", &quote) == B_OK) {
+		BMessenger messenger(fHandler);
+		BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteMessage);
+		objectUpdatedMessage->AddMessage("Quote", &quote);
+		messenger.SendMessage(objectUpdatedMessage);
+		delete objectUpdatedMessage;
+	}	
+}
+
+void 
+NetRequester::HandleStockSymbols(BMessage message) {
+	BMessenger messenger(fHandler);
+	BMessage *objectUpdatedMessage = new BMessage(kUpdateSymbolMessage);
+	objectUpdatedMessage->AddMessage("Symbols", &message);
+	messenger.SendMessage(objectUpdatedMessage);
+	delete objectUpdatedMessage;
+}
+
+void 
+NetRequester::HandleCompanyInformation(BMessage message) {
+	BMessage company;
+	if (message.FindMessage("company", &company) == B_OK) {
+		BMessenger messenger(fHandler);
+		BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
+		objectUpdatedMessage->AddMessage("Company", &company);
+		messenger.SendMessage(objectUpdatedMessage);
+		delete objectUpdatedMessage;
+	}
+}
+
 void 
 NetRequester::_HandleData(BString data) {
-	
-	BMessenger messenger(fHandler);
-	
+		
 	BMessage parsedData;
 	BJson parser;
 
 	status_t status = parser.Parse(data, parsedData);
+	
 	if (status == B_BAD_DATA) {
 		printf("JSON Parser error for data:\n%s\n", data.String());
 		//BMessage* message = new BMessage(kFailureMessage);
@@ -55,34 +97,22 @@ NetRequester::_HandleData(BString data) {
 	}
 	
 	switch (fType) {
+
+		case QUOTE: {
+			HandleQuoteBatch(parsedData);
+			break;
+		}
+	
 		case COMPANY_INFORMATION: {
-						
-			BMessage company;
-			if (parsedData.FindMessage("company", &company) == B_OK) {
-				BMessage *objectUpdatedMessage = new BMessage(kUpdateCompanyMessage);
-				objectUpdatedMessage->AddMessage("Company", &company);
-				messenger.SendMessage(objectUpdatedMessage);
-				delete objectUpdatedMessage;
-			}
-			
-			BMessage quote;
-			if (parsedData.FindMessage("quote", &quote) == B_OK) {
-				BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteMessage);
-				objectUpdatedMessage->AddMessage("Quote", &quote);
-				messenger.SendMessage(objectUpdatedMessage);
-				delete objectUpdatedMessage;
-			}	
+			HandleCompanyInformation(parsedData);
+			HandleQuote(parsedData);
+			break;
 		}
-		break;
-		
-		case STOCK_SYMBOLS: { 
-			BMessage *objectUpdatedMessage = new BMessage(kUpdateSymbolMessage);
-			objectUpdatedMessage->AddMessage("Symbols", &parsedData);
-			messenger.SendMessage(objectUpdatedMessage);
-			delete objectUpdatedMessage;
-		}
-		break;
-		
+
+		case STOCK_SYMBOLS:
+			HandleStockSymbols(parsedData);
+			break;
+	
 		default:
 			break;
 	}	

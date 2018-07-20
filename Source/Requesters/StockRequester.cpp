@@ -32,12 +32,27 @@ StockRequester::RequestData() {
 	_RequestCompanyInformation();
 }
 
+void 
+StockRequester::RequestBatchData() {
+	
+	NetRequester requester(fHandler, QUOTE);	
+				
+	const char *requestUrl = fBuilder->CreateBatchPath();
+	BUrl url = BUrl(requestUrl);
+
+	printf("%s %s %s\n", __FILE__, __FUNCTION__, requestUrl);
+	
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
+
+	thread_id thread = request->Run();
+	wait_for_thread(thread, NULL);
+		
+	delete request;
+}
+
 void
 StockRequester::AddStockSymbol(const char *symbol) {
-	if (fSymbolList.HasItem(symbol)) {
-		return;
-	}
-	fSymbolList.AddItem((void*)symbol);
+	fBuilder->AddSymbol(symbol);
 }
 
 void 
@@ -58,7 +73,7 @@ StockRequester::RequestStockInformation(const char *symbol) {
 	NetRequester requester(fHandler, COMPANY_INFORMATION);	
 	fBuilder->SetCompany(symbol);
 				
-	BUrl url = BUrl(fBuilder->CreatePath(Company));
+	BUrl url = BUrl(fBuilder->CreateCompanyPath(Company));
 	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
 	thread_id thread = request->Run();
@@ -83,7 +98,7 @@ StockRequester::_RequestCompanyInformation() {
 			
 		fBuilder->SetCompany(symbol);
 		
-		BUrl url = BUrl(fBuilder->CreatePath(Company));	
+		BUrl url = BUrl(fBuilder->CreateCompanyPath(Company));	
 		BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
 		thread_id thread = request->Run();
