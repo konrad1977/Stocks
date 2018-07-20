@@ -19,6 +19,8 @@ public:
 	virtual void Update(BView *view, const BFont *font);
 								
 private:
+			void DrawCompanyName(BView *view, BRect frame);
+			void DrawChange(BView *view, BRect frame);
 	Quote *fQuote;
 };
 

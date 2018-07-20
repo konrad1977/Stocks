@@ -29,7 +29,7 @@
 #include <GroupLayoutBuilder.h>
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE )
+	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE )
 	,fMenuBar(NULL)
 	,fStockRequester(NULL) 
 	,fStockListView(NULL) {
@@ -76,7 +76,7 @@ MainWindow::SetupViews() {
 		.End();
 	
 
-	fStockListView = new BListView();
+	fStockListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)

@@ -7,6 +7,9 @@
 #include "QuoteListItem.h"
 #include <ListView.h>
 #include <stdio.h>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 QuoteListItem::QuoteListItem(Quote *quote)
 	:BListItem()
@@ -16,6 +19,56 @@ QuoteListItem::QuoteListItem(Quote *quote)
 QuoteListItem::~QuoteListItem() {
 	delete fQuote;
 }	
+
+void QuoteListItem::DrawChange(BView *view, BRect frame) {
+
+	view->SetDrawingMode(B_OP_COPY);
+	view->SetHighColor(71,66,71);	
+	
+	BFont font(be_plain_font);
+	font.SetSize(17);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+
+	std::ostringstream percentText;
+	percentText << fQuote->changePercent * 100 << "%";
+
+	const char *percent = percentText.str().c_str();
+	const float width = font.StringWidth(percent);
+	
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
+
+	if (fQuote->changePercent < 0)  {
+		view->SetHighColor(248,63,58);
+	} else {
+		view->SetHighColor(44,104,233);
+	}
+	view->DrawString( percent ); 
+}
+
+void
+QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
+	
+	view->SetDrawingMode(B_OP_COPY);
+	view->SetHighColor(71,66,71);	
+	
+	BFont font(be_plain_font);
+	font.SetSize(17);
+	view->SetFont(&font);
+	
+	font_height fh;
+	font.GetHeight(&fh);
+	const float fontHeight = fh.ascent + fh.descent + fh.leading;
+	const float center = (frame.Height() - fontHeight) / 2;
+	
+	view->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
+	view->DrawString( fQuote->companyName.String() ); 
+}
 
 void 
 QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
@@ -30,20 +83,9 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 		parent->SetHighColor(245, 245, 245);
 	}
 	parent->FillRect(frame);
-	parent->SetHighColor(40,40,40);
-	parent->SetDrawingMode(B_OP_OVER);
 	
-	BFont font(be_plain_font);
-	font.SetSize(17);
-	parent->SetFont(&font);
-	
-	font_height fh;
-	font.GetHeight(&fh);
-	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fontHeight) / 2;
-	
-	parent->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
-	parent->DrawString( fQuote->companyName.String() ); 
+	DrawCompanyName(parent, frame);
+	DrawChange(parent, frame);
 }
 
 void
@@ -51,7 +93,7 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
-	const float height = fh.ascent + fh.descent + fh.leading + 20;
+	const float height = fh.ascent + fh.descent + fh.leading + 80;
 	SetHeight(height);
 }
 
