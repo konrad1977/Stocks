@@ -29,7 +29,7 @@
 #include <GroupLayoutBuilder.h>
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, "MainWindow", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE )
+	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_NOT_RESIZABLE | B_QUIT_ON_WINDOW_CLOSE )
 	,fMenuBar(NULL)
 	,fStockRequester(NULL) 
 	,fStockListView(NULL) {
