@@ -20,6 +20,7 @@ public:
 	StockSymbol* CurrentStockSymbol();
 							
 private:
+			rgb_color TextColor();
 			void DrawName(BView *view, BRect frame);
 			void DrawSymbol(BView *view, BRect frame);
 

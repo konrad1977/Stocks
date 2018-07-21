@@ -32,14 +32,12 @@ void SymbolListItem::DrawName(BView *view, BRect frame) {
 	
 	font_height fh;
 	font.GetHeight(&fh);
-
-	rgb_color textColor = ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 	
 	const float fontHeight = fh.ascent + fh.descent + fh.leading;
 	const float center = (frame.Height() - fontHeight) / 2;
 	
 	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
-	view->SetHighColor(textColor);
+	view->SetHighColor(TextColor());
 	view->DrawString( fStockSymbol->name.String() ); 
 }
 
@@ -51,15 +49,18 @@ void SymbolListItem::DrawSymbol(BView *view, BRect frame) {
 	
 	font_height fh;
 	font.GetHeight(&fh);
-
-	rgb_color textColor = ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 	
 	const float fontHeight = fh.ascent + fh.descent + fh.leading;
 	const float center = (frame.Height() - fontHeight) / 2;
 	
 	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
-	view->SetHighColor(textColor);
+	view->SetHighColor(TextColor());
 	view->DrawString( fStockSymbol->symbol.String() ); 
+}
+
+rgb_color
+SymbolListItem::TextColor() {
+	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 }
 
 void 

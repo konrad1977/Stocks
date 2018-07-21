@@ -19,6 +19,7 @@ public:
 	virtual void Update(BView *view, const BFont *font);
 								
 private:
+			rgb_color TextColor(); 
 			void DrawCompanyName(BView *view, BRect frame);
 			void DrawChangePercent(BView *view, BRect frame);
 			void DrawChangeDollar(BView *view, BRect frame);

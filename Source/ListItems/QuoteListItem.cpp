@@ -20,10 +20,14 @@ QuoteListItem::~QuoteListItem() {
 	delete fQuote;
 }	
 
-void QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
+rgb_color
+QuoteListItem::TextColor() {
+	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
+}
+
+void 
+QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
 		
-	view->SetDrawingMode(B_OP_COPY);
-	
 	BFont font(be_bold_font);
 	font.SetSize(15);
 	view->SetFont(&font);
@@ -52,10 +56,7 @@ void QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
 
 void
 QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
-	
-	view->SetDrawingMode(B_OP_COPY);
-	view->SetHighColor(71,66,71);	
-	
+		
 	BFont font(be_plain_font);
 	font.SetSize(14);
 	view->SetFont(&font);
@@ -66,15 +67,13 @@ QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
 	const float center = (frame.Height() - fontHeight) / 2;
 	
 	view->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
+	view->SetHighColor(TextColor());		
 	view->DrawString( fQuote->companyName.String() ); 
 }
 
 void 
 QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
-	
-	view->SetDrawingMode(B_OP_COPY);
-	view->SetHighColor(71,66,71);	
-	
+		
 	BFont font(be_plain_font);
 	font.SetSize(15);
 	view->SetFont(&font);
@@ -93,15 +92,12 @@ QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
 	
 	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
 
-	view->SetHighColor(80,80,80);
+	view->SetHighColor(TextColor());
 	view->DrawString( change ); 
 }
 
 void 
 QuoteListItem::DrawLatestPrice(BView *view, BRect frame) {
-	
-	view->SetDrawingMode(B_OP_COPY);
-	view->SetHighColor(71,66,71);	
 	
 	BFont font(be_bold_font);
 	font.SetSize(15);
@@ -119,7 +115,7 @@ QuoteListItem::DrawLatestPrice(BView *view, BRect frame) {
 	const float center = (frame.Height() - fontHeight) / 2;
 	
 	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
-	view->SetHighColor(44,38,44);
+	view->SetHighColor(TextColor());	
 	view->DrawString( dollar ); 
 }
 
@@ -130,15 +126,23 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
 	
-	if (index % 2 == 0) {
-		parent->SetHighColor(255, 255, 255);
+	rgb_color backgroundColor = ui_color(B_LIST_BACKGROUND_COLOR);
+	
+	if (IsSelected()) {
+		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
+	} else if (index % 2 == 0) {
+		parent->SetHighColor(backgroundColor);
 	} else {
-		parent->SetHighColor(245, 245, 245);
+		parent->SetHighColor(tint_color(backgroundColor, 1.02));
 	}
+		
 	parent->FillRect(frame);
 	
 	BRect halfRect = frame.InsetBySelf(0,10);
 	halfRect.bottom -= frame.Height() / 2;
+
+	parent->SetDrawingMode(B_OP_OVER);
+	
 	DrawCompanyName(parent, halfRect);
 	DrawChangePercent(parent, halfRect);
 
