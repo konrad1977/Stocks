@@ -17,7 +17,7 @@ public:
 	~MainWindow();
 	
 	virtual void MessageReceived(BMessage *message);
-
+			void RequestData();
 private:
 			void SetupViews();
 	

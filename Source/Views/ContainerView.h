@@ -24,11 +24,10 @@ public:
 	virtual status_t	Archive(BMessage* into, bool deep = true) const;
 	static BArchivable*	Instantiate(BMessage* archive);
 			status_t	SaveState(BMessage* into, bool deep = true) const;
- 
-	
+			
+			void RequestData();	
 private:
 		void SetupViews();
-		void LoadSymbols();
 		void HandleQuotes(BMessage message);
 		StockRequester* Requester();
 		
@@ -38,6 +37,9 @@ private:
 
 	SettingsManager *fSettingsManager;
 	StockRequester  *fStockRequester;
+	rgb_color fBackgroundColor;
+	
+	bool fIsReplicant;
 };
 
 #endif // _H

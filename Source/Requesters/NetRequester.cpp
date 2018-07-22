@@ -51,8 +51,6 @@ void
 NetRequester::HandleQuote(BMessage message) {
 	
 	BMessage quote;
-
-	message.PrintToStream();
 	
 	if (message.FindMessage("quote", &quote) == B_OK) {
 		BMessenger messenger(fHandler);

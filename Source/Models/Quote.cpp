@@ -9,7 +9,7 @@
 
 Quote::Quote(BMessage message) {
 	
-	message.PrintToStream();
+	//message.PrintToStream();
 	message.FindString("companyName", &companyName);
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);

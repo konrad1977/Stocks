@@ -24,7 +24,7 @@
 #include <GroupLayoutBuilder.h>
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE )
+	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL) {
 	SetupViews();
 }
@@ -34,9 +34,16 @@ MainWindow::~MainWindow() {
 }
 
 void
+MainWindow::RequestData() {
+	if( fContainerView ) 
+		fContainerView->RequestData();
+}
+
+void
 MainWindow::SetupViews() {
 
 	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
+	layout->SetSpacing(0);
 	SetLayout(layout);
 	
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
@@ -46,15 +53,14 @@ MainWindow::SetupViews() {
 			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
 		.End()
 		.AddMenu("Settings")
-			.AddItem("Add symbol...", kShowSearchWindowMessage, 'S')
+			.AddItem("Search symbols...", kShowSearchWindowMessage, 'S')
 		.End();
 	
 	fContainerView = new ContainerView();
 	
-	BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.SetInsets(0,0,0,0)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
-		.Add(fContainerView);		
+		.Add(fContainerView);
 }
 
 void

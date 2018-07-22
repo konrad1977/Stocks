@@ -10,9 +10,12 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <Screen.h>
+#include <Window.h>
 
-QuoteListItem::QuoteListItem(Quote *quote)
+QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant)
 	:BListItem()
+	,fIsReplicant(isReplicant)
 	,fQuote(quote) {	
 }
 
@@ -21,7 +24,32 @@ QuoteListItem::~QuoteListItem() {
 }	
 
 rgb_color
+QuoteListItem::BackgroundColor() {
+	if (fIsReplicant && IsSelected() == false) {
+		BScreen screen;		
+		rgb_color color = screen.DesktopColor();
+		color.alpha = 180;
+		return color;
+	}
+
+	rgb_color color = ui_color(B_LIST_BACKGROUND_COLOR);
+	color.alpha = 127;
+	return color;
+}
+
+rgb_color
 QuoteListItem::TextColor() {
+	if (fIsReplicant) {
+		rgb_color backgroundColor = BackgroundColor();
+		if ( 
+			backgroundColor.red < 127 || 
+			backgroundColor.green < 127 || 
+			backgroundColor.blue < 127) {
+			
+			rgb_color textColor = { 216, 214, 216 };
+			return textColor;
+		}
+	}
 	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 }
 
@@ -126,7 +154,7 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
 	
-	rgb_color backgroundColor = ui_color(B_LIST_BACKGROUND_COLOR);
+	rgb_color backgroundColor = BackgroundColor();
 	
 	if (IsSelected()) {
 		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
@@ -135,8 +163,8 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	} else {
 		parent->SetHighColor(tint_color(backgroundColor, 1.02));
 	}
-		
-	parent->FillRect(frame);
+	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
+	parent->FillRect(fIsReplicant ? frame.InsetBySelf(0,2) : frame);
 	
 	BRect halfRect = frame.InsetBySelf(0,10);
 	halfRect.bottom -= frame.Height() / 2;

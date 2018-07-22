@@ -12,7 +12,7 @@
 
 class QuoteListItem : public BListItem {
 public:
-	QuoteListItem(Quote *quote);
+	QuoteListItem(Quote *quote, bool replicant);
 	~QuoteListItem();
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
@@ -20,12 +20,15 @@ public:
 								
 private:
 			rgb_color TextColor(); 
+			rgb_color BackgroundColor();
+			
 			void DrawCompanyName(BView *view, BRect frame);
 			void DrawChangePercent(BView *view, BRect frame);
 			void DrawChangeDollar(BView *view, BRect frame);
 			void DrawLatestPrice(BView *view, BRect frame);
 			
 	Quote *fQuote;
+	bool fIsReplicant;
 };
 
 

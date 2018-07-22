@@ -20,22 +20,24 @@ App::App(void)
 	,fCurrentSymbols(NULL)
 	,fSymbolList(NULL)
 	,fStockRequester(NULL)
-	,fSettingsManager(NULL)
 	,fWindow(NULL)
-	,fStockSymbolWindow(NULL){ 
-
+	,fStockSymbolWindow(NULL)
+	,fSettingsManager(NULL) { 
+	
 	fSettingsManager = new SettingsManager();
+	fCurrentSymbols	= fSettingsManager->LoadSymbols();
+	
 	fStockRequester = new StockRequester(this);
 	fStockRequester->DownloadSymbols();
 	
-	fWindow = new MainWindow(BRect(150,150,480,320));
+	fWindow = new MainWindow(BRect(150,150,320,640));
 	fWindow->Show();		
 }
 
 App::~App() {
 	delete fStockRequester;
-	delete fSettingsManager;
 	delete fCurrentSymbols;
+	delete fSettingsManager;
 }
 
 StockSymbolWindow *
@@ -56,6 +58,7 @@ App::HasSymbol(const char *symbol) {
 	for (int32 i = 0; i<fCurrentSymbols->CountItems(); i++) {
 		char *sym = (char *)fCurrentSymbols->ItemAtFast(i);
 		if (strcasecmp(sym, symbol) == 0) {
+			printf("%s %s\n", sym, symbol);
 			return true;
 		}
 	}
@@ -64,9 +67,7 @@ App::HasSymbol(const char *symbol) {
 
 void 
 App::AddToPortfolio(const char *symbol) {
-
-	printf("%s %s %s\n", __FILE__, __FUNCTION__, symbol);
-
+	
 	if (symbol == NULL || strlen(symbol) < 1 ) {
 		printf("Symbol is null or not long enough\n");
 		return;
@@ -77,11 +78,10 @@ App::AddToPortfolio(const char *symbol) {
 		return;
 	}
 	
-//	fWindow->AddSymbol(symbol);
-//	fWindow->RequestData();
-	
 	fCurrentSymbols->AddItem((void*)symbol);
 	fSettingsManager->SaveSymbols(fCurrentSymbols);
+	
+	fWindow->RequestData();
 }
 
 void
@@ -113,7 +113,7 @@ App::MessageReceived(BMessage *message) {
 			break;
 		
 		default:
-			message->PrintToStream();
+			//message->PrintToStream();
 			break;
 	}
 }

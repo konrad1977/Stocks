@@ -33,9 +33,7 @@ SettingsManager::SaveSymbols(BList *list) {
 		return;
 	}	
 	
-	BMessage previousSave;
-	//LoadSettings(previousSave);
-	
+	BMessage previousSave;	
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		const char *symbol = (const char *)list->ItemAt(index);
 		if (symbol == NULL) {
@@ -45,7 +43,6 @@ SettingsManager::SaveSymbols(BList *list) {
 		symbolMsg.AddString("Symbol", symbol);
 		previousSave.AddMessage("Symbols", &symbolMsg);
 	}
-	previousSave.PrintToStream();
 	SaveSettings(previousSave);
 }
 	

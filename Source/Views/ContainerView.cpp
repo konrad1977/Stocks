@@ -23,13 +23,16 @@ const float kDraggerSize = 7;
 extern const char *kAppSignature;
 
 ContainerView::ContainerView()
-	:BView("ContainerView", B_WILL_DRAW | B_FRAME_EVENTS)
+	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fSettingsManager(NULL) 
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
+	,fIsReplicant(false)
+	,fBackgroundColor(ui_color(B_PANEL_BACKGROUND_COLOR))
 {	
+	SetViewColor(fBackgroundColor);
 	SetupViews();
 }
 	
@@ -40,7 +43,9 @@ ContainerView::ContainerView(BMessage *archive)
 	,fSettingsManager(NULL) 
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
+	,fIsReplicant(true)
 {	
+	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
 }
 
@@ -77,13 +82,11 @@ ContainerView::Requester() {
 
 void
 ContainerView::AttachedToWindow() {
-	LoadSymbols();
+	RequestData();
 }
 
 void
 ContainerView::MessageReceived(BMessage *message) {
-	
-	message->PrintToStream();
 	
 	switch (message->what) {
 			
@@ -97,7 +100,7 @@ ContainerView::MessageReceived(BMessage *message) {
 }
 
 void
-ContainerView::LoadSymbols() {
+ContainerView::RequestData() {
 
 	SettingsManager *manager = new SettingsManager();
 	
@@ -120,7 +123,8 @@ ContainerView::LoadSymbols() {
 void
 ContainerView::HandleQuotes(BMessage message) {
 
-	fQuoteListView->MakeEmpty();
+	if (fQuoteListView)
+		fQuoteListView->MakeEmpty();
 	
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
@@ -140,7 +144,7 @@ ContainerView::HandleQuotes(BMessage message) {
 				continue;
 			}			
 			Quote *quote = new Quote(quoteMsg);
-			fQuoteListView->AddItem(new QuoteListItem(quote));
+			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant));
 		}
 	}
 }
@@ -148,16 +152,21 @@ ContainerView::HandleQuotes(BMessage message) {
 void
 ContainerView::SetupViews() {
 	
+
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.SetInsets(0,0,0,0)
 		.Add(fQuoteListView)
 		.AddGroup(B_HORIZONTAL, 0)
-				.AddGlue()
-				.Add(fDragger = new BDragger(this))
+			.AddGlue()
+			.Add(fDragger = new BDragger(this))
 		.End()
+		
 	.End();
 	
 	fDragger->SetExplicitMinSize(BSize(kDraggerSize, kDraggerSize));
 	fDragger->SetExplicitMaxSize(BSize(kDraggerSize, kDraggerSize));
+
+	fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
 }
