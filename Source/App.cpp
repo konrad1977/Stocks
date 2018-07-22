@@ -25,19 +25,10 @@ App::App(void)
 	,fStockSymbolWindow(NULL){ 
 
 	fSettingsManager = new SettingsManager();
-	fCurrentSymbols = fSettingsManager->LoadSymbols();
-
 	fStockRequester = new StockRequester(this);
 	fStockRequester->DownloadSymbols();
 	
-	fWindow = new MainWindow(BRect(150,150,640,480));
-		
-	for (int32 index = 0; index<fCurrentSymbols->CountItems(); index++) {
-		char *symbol = (char *)fCurrentSymbols->ItemAt(index);
-		fWindow->AddSymbol(symbol);
-	}
-	
-	fWindow->RequestData();
+	fWindow = new MainWindow(BRect(150,150,480,320));
 	fWindow->Show();		
 }
 
@@ -86,8 +77,8 @@ App::AddToPortfolio(const char *symbol) {
 		return;
 	}
 	
-	fWindow->AddSymbol(symbol);
-	fWindow->RequestData();
+//	fWindow->AddSymbol(symbol);
+//	fWindow->RequestData();
 	
 	fCurrentSymbols->AddItem((void*)symbol);
 	fSettingsManager->SaveSymbols(fCurrentSymbols);
@@ -105,9 +96,7 @@ App::MessageReceived(BMessage *message) {
 			fStockSymbolWindow = NULL;
 			break;
 			
-		case kAddSymbolButtonPressedMessage: {
-			message->PrintToStream();
-			
+		case kAddSymbolButtonPressedMessage: {			
 			BString symbol;
 			if (message->FindString("symbol", &symbol) != B_OK)
 				return;

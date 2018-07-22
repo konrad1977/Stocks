@@ -1,0 +1,15 @@
+resource app_flags B_EXCLUSIVE_LAUNCH;
+
+resource app_signature "application/x-vnd.konradsson.HaikuStocks";
+
+resource app_version {
+	major  = 1,
+	middle = 0,
+	minor  = 0,
+
+	variety = B_APPV_FINAL,
+	internal = 0,
+
+	short_info = "A simple stock ticker application",
+	long_info = "An application showing stocks"
+};

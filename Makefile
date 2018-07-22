@@ -19,10 +19,10 @@ APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
 
 #	The following lines tell Pe and Eddie where the SRCS, RDEFS, and RSRCS are
 #	so that Pe and Eddie can fill them in for you.
-#%{
+#
 SRCS = \
-	 Source/ListItems/QuoteListItem.cpp  \
 	 Source/App.cpp  \
+	 Source/ListItems/QuoteListItem.cpp  \
 	 Source/ListItems/SymbolListItem.cpp  \
 	 Source/Models/Company.cpp  \
 	 Source/Models/Quote.cpp  \
@@ -31,6 +31,7 @@ SRCS = \
 	 Source/Requesters/StockRequester.cpp  \
 	 Source/Utils/SettingsManager.cpp  \
 	 Source/Utils/UrlBuilder.cpp  \
+	 Source/Views/ContainerView.cpp  \
 	 Source/Views/QuoteView.cpp  \
 	 Source/Views/SearchView.cpp  \
 	 Source/Views/StockListExtendedView.cpp  \
@@ -38,53 +39,15 @@ SRCS = \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
 
+RDEFS = Source/HaikuStocks.rdef
+
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
-# RDEFS = Source/Weather.rdef
+# RDEFS = Source/HaikuStocks.rdef
 
 #	Specify the resource files to use. Full or relative paths can be used.
 #	Both RDEFS and RSRCS can be utilized in the same Makefile.
 RSRCS = \
-
-
-# End Pe/Eddie support.
-# @<-src@
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
-#%}
-
 #	Specify libraries to link against.
 #	There are two acceptable forms of library specifications:
 #	-	if your library follows the naming pattern of libXXX.so or libXXX.a,
@@ -97,7 +60,7 @@ RSRCS = \
 #	- 	if your library does not follow the standard library naming scheme,
 #		you need to specify the path to the library and it's name.
 #		(e.g. for mylib.a, specify "mylib.a" or "path/mylib.a")
-LIBS = be bnetapi localestub shared translation $(STDCPPLIBS)
+LIBS = be bnetapi localestub shared tracker translation $(STDCPPLIBS)
 
 #	Specify additional paths to directories following the standard libXXX.so
 #	or libXXX.a naming scheme. You can specify full paths or paths relative

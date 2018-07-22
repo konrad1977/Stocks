@@ -64,18 +64,11 @@ SettingsManager::LoadSymbols() {
 	while ( (message.FindMessage("Symbols", index, &symbolMsg) == B_OK )) {
 		BString symbolString;
 		if (symbolMsg.FindString("Symbol", &symbolString) == B_OK) {
-			printf("%s %s\n", __FUNCTION__, symbolString.String());
 			char *symbol = strdup(symbolString.String());
 			list->AddItem((void*)symbol);
 		}
 		index++;
-	}
-
-	for(int32 i = 0; i<list->CountItems(); i++) {
-		char *item = (char *)list->ItemAt(i);
-		printf("DEBUG Item %s\n", item);
-	}
-	
+	}	
 	return list;
 }
 

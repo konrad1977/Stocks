@@ -9,26 +9,20 @@
 #include <SupportDefs.h>
 #include <Window.h>
 
-class BListView;
 class BMenuBar;
-class StockRequester;
+class ContainerView;
 class MainWindow: public BWindow {
 public:
 	MainWindow(BRect rect);	
 	~MainWindow();
 	
 	virtual void MessageReceived(BMessage *message);
-			void AddSymbol(const char *symbol);
-			void RequestData();
+
 private:
 			void SetupViews();
-			void HandleQuotes(BMessage message); 
-
-	StockRequester *Requester();	
 	
 	BMenuBar *fMenuBar;		
-	StockRequester *fStockRequester;
-	BListView *fStockListView;
+	ContainerView *fContainerView;
 };
 
 #endif

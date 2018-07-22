@@ -51,11 +51,15 @@ void
 NetRequester::HandleQuote(BMessage message) {
 	
 	BMessage quote;
+
+	message.PrintToStream();
+	
 	if (message.FindMessage("quote", &quote) == B_OK) {
 		BMessenger messenger(fHandler);
 		BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteMessage);
 		objectUpdatedMessage->AddMessage("Quote", &quote);
 		messenger.SendMessage(objectUpdatedMessage);
+		printf("quote\n");
 		delete objectUpdatedMessage;
 	}	
 }

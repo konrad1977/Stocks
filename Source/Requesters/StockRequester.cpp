@@ -36,8 +36,10 @@ void
 StockRequester::RequestBatchData() {
 	
 	NetRequester requester(fHandler, QUOTE);	
-				
+			
 	const char *requestUrl = fBuilder->CreateBatchPath();
+	printf("%p %s\n", fHandler, requestUrl);
+	
 	BUrl url = BUrl(requestUrl);	
 	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
 
