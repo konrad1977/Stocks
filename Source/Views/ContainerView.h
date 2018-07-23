@@ -11,6 +11,7 @@
 class StockRequester;
 class SettingsManager;
 class BDragger;
+class BMessageRunner;
 class BListView;
 class BList;
 class ContainerView : public BView {
@@ -27,17 +28,23 @@ public:
 			
 			void RequestData();	
 private:
-		void SetupViews();
-		void HandleQuotes(BMessage message);
-		StockRequester* Requester();
-		
-	BDragger *fDragger;	
-	BListView *fQuoteListView;
-	BList *fCurrentSymbols;
+			void SetupViews();
+			void HandleQuotes(BMessage message);
+			void StopActiveRequest();
+			void DownloadData();
+	static int32 DownloadDataFunc(void *cookie);	
+	StockRequester* Requester();	
+	
+	BDragger 		*fDragger;	
+	BListView 		*fQuoteListView;
+	BList 			*fCurrentSymbols;
 
+	BMessageRunner	*fAutoUpdateRunner;
 	SettingsManager *fSettingsManager;
-	StockRequester  *fStockRequester;	
-	bool fIsReplicant;
+	StockRequester  *fStockRequester;
+	
+	thread_id		fDownloadThread;
+	bool 			fIsReplicant;
 };
 
 #endif // _H

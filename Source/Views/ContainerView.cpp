@@ -10,6 +10,7 @@
 #include <LayoutBuilder.h>
 #include <ListView.h>
 #include <List.h>
+#include <MessageRunner.h>
 
 #include "Quote.h"
 #include "QuoteListItem.h"
@@ -30,6 +31,8 @@ ContainerView::ContainerView()
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
 	,fIsReplicant(false)
+	,fDownloadThread(-1)
+	,fAutoUpdateRunner(NULL)
 {	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetupViews();
@@ -43,13 +46,17 @@ ContainerView::ContainerView(BMessage *archive)
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
 	,fIsReplicant(true)
+	,fDownloadThread(-1)
+	,fAutoUpdateRunner(NULL)
 {	
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
 }
 
 ContainerView::~ContainerView() {
+	delete fSettingsManager;
 	delete fStockRequester;
+	delete fAutoUpdateRunner;
 }
 
 status_t
@@ -82,13 +89,22 @@ ContainerView::Requester() {
 void
 ContainerView::AttachedToWindow() {
 	RequestData();
+	
+	BMessenger view(this);
+	bigtime_t seconds = 10;
+	BMessage autoUpdateMessage(kAutoUpdateMessage);
+	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
 }
 
 void
 ContainerView::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
-			
+		case kAutoUpdateMessage:{
+			printf("Auto update\n");
+			RequestData();
+		}
+			break;
 		case kUpdateQuoteBatchMessage: {
 			HandleQuotes(*message);
 			break;
@@ -100,7 +116,7 @@ ContainerView::MessageReceived(BMessage *message) {
 }
 
 void
-ContainerView::RequestData() {
+ContainerView::DownloadData() {
 
 	SettingsManager *manager = new SettingsManager();
 	
@@ -118,6 +134,32 @@ ContainerView::RequestData() {
 	
 	Requester()->RequestBatchData();
 	delete manager;
+}
+
+int32 
+ContainerView::DownloadDataFunc(void *cookie) {
+	ContainerView *view = static_cast<ContainerView *>(cookie);
+	view->DownloadData();
+	return 0;
+}
+
+void
+ContainerView::RequestData() {
+	
+	StopActiveRequest();
+	
+	fDownloadThread = spawn_thread(&DownloadDataFunc, "Download Data", B_NORMAL_PRIORITY, this);
+	if (fDownloadThread >= 0)
+		resume_thread(fDownloadThread);
+}
+
+void
+ContainerView::StopActiveRequest() {
+	if (fDownloadThread == -1) {
+		return;
+	}
+	wait_for_thread(fDownloadThread, NULL);
+	fDownloadThread = -1;
 }
 
 void
@@ -161,14 +203,11 @@ ContainerView::SetupViews() {
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fQuoteListView)
-		.AddGroup(B_HORIZONTAL, 0)
+		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
 			.SetExplicitMinSize(draggerSize)
 			.SetExplicitMaxSize(draggerSize)
 			.Add(fDragger = new BDragger(this))
 		.End()
 	.End();
-
-	//fDragger->SetExplicitMinSize(BSize(kDraggerSize, kDraggerSize));
-	//fDragger->SetExplicitMaxSize(BSize(kDraggerSize, kDraggerSize));
 }
