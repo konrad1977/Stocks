@@ -30,9 +30,8 @@ ContainerView::ContainerView()
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
 	,fIsReplicant(false)
-	,fBackgroundColor(ui_color(B_PANEL_BACKGROUND_COLOR))
 {	
-	SetViewColor(fBackgroundColor);
+	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetupViews();
 }
 	
@@ -95,6 +94,7 @@ ContainerView::MessageReceived(BMessage *message) {
 			break;
 		}
 		default:
+		message->PrintToStream();
 			break;
 	}
 }
@@ -146,27 +146,29 @@ ContainerView::HandleQuotes(BMessage message) {
 			Quote *quote = new Quote(quoteMsg);
 			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant));
 		}
+		//float width, height;
+		//fQuoteListView->GetPreferredSize(&width, &height);	
 	}
 }
 
 void
 ContainerView::SetupViews() {
 	
-
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
+
+	BSize draggerSize = BSize(kDraggerSize,kDraggerSize);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.SetInsets(0,0,0,0)
 		.Add(fQuoteListView)
 		.AddGroup(B_HORIZONTAL, 0)
 			.AddGlue()
+			.SetExplicitMinSize(draggerSize)
+			.SetExplicitMaxSize(draggerSize)
 			.Add(fDragger = new BDragger(this))
 		.End()
-		
 	.End();
-	
-	fDragger->SetExplicitMinSize(BSize(kDraggerSize, kDraggerSize));
-	fDragger->SetExplicitMaxSize(BSize(kDraggerSize, kDraggerSize));
 
-	fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
+	//fDragger->SetExplicitMinSize(BSize(kDraggerSize, kDraggerSize));
+	//fDragger->SetExplicitMaxSize(BSize(kDraggerSize, kDraggerSize));
 }

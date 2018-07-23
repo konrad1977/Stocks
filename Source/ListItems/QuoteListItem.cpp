@@ -31,22 +31,16 @@ QuoteListItem::BackgroundColor() {
 		color.alpha = 180;
 		return color;
 	}
-
-	rgb_color color = ui_color(B_LIST_BACKGROUND_COLOR);
-	color.alpha = 127;
-	return color;
+	return ui_color(B_LIST_BACKGROUND_COLOR);
 }
 
 rgb_color
 QuoteListItem::TextColor() {
+
 	if (fIsReplicant) {
 		rgb_color backgroundColor = BackgroundColor();
-		if ( 
-			backgroundColor.red < 127 || 
-			backgroundColor.green < 127 || 
-			backgroundColor.blue < 127) {
-			
-			rgb_color textColor = { 216, 214, 216 };
+		if ( backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127) {
+			rgb_color textColor = { 224, 220, 224 };
 			return textColor;
 		}
 	}

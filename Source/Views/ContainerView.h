@@ -36,9 +36,7 @@ private:
 	BList *fCurrentSymbols;
 
 	SettingsManager *fSettingsManager;
-	StockRequester  *fStockRequester;
-	rgb_color fBackgroundColor;
-	
+	StockRequester  *fStockRequester;	
 	bool fIsReplicant;
 };
 

@@ -30,7 +30,7 @@ App::App(void)
 	fStockRequester = new StockRequester(this);
 	fStockRequester->DownloadSymbols();
 	
-	fWindow = new MainWindow(BRect(150,150,320,640));
+	fWindow = new MainWindow(BRect(150,150,420,240));
 	fWindow->Show();		
 }
 
@@ -58,7 +58,6 @@ App::HasSymbol(const char *symbol) {
 	for (int32 i = 0; i<fCurrentSymbols->CountItems(); i++) {
 		char *sym = (char *)fCurrentSymbols->ItemAtFast(i);
 		if (strcasecmp(sym, symbol) == 0) {
-			printf("%s %s\n", sym, symbol);
 			return true;
 		}
 	}

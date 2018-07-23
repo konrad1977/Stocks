@@ -8,8 +8,6 @@
 #include <stdio.h>
 
 Quote::Quote(BMessage message) {
-	
-	//message.PrintToStream();
 	message.FindString("companyName", &companyName);
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);
@@ -21,7 +19,6 @@ Quote::Quote(BMessage message) {
 	message.FindDouble("latestPrice", &latestPrice);
 	message.FindDouble("week52High", &week52High);
 	message.FindDouble("week52Low", &week52Low);
-	PrintToStream();
 }
 
 Quote::~Quote() {
