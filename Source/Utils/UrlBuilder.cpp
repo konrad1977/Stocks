@@ -21,19 +21,19 @@ UrlBuilder::~UrlBuilder() {
 	delete fSymbolList;
 }
 
-bool 
-UrlBuilder::HasSymbolInList(const char *symbol) {
+int32 
+UrlBuilder::IndexOfSymbol(const char *symbol) {
 
 	if (fSymbolList == NULL || fSymbolList->IsEmpty())
-		return false;
+		return -1;
 	
 	for (int32 i = 0; i<fSymbolList->CountItems(); i++) {
-		char *sym = (char *)fSymbolList->ItemAt(i);
+		char *sym = (char *)fSymbolList->ItemAtFast(i);
 		if (strcasecmp(sym, symbol) == 0) {
-			return true;
+			return i;
 		}
 	}
-	return false;
+	return -1;
 }
 
 const char *
@@ -57,11 +57,25 @@ UrlBuilder::CreateBatchPath() {
 }
 
 void
-UrlBuilder::AddSymbol(const char *symbol) {
-	if (symbol == NULL || strlen(symbol) < 1) {
-		return;
+UrlBuilder::RemoveSymbol(const char *symbol) {
+	int32 index = IndexOfSymbol(symbol);
+	if (index != -1) {
+		fSymbolList->RemoveItem(index);
 	}
-	if (HasSymbolInList(symbol)) {
+}
+
+void
+UrlBuilder::MakeEmpty() {
+	fSymbolList->MakeEmpty();
+}
+
+bool
+UrlBuilder::HasSymbol(const char *symbol) {
+	return IndexOfSymbol(symbol) != -1;
+}
+void
+UrlBuilder::AddSymbol(const char *symbol) {
+	if (HasSymbol(symbol)) {
 		return;
 	}
 	fSymbolList->AddItem((void*)symbol);

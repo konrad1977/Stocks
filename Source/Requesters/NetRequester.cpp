@@ -57,7 +57,6 @@ NetRequester::HandleQuote(BMessage message) {
 		BMessage *objectUpdatedMessage = new BMessage(kUpdateQuoteMessage);
 		objectUpdatedMessage->AddMessage("Quote", &quote);
 		messenger.SendMessage(objectUpdatedMessage);
-		printf("quote\n");
 		delete objectUpdatedMessage;
 	}	
 }

@@ -27,13 +27,13 @@ QuoteView::QuoteView()
 	,fTitle(NULL)
 	,f52High(NULL)
 	,f52Low(NULL)
-	,fChangePercent(NULL) {
-			
+	,fChangePercent(NULL)
+	,fPortfolioButton(NULL)	{	
+	
 	fTitle = new BStringView("Title", "");
 	f52High = new BStringView("52High", "");
 	f52Low = new BStringView("52Low", "");
 	fChangePercent = new BStringView("ChangePercent", "");
-	
 }
 
 QuoteView::~QuoteView() {
@@ -44,6 +44,23 @@ QuoteView::~QuoteView() {
 void
 QuoteView::AttachedToWindow() {
 	InitLayout();
+}
+
+void
+QuoteView::MessageReceived(BMessage *message) {
+		
+	switch (message->what) {
+		case kPortfolioButtonPressedMessage: {
+			BMessage message(kPortfolioButtonPressedMessage);
+			message.AddBool("removeQuote", fHasQuote);
+			message.AddString("symbol", fQuote->symbol);
+			message.PrintToStream();
+			fMessenger->SendMessage(&message);
+			break;
+		}
+		default:
+			break;
+	}
 }
 
 const char * 
@@ -81,7 +98,13 @@ QuoteView::SetTarget(BHandler *handler) {
 }
 
 void
-QuoteView::SetQuote(Quote *quote) {
+QuoteView::SetQuote(Quote *quote, bool hasQuote) {
+	
+	fHasQuote = hasQuote;
+	
+	SetupButton(hasQuote);
+	printf("Has quote %s\n ", hasQuote ? "YES" : "NO");
+	
 	delete fQuote;
 	fQuote = quote;
 	
@@ -90,6 +113,11 @@ QuoteView::SetQuote(Quote *quote) {
 	f52High->SetText(MakeText("$",  quote->week52High));
 	f52Low->SetText(MakeText("$",  quote->week52Low));
 	SetChange(quote->changePercent, quote->change);
+}
+
+void
+QuoteView::SetupButton(bool hasQuote) {
+	fPortfolioButton->SetLabel(hasQuote ? "Remove from portfolio" : "Add to portfolio");
 }
 
 BBox *
@@ -102,6 +130,7 @@ QuoteView::MakeSeparator() const {
 
 BView *
 QuoteView::MakeTitleGroup(const char *title, BStringView *right) {
+	
 	if (right == NULL) 
 		return NULL;
 		
@@ -122,13 +151,15 @@ QuoteView::InitLayout() {
 	
 	BGroupLayout *groupLayout = new BGroupLayout(B_HORIZONTAL);
 	SetLayout(groupLayout);
-	
-	BButton *portfolioButton = new BButton("Portfolio", "Add to portfolio", new BMessage(kAddSymbolButtonPressedMessage));
-	portfolioButton->SetTarget(*fMessenger);
+
+	if (fPortfolioButton == NULL) {
+		fPortfolioButton = new BButton("Portfolio", "Add to portfolio", new BMessage(kPortfolioButtonPressedMessage));
+	}	
+	fPortfolioButton->SetTarget(this);
 	
 	BView *buttonGroup = BGroupLayoutBuilder(B_HORIZONTAL, 0)
 		.AddGlue()
-		.Add(portfolioButton)
+		.Add(fPortfolioButton)
 		.TopView();
 	
 	BView *group = BGroupLayoutBuilder(B_VERTICAL, 0)

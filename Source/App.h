@@ -5,10 +5,14 @@
 #ifndef APP_H
 #define APP_H
 
-
 #include <SupportDefs.h>
 #include <Application.h>
 #include "StockSymbolWindow.h"
+
+enum PortfolioAction {
+	REMOVE = 0,
+	ADD
+};
 
 class SettingsManager;
 class StockRequester;
@@ -22,21 +26,21 @@ public:
 	virtual void MessageReceived(BMessage *message);
 		
 private:
+			void HandlePortfolioUpdates(BMessage *message);
 			void HandleUpdate(BMessage *message);
 			void SaveSettings(BMessage *message);
-			void AddToPortfolio(const char *symbol);
+			
+			void HandlePortfolio(const char *symbol, PortfolioAction action);
 			bool HasSymbol(const char *symbol);
-
-
-	StockSymbolWindow *SymbolWindow();
+			
+	StockSymbolWindow 	*SymbolWindow();
 	
-	MainWindow *fWindow;
-	
-	StockRequester *fStockRequester;
-	StockSymbolWindow *fStockSymbolWindow;
-	SettingsManager *fSettingsManager;
-	BList *fSymbolList;
-	BList *fCurrentSymbols;
+	MainWindow 			*fWindow;
+	StockRequester 		*fStockRequester;
+	StockSymbolWindow 	*fStockSymbolWindow;
+	SettingsManager 	*fSettingsManager;
+	BList 				*fSymbolList;
+	BList 				*fCurrentSymbols;
 };
 
 

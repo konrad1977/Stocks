@@ -13,6 +13,7 @@
 #include "StockListExtendedView.h"
 #include "Company.h"
 #include "Quote.h"
+#include "SettingsManager.h"
 
 #include <ListView.h>
 #include <ScrollView.h>
@@ -28,8 +29,8 @@ StockSymbolWindow::StockSymbolWindow()
 	,fSymbolListView(NULL)
 	,fStockSymbolListItems(NULL)
 	,fCurrentFilter(NULL)
-	,fHasFilter(false) {
-	
+	,fHasFilter(false) 
+{
 	InitLayout();	
 }
 
@@ -37,7 +38,16 @@ StockSymbolWindow::~StockSymbolWindow() {
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
+	delete fMessenger;
 	delete fCurrentFilter;
+}
+
+bool
+StockSymbolWindow::HasSymbolInPortfolio(const char *symbol) {
+	SettingsManager *manager = new SettingsManager();
+	bool hasSymbol = manager->HasSymbol(symbol);
+	delete manager;
+	return hasSymbol;
 }
 
 void
@@ -92,6 +102,7 @@ StockSymbolWindow::InitLayout() {
 	frame.top = Bounds().bottom - extendedHeight;
 	frame.bottom = Bounds().bottom;
 	fStockListExtendedView = new StockListExtendedView(frame);
+	fStockListExtendedView->SetTarget(this);
 	AddChild(fStockListExtendedView);
 }
 
@@ -181,7 +192,7 @@ StockSymbolWindow::HandleSelection(BMessage *message) {
 		}
 	}
 }
-						
+
 void 
 StockSymbolWindow::HandleSearch(BMessage *message) {
 	BString searchString;
@@ -195,7 +206,9 @@ StockSymbolWindow::HandleQuoteInformation(BMessage *message) {
 	BMessage quoteMessage;
 	if (message->FindMessage("Quote", &quoteMessage) == B_OK) {
 		Quote *quote = new Quote(quoteMessage);
-		fStockListExtendedView->SetQuote(quote);
+		const char *symbol = quote->symbol.String();
+		bool hasQuote = HasSymbolInPortfolio(symbol);
+		fStockListExtendedView->SetQuote(quote, hasQuote);
 	}
 }
 
@@ -210,19 +223,8 @@ StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
 
 void
 StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
-	
-	if (fMessenger == NULL) {
-		return;
-	}
-	
-	const int32 selectedIndex = fSymbolListView->CurrentSelection();	
-	if (const char *symbol = SymbolAtIndex(selectedIndex)) {
-		printf("%s::%s %s\n", __FILE__, __FUNCTION__, symbol);
-		
-		BMessage message(kAddSymbolButtonPressedMessage);
-		message.AddString("symbol", symbol);
-		fMessenger->SendMessage(&message);
-	}	
+	if (fMessenger) 
+		fMessenger->SendMessage(message);
 }
 
 void
@@ -230,7 +232,7 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
 		
-		case kAddSymbolButtonPressedMessage:
+		case kPortfolioButtonPressedMessage:
 			HandleAddToPortfolio(message);
 			break;
 		

@@ -27,6 +27,37 @@ SettingsManager::~SettingsManager() {
 }
 
 void 
+SettingsManager::RemoveSymbol(const char *symbol) {
+	int32 index = IndexOf(symbol);
+	if (index != -1) {
+		BList *list = LoadSymbols();
+		list->RemoveItem(index);
+		SaveSymbols(list);
+		delete list;
+	}
+}
+
+int32 
+SettingsManager::IndexOf(const char *symbol) {
+
+	BList *list = LoadSymbols();
+	if (list == NULL) {
+		delete list;
+		return -1;
+	}
+	
+	for(int32 i = 0; i<list->CountItems(); i++) {
+		char *sym = (char *)list->ItemAtFast(i);
+		if (strcasecmp(sym, symbol) == 0) {
+			delete list;
+			return i;
+		}
+	}	
+	delete list;
+	return -1;
+}
+
+void 
 SettingsManager::SaveSymbols(BList *list) {
 	
 	if (list == NULL || list->IsEmpty()) {
@@ -35,7 +66,7 @@ SettingsManager::SaveSymbols(BList *list) {
 	
 	BMessage previousSave;	
 	for (int32 index = 0; index<list->CountItems(); index++) {
-		const char *symbol = (const char *)list->ItemAt(index);
+		const char *symbol = (const char *)list->ItemAtFast(index);
 		if (symbol == NULL) {
 			continue;
 		}
@@ -44,6 +75,11 @@ SettingsManager::SaveSymbols(BList *list) {
 		previousSave.AddMessage("Symbols", &symbolMsg);
 	}
 	SaveSettings(previousSave);
+}
+
+bool
+SettingsManager::HasSymbol(const char *symbol) {
+	return IndexOf(symbol) != -1;
 }
 	
 BList *

@@ -19,7 +19,12 @@ public:
 	void RequestBatchData();
 	void RequestData();
 	void DownloadSymbols();
+	
+	void BatchMakeEmpty();
+	
 	void AddStockSymbol(const char *symbol);
+	void RemoveStockSymbol(const char *symbol);
+	
 	void RequestStockInformation(const char *symbol);							
 private:
 	

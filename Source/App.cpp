@@ -49,40 +49,6 @@ App::SymbolWindow() {
 	return fStockSymbolWindow;
 }
 
-bool 
-App::HasSymbol(const char *symbol) {
-
-	if (fCurrentSymbols == NULL)
-		return false;
-	
-	for (int32 i = 0; i<fCurrentSymbols->CountItems(); i++) {
-		char *sym = (char *)fCurrentSymbols->ItemAtFast(i);
-		if (strcasecmp(sym, symbol) == 0) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void 
-App::AddToPortfolio(const char *symbol) {
-	
-	if (symbol == NULL || strlen(symbol) < 1 ) {
-		printf("Symbol is null or not long enough\n");
-		return;
-	}
-	
-	if (HasSymbol(symbol)) {
-		printf("Has item %s\n", symbol);
-		return;
-	}
-	
-	fCurrentSymbols->AddItem((void*)symbol);
-	fSettingsManager->SaveSymbols(fCurrentSymbols);
-	
-	fWindow->RequestData();
-}
-
 void
 App::MessageReceived(BMessage *message) {
 		
@@ -95,12 +61,8 @@ App::MessageReceived(BMessage *message) {
 			fStockSymbolWindow = NULL;
 			break;
 			
-		case kAddSymbolButtonPressedMessage: {			
-			BString symbol;
-			if (message->FindString("symbol", &symbol) != B_OK)
-				return;
-			char *copy = strdup(symbol);
-			AddToPortfolio(copy);
+		case kPortfolioButtonPressedMessage: {	
+			HandlePortfolioUpdates(message);
 		}
 		break;
 		
@@ -115,6 +77,53 @@ App::MessageReceived(BMessage *message) {
 			//message->PrintToStream();
 			break;
 	}
+}
+
+bool 
+App::HasSymbol(const char *symbol) {
+	if (fSettingsManager)
+		fSettingsManager->HasSymbol(symbol);
+}
+
+void 
+App::HandlePortfolio(const char *symbol, PortfolioAction action) {
+	
+	if (symbol == NULL || strlen(symbol) < 1 ) {
+		printf("Symbol is null or not long enough\n");
+		return;
+	}
+	
+	switch (action) {
+		case ADD: {
+			if (HasSymbol(symbol)) {
+				return;
+			}
+			fCurrentSymbols->AddItem((void*)symbol);
+			fSettingsManager->SaveSymbols(fCurrentSymbols);
+			break;
+		}	
+		case REMOVE: {
+			if (HasSymbol(symbol)) {
+				fSettingsManager->RemoveSymbol(symbol);
+			}
+			break;
+		}
+	}
+	
+	fWindow->RequestData();
+}
+
+void 
+App::HandlePortfolioUpdates(BMessage *message) {
+	
+	BString symbol;
+	bool removeFromPortfolio = false;
+
+	if (message->FindString("symbol", &symbol) != B_OK)
+		return;
+		
+	removeFromPortfolio = message->FindBool("removeQuote");
+	HandlePortfolio(symbol, removeFromPortfolio ? REMOVE : ADD);
 }
 
 void 

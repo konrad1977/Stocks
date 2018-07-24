@@ -13,6 +13,7 @@
 class BScrollView;
 class BListView;
 class BList;
+class SettingsManager;
 class StockRequester;
 class SearchView;
 class StockListExtendedView;
@@ -24,12 +25,13 @@ public:
 	virtual	bool QuitRequested();
 	virtual void MessageReceived(BMessage *message);	
 			void SetTarget(BHandler *handler);		
-			void SetStockSymbols(BList *symbols);				
+			void SetStockSymbols(BList *symbols);	
 private:
 	const char*  SymbolAtIndex(int32 index);
 			void InitLayout();
 			void SetItems(BList *listItems);
 			void ApplyFilter(BString filter);
+			bool HasSymbolInPortfolio(const char *symbol);
 			
 			void HandleAddToPortfolio(BMessage *message);
 			void HandleSelection(BMessage *message);
@@ -37,17 +39,17 @@ private:
 			void HandleSearch(BMessage *message);
 			void HandleQuoteInformation(BMessage *message);
 			
-			BList * Filtered(BString filter);
+			BList 			*Filtered(BString filter);			
 			
-			
-	SearchView *fSearchView;
-	StockListExtendedView *fStockListExtendedView;
-	BListView *fSymbolListView;
-	BScrollView *fScrollView;
-	BList *fStockSymbolListItems;
-	BList *fCurrentFilter;
-	BMessenger *fMessenger;
-	bool fHasFilter;
+	SearchView 				*fSearchView;
+	StockListExtendedView 	*fStockListExtendedView;
+	BListView 				*fSymbolListView;
+	BScrollView 			*fScrollView;
+	BList 					*fStockSymbolListItems;
+	BList 					*fCurrentFilter;
+	
+	BMessenger 				*fMessenger;
+	bool fHasFilter;	
 };
 
 #endif // _H

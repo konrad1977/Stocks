@@ -21,7 +21,9 @@ public:
 	UrlBuilder(const char *base);
 	~UrlBuilder();
 	
+	void RemoveSymbol(const char *symbol);
 	void AddSymbol(const char *symbol);
+	void MakeEmpty();
 
 	const char *CreateBatchPath();	
 	
@@ -30,7 +32,8 @@ public:
 		
 private:
 
-	bool HasSymbolInList(const char *symbol);
+	int32 	IndexOfSymbol(const char *symbol);
+	bool	HasSymbol(const char *symbol);
 
 	BList *fSymbolList;
 	BString fBaseUrl;

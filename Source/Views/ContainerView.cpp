@@ -78,6 +78,14 @@ ContainerView::SaveState(BMessage* into, bool deep) const {
 	return B_OK;
 }
 
+SettingsManager*
+ContainerView::Manager() {
+	if (fSettingsManager == NULL) {
+		fSettingsManager = new SettingsManager();
+	}
+	return fSettingsManager;
+}
+
 StockRequester* 
 ContainerView::Requester() {
 	if (fStockRequester == NULL) {
@@ -117,23 +125,20 @@ ContainerView::MessageReceived(BMessage *message) {
 
 void
 ContainerView::DownloadData() {
-
-	SettingsManager *manager = new SettingsManager();
-	
+		
 	if (fCurrentSymbols) {
 		fCurrentSymbols->MakeEmpty();
 	}
+	delete fCurrentSymbols;
+	fCurrentSymbols = Manager()->LoadSymbols();
+
+	Requester()->BatchMakeEmpty();	
 	
-	fCurrentSymbols = manager->LoadSymbols();
-			
 	for (int32 index = 0; index<fCurrentSymbols->CountItems(); index++) {
 		char *symbol = (char *)fCurrentSymbols->ItemAt(index);
 		Requester()->AddStockSymbol(symbol);
-		printf("%s\n", symbol);
-	}
-	
+	}	
 	Requester()->RequestBatchData();
-	delete manager;
 }
 
 int32 
@@ -188,8 +193,6 @@ ContainerView::HandleQuotes(BMessage message) {
 			Quote *quote = new Quote(quoteMsg);
 			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant));
 		}
-		//float width, height;
-		//fQuoteListView->GetPreferredSize(&width, &height);	
 	}
 }
 

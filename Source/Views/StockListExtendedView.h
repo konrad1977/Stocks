@@ -23,19 +23,21 @@ public:
 		~StockListExtendedView();
 		
 			void SetCompany(Company *company);
-			void SetQuote(Quote *quote);
+			void SetQuote(Quote *quote, bool hasQuote);
 			void SetTarget(BHandler *handler);
+			
+	virtual void AttachedToWindow();
+	virtual void MessageReceieved(BMessage *message);
+		
 private:
 			void InitLayout();
 
 	BTextView 	*fDescriptionTextView;
-	BStringView *fTitleStringView;
-	BButton 	*fAddSymbolButton;
-	
+	BStringView *fTitleStringView;	
+	BMessenger 	*fMessenger;
 			
 	Company 	*fCompany;
 	QuoteView 	*fQuoteView;
-	BMessenger 	*fMessenger;
 };
 
 #endif // _H

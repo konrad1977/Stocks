@@ -33,8 +33,9 @@ private:
 			void StopActiveRequest();
 			void DownloadData();
 	static int32 DownloadDataFunc(void *cookie);	
-	StockRequester* Requester();	
 	
+	StockRequester	*Requester();	
+	SettingsManager *Manager();
 	BDragger 		*fDragger;	
 	BListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;

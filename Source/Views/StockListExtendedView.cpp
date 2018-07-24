@@ -25,21 +25,19 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, 0 ) 
 	,fDescriptionTextView(NULL)
 	,fTitleStringView(NULL)
-	,fAddSymbolButton(NULL)
 	,fCompany(NULL)
-	,fMessenger(NULL) {
+	,fMessenger(NULL)
+	,fQuoteView(NULL) {
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	fQuoteView = new QuoteView();
-	fQuoteView->SetTarget(this);
 	fQuoteView->Hide();
 
 	fDescriptionTextView = new BTextView("TextView");
 	fDescriptionTextView->MakeEditable(false);
 	fDescriptionTextView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
-
 	fTitleStringView = new BStringView("Title", "");
 	BFont font(be_bold_font);
 	fTitleStringView->SetFont(&font);
@@ -50,6 +48,31 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 StockListExtendedView::~StockListExtendedView() {
 	delete fCompany;
 	delete fMessenger;
+}
+
+void
+StockListExtendedView::AttachedToWindow() {
+	if (fQuoteView) 
+		fQuoteView->SetTarget(this);
+}
+
+void
+StockListExtendedView::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
+}
+
+void 
+StockListExtendedView::MessageReceieved(BMessage *message) {
+	switch (message->what) {
+		case kPortfolioButtonPressedMessage: {
+			if (fMessenger)
+				fMessenger->SendMessage(message);
+		}
+		break;
+	default:
+		break;		
+	}
 }
 
 void
@@ -75,12 +98,6 @@ StockListExtendedView::InitLayout() {
 	AddChild(gridLayout->View());
 }
 
-void 
-StockListExtendedView::SetTarget(BHandler *handler) {
-	delete fMessenger;
-	fMessenger = new BMessenger(handler);
-}
-
 void
 StockListExtendedView::SetCompany(Company *company) {
 	delete fCompany;
@@ -90,7 +107,7 @@ StockListExtendedView::SetCompany(Company *company) {
 }
 
 void
-StockListExtendedView::SetQuote(Quote *quote) {
+StockListExtendedView::SetQuote(Quote *quote, bool hasQuote) {
 	
 	if (fQuoteView == NULL)  
 		return;
@@ -98,5 +115,5 @@ StockListExtendedView::SetQuote(Quote *quote) {
 	if (fQuoteView->IsHidden()) {
 		fQuoteView->Show();
 	}
-	fQuoteView->SetQuote(quote);
+	fQuoteView->SetQuote(quote, hasQuote);
 }

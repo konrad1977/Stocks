@@ -15,10 +15,14 @@ public:
 	SettingsManager();
 	~SettingsManager();
 
+	bool HasSymbol(const char *symbol);
+	void RemoveSymbol(const char *symbol);
 	void SaveSymbols(BList *list);
 	BList *LoadSymbols();
 	
 private:
+	int32 	IndexOf(const char *symbol);
+	
 	status_t LoadSettings(BMessage &message);
 	status_t SaveSettings(BMessage message);
 	char *fFileName;
