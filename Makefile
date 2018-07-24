@@ -35,7 +35,6 @@ SRCS = \
 	 Source/Views/QuoteView.cpp  \
 	 Source/Views/SearchView.cpp  \
 	 Source/Views/StockListExtendedView.cpp  \
-	 Source/Views/StockView.cpp  \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
 
