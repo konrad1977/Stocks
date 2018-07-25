@@ -17,23 +17,18 @@ public:
 	~StockRequester();
 	
 	void RequestBatchData();
-	void RequestData();
 	void DownloadSymbols();
 	
-	void BatchMakeEmpty();
-	
-	void AddStockSymbol(const char *symbol);
-	void RemoveStockSymbol(const char *symbol);
+	void ResetUrlList();
+	void Add(const char *symbol);
+	void Remove(const char *symbol);
 	
 	void RequestStockInformation(const char *symbol);							
 private:
-	
+	void RunRequest(const char *url, NetRequester *requester);
 	void _RequestNews();
-	
-	BHandler *fHandler;
-	
+	BHandler *fHandler;	
 	UrlBuilder *fBuilder;
-	BList fSymbolList;
 };
 
 #endif // _H

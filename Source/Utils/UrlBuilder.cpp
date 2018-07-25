@@ -6,9 +6,10 @@
 
 #include "UrlBuilder.h"
 
-#include <List.h>
-
+#include <os/support/List.h>
 #include <posix/string.h>
+#include <posix/stdio.h>
+#include <posix/stdlib.h>
 
 UrlBuilder::UrlBuilder(const char *base)
 	:fBaseUrl(BString(base)) 
@@ -18,6 +19,10 @@ UrlBuilder::UrlBuilder(const char *base)
 }
 
 UrlBuilder::~UrlBuilder() {
+	while(fSymbolList->CountItems()) {
+		char *str = (char *)fSymbolList->RemoveItem(0);
+		free(str);
+	}
 	delete fSymbolList;
 }
 
@@ -60,7 +65,12 @@ void
 UrlBuilder::RemoveSymbol(const char *symbol) {
 	int32 index = IndexOfSymbol(symbol);
 	if (index != -1) {
-		fSymbolList->RemoveItem(index);
+		free(fSymbolList->RemoveItem(index));
+	}
+	
+	for(int32 i = 0; i<fSymbolList->CountItems(); i++) {
+		char *symbols = (char*)fSymbolList->ItemAt(i);
+		printf("%s\n", symbols);
 	}
 }
 
@@ -75,10 +85,13 @@ UrlBuilder::HasSymbol(const char *symbol) {
 }
 void
 UrlBuilder::AddSymbol(const char *symbol) {
+	char *copyStr = strdup(symbol);
+
 	if (HasSymbol(symbol)) {
+		free(copyStr);
 		return;
 	}
-	fSymbolList->AddItem((void*)symbol);
+	fSymbolList->AddItem((void*)copyStr);
 }
 
 void

@@ -131,7 +131,6 @@ MainWindow::MessageReceived(BMessage *message) {
 			break;
 	
 		default:
-			message->PrintToStream();
 			break;
 	}
 }

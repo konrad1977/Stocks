@@ -8,7 +8,6 @@
 #include <UrlRequest.h>
 
 #include "StockRequester.h"
-#include "NetRequester.h"
 #include "UrlBuilder.h"
 
 #include <SupportDefs.h>
@@ -16,10 +15,8 @@
 
 
 StockRequester::StockRequester(BHandler *handler) 
-	:fHandler(handler) { 
-	
-	fSymbolList = BList();	
-	
+	:fHandler(handler)
+	,fBuilder(NULL)	{ 	
 	fBuilder = new UrlBuilder("https://api.iextrading.com/1.0/stock");
 }
 
@@ -27,52 +24,35 @@ StockRequester::~StockRequester() {
 	delete fBuilder;
 }
 
+void 
+StockRequester::Remove(const char *symbol) {
+	fBuilder->RemoveSymbol(symbol);
+}
+
 void
-StockRequester::RequestData() {
-	//_RequestCompanyInformation();
+StockRequester::Add(const char *symbol) {
+	fBuilder->AddSymbol(symbol);
+}
+
+void
+StockRequester::ResetUrlList() {
+	fBuilder->MakeEmpty();
+}
+
+void 
+StockRequester::DownloadSymbols() {
+
+	NetRequester requester(fHandler, STOCK_SYMBOLS);
+	RunRequest("https://api.iextrading.com/1.0/ref-data/symbols", &requester);
 }
 
 void 
 StockRequester::RequestBatchData() {
 		
 	NetRequester requester(fHandler, QUOTE);	
-			
 	const char *requestUrl = fBuilder->CreateBatchPath();
-	
-	BUrl url = BUrl(requestUrl);	
-	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
-
-	thread_id thread = request->Run();
-	wait_for_thread(thread, NULL);
-		
-	delete request;
-}
-
-void 
-StockRequester::RemoveStockSymbol(const char *symbol) {
-	fBuilder->RemoveSymbol(symbol);
-}
-
-void
-StockRequester::AddStockSymbol(const char *symbol) {
-	fBuilder->AddSymbol(symbol);
-}
-
-void
-StockRequester::BatchMakeEmpty() {
-	fBuilder->MakeEmpty();
-}
-
-void 
-StockRequester::DownloadSymbols() {
-	
-	NetRequester requester(fHandler, STOCK_SYMBOLS);
-	BUrl url = BUrl("https://api.iextrading.com/1.0/ref-data/symbols");	
-	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
-
-	thread_id thread = request->Run();
-	wait_for_thread(thread, NULL);
-	delete request;
+	printf("%s\n", requestUrl);
+	RunRequest(requestUrl, &requester);
 }
 
 void 
@@ -80,12 +60,16 @@ StockRequester::RequestStockInformation(const char *symbol) {
 	
 	NetRequester requester(fHandler, COMPANY_INFORMATION);	
 	fBuilder->SetCompany(symbol);
-				
-	BUrl url = BUrl(fBuilder->CreateCompanyPath(Company));
-	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, &requester);
+	RunRequest(fBuilder->CreateCompanyPath(Company), &requester);
+}	
+
+void
+StockRequester::RunRequest(const char *urlStr, NetRequester *requester) {
+
+	BUrl url = BUrl(urlStr);	
+	BUrlRequest* request = BUrlProtocolRoster::MakeRequest(url, requester);
 
 	thread_id thread = request->Run();
 	wait_for_thread(thread, NULL);
-		
 	delete request;
-}							
+}						

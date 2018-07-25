@@ -33,22 +33,31 @@ Portfolio::~Portfolio() {
 
 BList*
 Portfolio::CurrentSymbols() {
+	Load();
 	return fCurrentSymbols;
 }
 
 void Portfolio::Add(const char *symbol) {
 	fSettingsManager->AddSymbol(symbol);
-	Load();
+	NotifyAdd(symbol);
 }
 	
 void Portfolio::Remove(const char *symbol) {
 	fSettingsManager->RemoveSymbol(symbol);
-	Load();
+	NotifyRemove(symbol);
 }
 
 void
-Portfolio::NotifyChange() {	
-	BMessage message(kPortfolioChangedMessage);
+Portfolio::NotifyAdd(const char *symbol) {	
+	BMessage message(kPortfolioAddedSymbolMessage);
+	message.AddString("symbol", symbol);
+	fMessenger->SendMessage(&message);
+}
+
+void
+Portfolio::NotifyRemove(const char *symbol) {
+	BMessage message(kPortfolioRemovedSymbolMessage);
+	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
 }
 
@@ -74,10 +83,5 @@ Portfolio::HandlePortfolioUpdate(BMessage *message) {
 		return;
 		
 	removeFromPortfolio = message->FindBool("removeQuote");
-	if (removeFromPortfolio) {
-		Remove(symbol.String());
-	} else {
-		Add(symbol.String());
-	}
-	printf("%s %s\n", symbol, removeFromPortfolio ? "Remove" : "Adding");
+	removeFromPortfolio ? Remove(symbol.String()) : Add(symbol.String());
 }

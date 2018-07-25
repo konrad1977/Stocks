@@ -37,6 +37,7 @@ ContainerView::ContainerView()
 {	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetupViews();
+	LoadSavedData();
 }
 	
 ContainerView::ContainerView(BMessage *archive) 
@@ -51,6 +52,7 @@ ContainerView::ContainerView(BMessage *archive)
 {	
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
+	LoadSavedData();
 }
 
 ContainerView::~ContainerView() {
@@ -75,6 +77,15 @@ status_t
 ContainerView::SaveState(BMessage* into, bool deep) const {
 	status_t status;
 	return B_OK;
+}
+
+void
+ContainerView::LoadSavedData() {
+	BList *list = CurrentPortfolio()->CurrentSymbols();	
+	for (int32 index = 0; index<list->CountItems(); index++) {
+		char *symbol = (char *)list->ItemAt(index);
+		Requester()->Add(symbol);
+	}	
 }
 
 Portfolio*
@@ -110,8 +121,21 @@ void
 ContainerView::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
-		case kPortfolioChangedMessage:  {
-			RequestData();
+		case kPortfolioRemovedSymbolMessage:  {
+			BString symbol;
+			if (message->FindString("symbol", &symbol) == B_OK) {
+				Requester()->Remove(symbol.String());
+				RequestData();
+			}
+			break;
+		}
+		
+		case kPortfolioAddedSymbolMessage: {
+			BString symbol;
+			if (message->FindString("symbol", &symbol) == B_OK) {
+				Requester()->Add(symbol.String());
+				RequestData();
+			}
 			break;
 		}
 		case kAutoUpdateMessage:{
@@ -135,7 +159,6 @@ ContainerView::MessageReceived(BMessage *message) {
 		}
 		
 		default:
-			message->PrintToStream();
 			break;
 	}
 }
@@ -144,12 +167,12 @@ void
 ContainerView::DownloadData() {
 	
 	BList *list = CurrentPortfolio()->CurrentSymbols();
-	Requester()->BatchMakeEmpty();	
+	Requester()->ResetUrlList();	
 	
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		char *symbol = (char *)list->ItemAt(index);
-		Requester()->AddStockSymbol(symbol);
-	}	
+		Requester()->Add(symbol);
+	}
 	Requester()->RequestBatchData();
 }
 

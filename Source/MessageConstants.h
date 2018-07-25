@@ -14,7 +14,9 @@ const uint32 kUpdateQuoteBatchMessage 		= 'Uqbm';
 const uint32 kAutoUpdateMessage 			= 'UAUm';
 const uint32 kPortfolioButtonPressedMessage = 'PSBm';
 const uint32 kSaveSettingsMessage 			= 'PREm';
-const uint32 kPortfolioChangedMessage		= 'PCMe';
+const uint32 kPortfolioRemovedSymbolMessage	= 'PRMe';
+const uint32 kPortfolioAddedSymbolMessage	= 'PAMe';
+
 
 //GUID
 const uint32 kHideSearchWindowMessaage 		= 'SWCm';

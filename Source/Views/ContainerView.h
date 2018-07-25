@@ -29,6 +29,7 @@ public:
 			void RequestData();	
 private:
 			void HandleQuotes(BMessage message);
+			void LoadSavedData();
 			void SetupViews();
 			void StopActiveRequest();
 			void DownloadData();

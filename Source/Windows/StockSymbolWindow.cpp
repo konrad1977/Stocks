@@ -45,7 +45,9 @@ StockSymbolWindow::~StockSymbolWindow() {
 bool
 StockSymbolWindow::HasSymbolInPortfolio(const char *symbol) {
 	SettingsManager *manager = new SettingsManager();
+	Lock();
 	bool hasSymbol = manager->HasSymbol(symbol);
+	Unlock();
 	delete manager;
 	return hasSymbol;
 }

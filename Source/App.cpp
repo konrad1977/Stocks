@@ -13,7 +13,7 @@ const char *kAppSignature = "application/x-vnd.konradsson.HaikuStocks";
 App::App(void)
 	:BApplication(kAppSignature) {
 	
-	fWindow = new MainWindow(BRect(150,150,420,240));
+	fWindow = new MainWindow(BRect(150,150,420,540));
 	fWindow->Show();		
 }
 

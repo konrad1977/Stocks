@@ -26,7 +26,9 @@ public:
 	
 private:
 
-	void NotifyChange();
+	void NotifyAdd(const char *symbol);
+	void NotifyRemove(const char *symbol);
+	
 	void Load();
 	
 	BList 			*fCurrentSymbols;

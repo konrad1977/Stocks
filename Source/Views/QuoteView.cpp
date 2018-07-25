@@ -54,7 +54,6 @@ QuoteView::MessageReceived(BMessage *message) {
 			BMessage message(kPortfolioButtonPressedMessage);
 			message.AddBool("removeQuote", fHasQuote);
 			message.AddString("symbol", fQuote->symbol);
-			message.PrintToStream();
 			fMessenger->SendMessage(&message);
 			break;
 		}
