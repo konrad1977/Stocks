@@ -165,6 +165,7 @@ StockSymbolWindow::ApplyFilter(BString filter) {
 
 const char*
 StockSymbolWindow::SymbolAtIndex(int32 index) {
+	
 	if (fSymbolListView == NULL) {
 		return NULL;
 	}
@@ -172,13 +173,8 @@ StockSymbolWindow::SymbolAtIndex(int32 index) {
 	SymbolListItem *listItem = static_cast<SymbolListItem *>(fSymbolListView->ItemAt(index));
 	if (listItem == NULL) {
 		return NULL;
-	}
-		
-	const char *symbol = listItem->CurrentStockSymbol()->symbol.String();
-		
-	if (strlen(symbol) == 0 || symbol == NULL) 			
-		return NULL;
-	return symbol;
+	}		
+	return listItem->CurrentStockSymbol()->symbol.String();
 }
 
 void 
@@ -197,6 +193,7 @@ void
 StockSymbolWindow::HandleSearch(BMessage *message) {
 	BString searchString;
 	if (message->FindString("searchText", &searchString) == B_OK ) {
+		fSymbolListView->DeselectAll();
 		ApplyFilter(searchString);
 	}
 }
