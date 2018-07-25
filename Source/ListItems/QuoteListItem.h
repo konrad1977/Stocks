@@ -17,10 +17,13 @@ public:
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
 	virtual void Update(BView *view, const BFont *font);
-								
+	
+	Quote  *CurrentQuoteItem();
+	
 private:
 			rgb_color TextColor(); 
 			rgb_color BackgroundColor();
+				
 			
 			void DrawCompanyName(BView *view, BRect frame);
 			void DrawChangePercent(BView *view, BRect frame);

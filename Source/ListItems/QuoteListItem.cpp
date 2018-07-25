@@ -23,6 +23,11 @@ QuoteListItem::~QuoteListItem() {
 	delete fQuote;
 }	
 
+Quote*
+QuoteListItem::CurrentQuoteItem() {
+	return fQuote;
+}
+
 rgb_color
 QuoteListItem::BackgroundColor() {
 	if (fIsReplicant && IsSelected() == false) {

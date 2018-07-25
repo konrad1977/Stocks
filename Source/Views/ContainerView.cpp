@@ -11,6 +11,7 @@
 #include <ListView.h>
 #include <List.h>
 #include <MessageRunner.h>
+#include <Alert.h>
 
 #include "Portfolio.h"
 #include "Quote.h"
@@ -117,6 +118,11 @@ ContainerView::MessageReceived(BMessage *message) {
 			RequestData();
 			break;
 		}
+		
+		case kRemoveSelectedListItem: {
+			RemoveSelectedListItem();
+			break;
+		}
 	
 		case kUpdateQuoteBatchMessage: {
 			HandleQuotes(*message);
@@ -171,6 +177,27 @@ ContainerView::StopActiveRequest() {
 	}
 	wait_for_thread(fDownloadThread, NULL);
 	fDownloadThread = -1;
+}
+
+void 
+ContainerView::RemoveSelectedListItem() {
+	if (fQuoteListView == NULL) {
+		return;
+	}
+	
+	int32 selectedIndex = fQuoteListView->CurrentSelection();
+	if (selectedIndex != -1) {
+		QuoteListItem  *listItem = (QuoteListItem*)fQuoteListView->ItemAt(selectedIndex);
+		if (listItem && listItem->CurrentQuoteItem()) {
+			const char *symbol = listItem->CurrentQuoteItem()->symbol.String();
+			CurrentPortfolio()->Remove(symbol);
+			fQuoteListView->RemoveItem(selectedIndex);
+		}
+	} else {
+		BAlert *alert = new BAlert("No selection", "No item selected in the list", "Ok");
+		alert->SetType(B_WARNING_ALERT);
+		alert->Go();
+	}
 }
 
 void

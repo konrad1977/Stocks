@@ -27,7 +27,7 @@
 #include <GroupLayoutBuilder.h>
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
+	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fMenuBar(NULL) 
 	,fSymbolList(NULL)
 	,fStockRequester(NULL)
@@ -71,6 +71,9 @@ MainWindow::SetupViews() {
 			.AddSeparator()
 			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
 		.End()
+		.AddMenu("Edit")
+			.AddItem("Remove selected item", kRemoveSelectedListItem, 'R')
+		.End()
 		.AddMenu("Settings")
 			.AddItem("Search symbols...", kShowSearchWindowMessage, 'S')
 		.End();
@@ -100,6 +103,14 @@ MainWindow::MessageReceived(BMessage *message) {
 			delete messenger;
 			break;
 		}
+
+		case kRemoveSelectedListItem: {
+			BMessenger *messenger = new BMessenger(fContainerView);
+			messenger->SendMessage(message);
+			delete messenger;
+			break;
+		}
+		
 		case kUpdateSymbolMessage: { 
 			HandleStockSearchSymbols(message);
 			break;		

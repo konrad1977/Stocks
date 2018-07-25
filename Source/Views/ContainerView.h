@@ -32,6 +32,7 @@ private:
 			void SetupViews();
 			void StopActiveRequest();
 			void DownloadData();
+			void RemoveSelectedListItem();
 	static int32 DownloadDataFunc(void *cookie);	
 	
 	StockRequester	*Requester();	

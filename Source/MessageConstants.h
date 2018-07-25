@@ -21,5 +21,6 @@ const uint32 kHideSearchWindowMessaage 		= 'SWCm';
 const uint32 kShowSearchWindowMessage 		= 'SSWm';
 const uint32 kSearchTextChangedMessage 		= 'STCm';
 const uint32 kSymbolListSelectionChanged 	= 'SLSc';
+const uint32 kRemoveSelectedListItem		= 'RSLm';
 
 #endif // _H
