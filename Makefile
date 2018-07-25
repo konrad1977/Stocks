@@ -31,6 +31,7 @@ SRCS = \
 	 Source/Requesters/StockRequester.cpp  \
 	 Source/Utils/SettingsManager.cpp  \
 	 Source/Utils/UrlBuilder.cpp  \
+	 Source/Utils/Portfolio.cpp  \
 	 Source/Views/ContainerView.cpp  \
 	 Source/Views/QuoteView.cpp  \
 	 Source/Views/SearchView.cpp  \

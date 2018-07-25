@@ -17,6 +17,8 @@ public:
 
 	bool HasSymbol(const char *symbol);
 	void RemoveSymbol(const char *symbol);
+	void AddSymbol(const char *symbol);
+	
 	void SaveSymbols(BList *list);
 	BList *LoadSymbols();
 	
@@ -26,6 +28,7 @@ private:
 	status_t LoadSettings(BMessage &message);
 	status_t SaveSettings(BMessage message);
 	char *fFileName;
+	BList *fCurrentLoadedSymbols;
 };
 
 

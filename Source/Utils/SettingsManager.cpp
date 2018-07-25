@@ -37,6 +37,19 @@ SettingsManager::RemoveSymbol(const char *symbol) {
 	}
 }
 
+void
+SettingsManager::AddSymbol(const char *symbol) {
+
+	if (HasSymbol(symbol)) {
+		return;
+	}
+	
+	BList *symbolList = LoadSymbols();
+	symbolList->AddItem((void *)symbol);
+	SaveSymbols(symbolList);
+	delete symbolList;
+}
+
 int32 
 SettingsManager::IndexOf(const char *symbol) {
 

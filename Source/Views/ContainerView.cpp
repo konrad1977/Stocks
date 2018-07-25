@@ -12,9 +12,9 @@
 #include <List.h>
 #include <MessageRunner.h>
 
+#include "Portfolio.h"
 #include "Quote.h"
 #include "QuoteListItem.h"
-#include "SettingsManager.h"
 #include "StockRequester.h"
 #include "MessageConstants.h"
 #include <stdio.h>
@@ -27,12 +27,12 @@ ContainerView::ContainerView()
 	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
-	,fSettingsManager(NULL) 
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
 	,fIsReplicant(false)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
+	,fPortfolio(NULL)
 {	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetupViews();
@@ -42,19 +42,17 @@ ContainerView::ContainerView(BMessage *archive)
 	:BView(archive)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
-	,fSettingsManager(NULL) 
 	,fStockRequester(NULL)
-	,fCurrentSymbols(NULL)
 	,fIsReplicant(true)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
+	,fPortfolio(NULL)
 {	
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
 }
 
 ContainerView::~ContainerView() {
-	delete fSettingsManager;
 	delete fStockRequester;
 	delete fAutoUpdateRunner;
 }
@@ -78,12 +76,12 @@ ContainerView::SaveState(BMessage* into, bool deep) const {
 	return B_OK;
 }
 
-SettingsManager*
-ContainerView::Manager() {
-	if (fSettingsManager == NULL) {
-		fSettingsManager = new SettingsManager();
+Portfolio*
+ContainerView::CurrentPortfolio() {
+	if (fPortfolio == NULL) {
+		fPortfolio = new Portfolio();
 	}
-	return fSettingsManager;
+	return fPortfolio;
 }
 
 StockRequester* 
@@ -96,6 +94,9 @@ ContainerView::Requester() {
 
 void
 ContainerView::AttachedToWindow() {
+	
+	CurrentPortfolio()->SetTarget(this);
+	
 	RequestData();
 	
 	BMessenger view(this);
@@ -108,34 +109,39 @@ void
 ContainerView::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
-		case kAutoUpdateMessage:{
-			printf("Auto update\n");
+		case kPortfolioChangedMessage:  {
 			RequestData();
-		}
 			break;
+		}
+		case kAutoUpdateMessage:{
+			RequestData();
+			break;
+		}
+	
 		case kUpdateQuoteBatchMessage: {
 			HandleQuotes(*message);
 			break;
 		}
+		
+		case kPortfolioButtonPressedMessage: {	
+			CurrentPortfolio()->HandlePortfolioUpdate(message);
+			break;
+		}
+		
 		default:
-		message->PrintToStream();
+			message->PrintToStream();
 			break;
 	}
 }
 
 void
 ContainerView::DownloadData() {
-		
-	if (fCurrentSymbols) {
-		fCurrentSymbols->MakeEmpty();
-	}
-	delete fCurrentSymbols;
-	fCurrentSymbols = Manager()->LoadSymbols();
-
+	
+	BList *list = CurrentPortfolio()->CurrentSymbols();
 	Requester()->BatchMakeEmpty();	
 	
-	for (int32 index = 0; index<fCurrentSymbols->CountItems(); index++) {
-		char *symbol = (char *)fCurrentSymbols->ItemAt(index);
+	for (int32 index = 0; index<list->CountItems(); index++) {
+		char *symbol = (char *)list->ItemAt(index);
 		Requester()->AddStockSymbol(symbol);
 	}	
 	Requester()->RequestBatchData();

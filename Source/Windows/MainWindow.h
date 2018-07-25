@@ -9,6 +9,8 @@
 #include <SupportDefs.h>
 #include <Window.h>
 
+class StockRequester;
+class StockSymbolWindow;
 class BMenuBar;
 class ContainerView;
 class MainWindow: public BWindow {
@@ -17,12 +19,21 @@ public:
 	~MainWindow();
 	
 	virtual void MessageReceived(BMessage *message);
-			void RequestData();
-private:
-			void SetupViews();
 	
-	BMenuBar *fMenuBar;		
-	ContainerView *fContainerView;
+private:
+			void SetupViews();	
+			void DownloadStockSymbols();
+			void HandleStockSearchSymbols(BMessage *message);
+			void ShowStockWindow();
+				
+	StockSymbolWindow 	*SymbolWindow();
+	
+	BMenuBar 			*fMenuBar;		
+	ContainerView 		*fContainerView;
+	
+	StockRequester 		*fStockRequester;
+	StockSymbolWindow 	*fStockSymbolWindow;
+	BList 				*fSymbolList;
 };
 
 #endif

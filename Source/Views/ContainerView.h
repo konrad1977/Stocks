@@ -9,7 +9,7 @@
 #include <View.h>
 
 class StockRequester;
-class SettingsManager;
+class Portfolio;
 class BDragger;
 class BMessageRunner;
 class BListView;
@@ -28,21 +28,22 @@ public:
 			
 			void RequestData();	
 private:
-			void SetupViews();
 			void HandleQuotes(BMessage message);
+			void SetupViews();
 			void StopActiveRequest();
 			void DownloadData();
 	static int32 DownloadDataFunc(void *cookie);	
 	
 	StockRequester	*Requester();	
-	SettingsManager *Manager();
+	Portfolio		*CurrentPortfolio();
+	
 	BDragger 		*fDragger;	
 	BListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;
 
 	BMessageRunner	*fAutoUpdateRunner;
-	SettingsManager *fSettingsManager;
 	StockRequester  *fStockRequester;
+	Portfolio 		*fPortfolio;
 	
 	thread_id		fDownloadThread;
 	bool 			fIsReplicant;

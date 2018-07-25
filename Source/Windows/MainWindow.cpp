@@ -5,9 +5,12 @@
 
 
 #include "MainWindow.h"
-#include "StockRequester.h"
 #include "MessageConstants.h"
 #include "ContainerView.h"
+#include "StockSymbolWindow.h"
+#include "MessageConstants.h"
+#include "SymbolListItem.h"
+#include "StockRequester.h"
 
 #include <Application.h>
 #include <MenuBar.h>
@@ -25,18 +28,34 @@
 
 MainWindow::MainWindow(BRect rect) 
 	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
-	,fMenuBar(NULL) {
+	,fMenuBar(NULL) 
+	,fSymbolList(NULL)
+	,fStockRequester(NULL)
+	,fStockSymbolWindow(NULL) 
+{ 	
 	SetupViews();
+	DownloadStockSymbols();
 }
 
 MainWindow::~MainWindow() {
-
+	delete fStockRequester;
 }
 
-void
-MainWindow::RequestData() {
-	if( fContainerView ) 
-		fContainerView->RequestData();
+void 
+MainWindow::DownloadStockSymbols() {
+	if (fStockRequester == NULL) {
+		fStockRequester = new StockRequester(this);
+	}
+	fStockRequester->DownloadSymbols();
+}
+
+StockSymbolWindow *
+MainWindow::SymbolWindow() {
+	if (fStockSymbolWindow == NULL) {		
+		fStockSymbolWindow = new StockSymbolWindow();
+		fStockSymbolWindow->SetTarget(this);	
+	}
+	return fStockSymbolWindow;
 }
 
 void
@@ -64,29 +83,69 @@ MainWindow::SetupViews() {
 }
 
 void
+MainWindow::ShowStockWindow() {
+	if (SymbolWindow()->IsHidden() || SymbolWindow()->IsMinimized()) {
+		SymbolWindow()->SetStockSymbols(fSymbolList);
+		SymbolWindow()->Show();				
+	}
+}
+
+void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
-			
+		
+		case kPortfolioButtonPressedMessage: {
+			BMessenger *messenger = new BMessenger(fContainerView);
+			messenger->SendMessage(message);
+			delete messenger;
+			break;
+		}
+		case kUpdateSymbolMessage: { 
+			HandleStockSearchSymbols(message);
+			break;		
+		}
+		
+		case kHideSearchWindowMessaage: {
+			fStockSymbolWindow = NULL;
+			printf("kHideSearchWindowMessaage\n");
+			break;
+		}
+				
 		case kShowSearchWindowMessage: {
-			BMessage *showSearchWindowMessage = new BMessage(kShowSearchWindowMessage);
-			be_app_messenger.SendMessage(showSearchWindowMessage);
-			delete showSearchWindowMessage;
+			ShowStockWindow();
 			break;
 		}
 		
 		case B_ABOUT_REQUESTED:
 			break;
-			
-		case kUpdateCompanyMessage: {			
-			printf("kUpdateCompanyMessage\n");
-			/*BMessage companyMessage;
-			message->FindMessage("Company", &companyMessage);
-			Company *company = new Company(companyMessage);
-			fStockListView->AddItem(new BStringItem(company->name));*/
-			break;
-		}
+	
 		default:
+			message->PrintToStream();
 			break;
+	}
+}
+
+void 
+MainWindow::HandleStockSearchSymbols(BMessage *message) {
+	BMessage symbolMessage;
+			
+	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
+		char *name;
+		uint32 type;
+		int32 count;
+				
+		if (fSymbolList == NULL) {
+			fSymbolList = new BList();
+		}
+				
+		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
+			BMessage currentMessage;
+			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
+				StockSymbol *symbol = new StockSymbol(currentMessage);
+				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
+				fSymbolList->AddItem(symbolListItem);
+			}
+		}
 	}
 }
 
