@@ -33,7 +33,7 @@ QuoteListItem::BackgroundColor() {
 	if (fIsReplicant && IsSelected() == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		color.alpha = 180;
+		color.alpha = 140;
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);
@@ -163,7 +163,11 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 		parent->SetHighColor(tint_color(backgroundColor, 1.02));
 	}
 	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
-	parent->FillRect(fIsReplicant ? frame.InsetBySelf(0,2) : frame);
+	if (fIsReplicant) {
+		parent->FillRoundRect(frame.InsetBySelf(0,2), 2, 2);
+	} else {
+		parent->FillRect(frame);
+	}
 	
 	BRect halfRect = frame.InsetBySelf(0,10);
 	halfRect.bottom -= frame.Height() / 2;
