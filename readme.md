@@ -7,7 +7,7 @@
 
 ## Acknowledgements
 Follow me on:
-[Twitter](http:://twitter.com/konrad1977)
+[Twitter](https:://twitter.com/konrad1977)
 
 ## MIT License
 ----------------
