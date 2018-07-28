@@ -149,6 +149,15 @@ ContainerView::MessageReceived(BMessage *message) {
 			break;
 		}
 
+		case kPortfolioAddedSymbolMessage: {
+			BString symbol;
+			if (message->FindString("symbol", &symbol) == B_OK) {
+				Requester()->Add(symbol.String());
+				RequestData();
+			}
+			break;
+		}
+		
 		case kUseSmallQuoteSize: {
 			UpdateQuoteItemSizes(SMALL);
 			break;
@@ -164,14 +173,6 @@ ContainerView::MessageReceived(BMessage *message) {
 			break;
 		}
 			
-		case kPortfolioAddedSymbolMessage: {
-			BString symbol;
-			if (message->FindString("symbol", &symbol) == B_OK) {
-				Requester()->Add(symbol.String());
-				RequestData();
-			}
-			break;
-		}
 		case kAutoUpdateMessage:{
 			RequestData();
 			break;
@@ -301,6 +302,15 @@ void ContainerView::UpdateItemWithQuote(Quote *quote) {
 
 void
 ContainerView::HandleQuotes(BMessage message) {
+		
+	if (fQuoteListView == NULL) {
+		return;
+	}
+
+	fQuoteListView->MakeEmpty();	
+	
+	SettingsManager *manager = new SettingsManager();
+	QuoteSize size = manager->CurrentQuoteSize();
 
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
@@ -320,7 +330,8 @@ ContainerView::HandleQuotes(BMessage message) {
 				continue;
 			}			
 			Quote *quote = new Quote(quoteMsg);
-			UpdateItemWithQuote(quote);
+			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
+			//UpdateItemWithQuote(quote);
 		}
 	}
 }
