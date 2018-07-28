@@ -26,9 +26,11 @@ public:
 	virtual status_t	Archive(BMessage* into, bool deep = true) const;
 	static BArchivable*	Instantiate(BMessage* archive);
 			status_t	SaveState(BMessage* into, bool deep = true) const;
-			
+		
+			void SetTarget(BHandler *handler);
 			void RequestData();	
 private:
+			void SendEmptyListMessage();
 			void UpdateQuoteItemSizes(QuoteSize size);
 			void UpdateItemWithQuote(Quote *quote);
 			void HandleQuotes(BMessage message);
@@ -46,6 +48,7 @@ private:
 	BListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;
 
+	BMessenger		*fMessenger;
 	BMessageRunner	*fAutoUpdateRunner;
 	StockRequester  *fStockRequester;
 	Portfolio 		*fPortfolio;

@@ -31,6 +31,7 @@ ContainerView::ContainerView()
 	,fQuoteListView(NULL)
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
+	,fMessenger(NULL)
 	,fIsReplicant(false)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
@@ -46,6 +47,7 @@ ContainerView::ContainerView(BMessage *archive)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fStockRequester(NULL)
+	,fMessenger(NULL)
 	,fIsReplicant(true)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
@@ -59,6 +61,7 @@ ContainerView::ContainerView(BMessage *archive)
 ContainerView::~ContainerView() {
 	delete fStockRequester;
 	delete fAutoUpdateRunner;
+	delete fMessenger;
 }
 
 status_t
@@ -78,6 +81,21 @@ status_t
 ContainerView::SaveState(BMessage* into, bool deep) const {
 	status_t status;
 	return B_OK;
+}
+
+void
+ContainerView::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
+}
+
+void
+ContainerView::SendEmptyListMessage() {
+	BList *list = CurrentPortfolio()->CurrentSymbols();	
+	if (list == NULL || list->CountItems() == 0) {
+		BMessage emptyListMessage(kEmptyListMessage);
+		fMessenger->SendMessage(&emptyListMessage);
+	}
 }
 
 void
@@ -109,8 +127,8 @@ void
 ContainerView::AttachedToWindow() {
 	
 	CurrentPortfolio()->SetTarget(this);
-	
 	RequestData();
+	SendEmptyListMessage();
 	
 	BMessenger view(this);
 	bigtime_t seconds = 10;

@@ -31,7 +31,9 @@ MainWindow::MainWindow(BRect rect)
 	,fMenuBar(NULL) 
 	,fSymbolList(NULL)
 	,fStockRequester(NULL)
-	,fStockSymbolWindow(NULL) 
+	,fStockSymbolWindow(NULL)
+	,fShowStockSymbolListWhenDone(false)
+	,fStockSymbolsLoaded(false)	
 { 	
 	SetupViews();
 	DownloadStockSymbols();
@@ -79,10 +81,11 @@ MainWindow::SetupViews() {
 			.AddItem("Use large size", kUseLargeQuoteSize, 'L')
 		.End()
 		.AddMenu("Settings")
-			.AddItem("Search symbols...", kShowSearchWindowMessage, 'F')
+			.AddItem("Find symbols...", kShowSearchWindowMessage, 'F')
 		.End();
 	
 	fContainerView = new ContainerView();
+	fContainerView->SetTarget(this);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
@@ -107,7 +110,7 @@ MainWindow::SendToContainerView(BMessage *message) {
 void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
-		
+	
 		case kRemoveSelectedListItem:
 		case kPortfolioButtonPressedMessage:
 		case kUseSmallQuoteSize:
@@ -127,7 +130,15 @@ MainWindow::MessageReceived(BMessage *message) {
 			printf("kHideSearchWindowMessaage\n");
 			break;
 		}
-				
+		
+		case kEmptyListMessage: {
+			if (fStockSymbolsLoaded) {
+				ShowStockWindow();
+				return;
+			}
+			fShowStockSymbolListWhenDone = true;
+			break;
+		}
 		case kShowSearchWindowMessage: {
 			ShowStockWindow();
 			break;
@@ -162,6 +173,11 @@ MainWindow::HandleStockSearchSymbols(BMessage *message) {
 				fSymbolList->AddItem(symbolListItem);
 			}
 		}
+	}
+	
+	fStockSymbolsLoaded = true;
+	if (fShowStockSymbolListWhenDone) {
+		ShowStockWindow();
 	}
 }
 

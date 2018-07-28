@@ -98,11 +98,13 @@ SettingsManager::HasSymbol(const char *symbol) {
 void SettingsManager::SetQuoteSize(QuoteSize size) {
 	BMessage message;
 	LoadSettings(message);
-	if (message.AddInt32("size", int32(size)) != B_OK) {
-		printf("Couldnt add size\n");
+	
+	int32 value = int32(size);
+	if (message.ReplaceInt32("size", value) != B_OK) {
+		message.AddInt32("size", int32(size));
 	}
 	SaveSettings(message);
-	printf("Set size in settings %d\n", int32(size));
+	message.PrintToStream();	
 }
 
 QuoteSize 

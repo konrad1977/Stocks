@@ -23,7 +23,7 @@
 
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(200,200,900,720), "Stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
+	:BWindow(BRect(200,200,900,720), "Find stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
 	,fMessenger(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
