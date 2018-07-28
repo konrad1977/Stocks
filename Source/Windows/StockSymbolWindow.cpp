@@ -15,6 +15,7 @@
 #include "Quote.h"
 #include "SettingsManager.h"
 
+#include <Alert.h>
 #include <ListView.h>
 #include <ScrollView.h>
 #include <stdio.h>
@@ -226,10 +227,27 @@ StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
 		fMessenger->SendMessage(message);
 }
 
+void 
+StockSymbolWindow::ShowAlert(const char *title, const char *message) {
+	BAlert *alert = new BAlert(title, message, "Ok");
+	alert->SetType(B_WARNING_ALERT);
+	alert->Go();
+}
+
 void
 StockSymbolWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
+
+		case kUpdateFailed: {
+			BString description;
+			if (message->FindString("message", &description) == B_OK) {
+				ShowAlert("Failed to fetch data", description.String());
+			} else {
+				ShowAlert("Failed to fetch data", "Couldnt parse JSON!");
+			}
+			break;
+		}
 		
 		case kPortfolioButtonPressedMessage:
 			HandleAddToPortfolio(message);

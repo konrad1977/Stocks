@@ -38,9 +38,11 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	fDescriptionTextView->MakeEditable(false);
 	fDescriptionTextView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
+	rgb_color textColor = ui_color(B_PANEL_TEXT_COLOR);
+	fDescriptionTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColor);
+
 	fTitleStringView = new BStringView("Title", "");
-	BFont font(be_bold_font);
-	fTitleStringView->SetFont(&font);
+	fTitleStringView->SetFont(be_bold_font);
 	
 	InitLayout();	
 }

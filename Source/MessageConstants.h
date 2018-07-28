@@ -11,6 +11,8 @@ const uint32 kUpdateCompanyMessage 			= 'Updc';
 const uint32 kUpdateSymbolMessage 			= 'Upds';
 const uint32 kUpdateQuoteMessage 			= 'Upqm';
 const uint32 kUpdateQuoteBatchMessage 		= 'Uqbm';
+const uint32 kUpdateFailed 					= 'UFMb';
+
 const uint32 kAutoUpdateMessage 			= 'UAUm';
 const uint32 kPortfolioButtonPressedMessage = 'PSBm';
 const uint32 kSaveSettingsMessage 			= 'PREm';

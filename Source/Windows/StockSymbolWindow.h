@@ -30,8 +30,10 @@ private:
 	const char*  SymbolAtIndex(int32 index);
 			void InitLayout();
 			void SetItems(BList *listItems);
+			void ShowAlert(const char *title, const char *message);
 			void ApplyFilter(BString filter);
 			bool HasSymbolInPortfolio(const char *symbol);
+				
 			
 			void HandleAddToPortfolio(BMessage *message);
 			void HandleSelection(BMessage *message);

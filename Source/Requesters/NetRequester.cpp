@@ -91,9 +91,10 @@ NetRequester::_HandleData(BString data) {
 	status_t status = parser.Parse(data, parsedData);
 	
 	if (status == B_BAD_DATA) {
-		printf("JSON Parser error for data:\n%s\n", data.String());
-		//BMessage* message = new BMessage(kFailureMessage);
-		//messenger.SendMessage(message);
+		BMessenger messenger(fHandler);
+		BMessage* message = new BMessage(kUpdateFailed);
+		message->AddString("message", data.String());
+		messenger.SendMessage(message);
 		return;
 	}
 	
