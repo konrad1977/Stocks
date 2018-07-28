@@ -7,6 +7,7 @@
 
 #include <SupportDefs.h>
 #include <View.h>
+#include "QuoteListItem.h"
 
 class StockRequester;
 class Portfolio;
@@ -28,6 +29,7 @@ public:
 			
 			void RequestData();	
 private:
+			void UpdateQuoteItemSizes(QuoteSize size);
 			void HandleQuotes(BMessage message);
 			void LoadSavedData();
 			void SetupViews();

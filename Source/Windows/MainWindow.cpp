@@ -73,9 +73,13 @@ MainWindow::SetupViews() {
 		.End()
 		.AddMenu("Edit")
 			.AddItem("Remove selected item", kRemoveSelectedListItem, 'R')
+			.AddSeparator()
+			.AddItem("Use small size", kUseSmallQuoteSize, 'S')
+			.AddItem("Use normal size", kUseNormalQuoteSize, 'N')
+			.AddItem("Use large size", kUseLargeQuoteSize, 'L')
 		.End()
 		.AddMenu("Settings")
-			.AddItem("Search symbols...", kShowSearchWindowMessage, 'S')
+			.AddItem("Search symbols...", kShowSearchWindowMessage, 'F')
 		.End();
 	
 	fContainerView = new ContainerView();
@@ -94,20 +98,22 @@ MainWindow::ShowStockWindow() {
 }
 
 void
+MainWindow::SendToContainerView(BMessage *message) {
+	BMessenger *messenger = new BMessenger(fContainerView);
+	messenger->SendMessage(message);
+	delete messenger;
+}
+
+void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
 		
-		case kPortfolioButtonPressedMessage: {
-			BMessenger *messenger = new BMessenger(fContainerView);
-			messenger->SendMessage(message);
-			delete messenger;
-			break;
-		}
-
-		case kRemoveSelectedListItem: {
-			BMessenger *messenger = new BMessenger(fContainerView);
-			messenger->SendMessage(message);
-			delete messenger;
+		case kRemoveSelectedListItem:
+		case kPortfolioButtonPressedMessage:
+		case kUseSmallQuoteSize:
+		case kUseNormalQuoteSize:
+		case kUseLargeQuoteSize: {
+			SendToContainerView(message);
 			break;
 		}
 		

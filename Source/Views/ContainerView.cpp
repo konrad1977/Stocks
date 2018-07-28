@@ -129,7 +129,22 @@ ContainerView::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-		
+
+		case kUseSmallQuoteSize: {
+			UpdateQuoteItemSizes(SMALL);
+			break;
+		}
+
+		case kUseNormalQuoteSize: {
+			UpdateQuoteItemSizes(NORMAL);
+			break;
+		}
+
+		case kUseLargeQuoteSize: {
+			UpdateQuoteItemSizes(LARGE);
+			break;
+		}
+			
 		case kPortfolioAddedSymbolMessage: {
 			BString symbol;
 			if (message->FindString("symbol", &symbol) == B_OK) {
@@ -160,6 +175,20 @@ ContainerView::MessageReceived(BMessage *message) {
 		
 		default:
 			break;
+	}
+}
+
+void
+ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
+	if (fQuoteListView == NULL) {
+		return;
+	}
+	const int32 items = fQuoteListView->CountItems();
+	for(int32 i = 0; i<items; i++) {
+		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
+		item->SetQuoteItemSize(size);
+		item->Update(fQuoteListView, be_plain_font);
+		fQuoteListView->InvalidateItem(i);
 	}
 }
 

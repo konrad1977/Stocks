@@ -26,5 +26,9 @@ const uint32 kShowSearchWindowMessage 		= 'SSWm';
 const uint32 kSearchTextChangedMessage 		= 'STCm';
 const uint32 kSymbolListSelectionChanged 	= 'SLSc';
 const uint32 kRemoveSelectedListItem		= 'RSLm';
+const uint32 kUseSmallQuoteSize				= 'USQs';
+const uint32 kUseNormalQuoteSize			= 'UNQs';
+const uint32 kUseLargeQuoteSize				= 'ULQs';
+
 
 #endif // _H

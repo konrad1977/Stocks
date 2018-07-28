@@ -13,10 +13,11 @@
 #include <Screen.h>
 #include <Window.h>
 
-QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant)
+QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize)
 	:BListItem()
 	,fIsReplicant(isReplicant)
-	,fQuote(quote) {	
+	,fQuote(quote) 
+	,fQuoteSize(quoteSize) {	
 }
 
 QuoteListItem::~QuoteListItem() {
@@ -50,6 +51,10 @@ QuoteListItem::TextColor() {
 		}
 	}
 	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
+}
+
+void QuoteListItem::SetQuoteItemSize(QuoteSize size) {
+	fQuoteSize = size;
 }
 
 void 
@@ -155,7 +160,7 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	
 	rgb_color backgroundColor = BackgroundColor();
 	
-	if (IsSelected()) {
+	if (IsSelected() && fIsReplicant == false) {
 		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
 	} else if (index % 2 == 0) {
 		parent->SetHighColor(backgroundColor);
@@ -164,15 +169,51 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	}
 	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
 	if (fIsReplicant) {
-		parent->FillRoundRect(frame.InsetBySelf(0,2), 2, 2);
+		parent->FillRoundRect(frame.InsetBySelf(0,2), 3, 3);
 	} else {
 		parent->FillRect(frame);
 	}
 	
+	parent->SetDrawingMode(B_OP_OVER);
+
+	switch (fQuoteSize) {
+		case SMALL:
+			DrawSmallItem(parent, frame);
+			break;
+		case NORMAL:
+			DrawNormalItem(parent, frame);
+			break;
+		case LARGE:
+			DrawLargeItem(parent, frame);
+			break;
+	}
+}
+
+void
+QuoteListItem::DrawSmallItem(BView *parent, BRect frame) {
+	BRect rect = frame.InsetBySelf(0,10);
+	DrawCompanyName(parent, rect);
+	DrawChangePercent(parent, rect);
+}
+
+void 
+QuoteListItem::DrawNormalItem(BView *parent, BRect frame) {
+
 	BRect halfRect = frame.InsetBySelf(0,10);
 	halfRect.bottom -= frame.Height() / 2;
+	
+	DrawCompanyName(parent, halfRect);
+	DrawChangePercent(parent, halfRect);
 
-	parent->SetDrawingMode(B_OP_OVER);
+	halfRect.OffsetBy(0, halfRect.Height());
+	DrawLatestPrice(parent, halfRect);	
+	DrawChangeDollar(parent, halfRect);
+}
+
+void 
+QuoteListItem::DrawLargeItem(BView *parent, BRect frame) {
+	BRect halfRect = frame.InsetBySelf(0,5);
+	halfRect.bottom -= frame.Height() / 2;
 	
 	DrawCompanyName(parent, halfRect);
 	DrawChangePercent(parent, halfRect);
@@ -187,7 +228,19 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 	
 	font_height fh;
 	font->GetHeight(&fh);
-	const float height = fh.ascent + fh.descent + fh.leading + 50;
+	float height = fh.ascent + fh.descent + fh.leading;
+	switch (fQuoteSize) {
+		case SMALL:
+			height += 12;
+			break;
+		case NORMAL:
+			height += 50;
+			break;
+		case LARGE:
+			height += 90;
+			break;
+	}
 	SetHeight(height);
+	printf("Update called\n");
 }
 

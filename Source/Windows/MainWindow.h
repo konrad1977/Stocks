@@ -25,6 +25,7 @@ private:
 			void DownloadStockSymbols();
 			void HandleStockSearchSymbols(BMessage *message);
 			void ShowStockWindow();
+			void SendToContainerView(BMessage *message);
 				
 	StockSymbolWindow 	*SymbolWindow();
 	
