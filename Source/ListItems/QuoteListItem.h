@@ -24,6 +24,8 @@ public:
 	virtual void Update(BView *view, const BFont *font);
 	
 			void SetQuoteItemSize(QuoteSize size);
+			void SetQuote(Quote *quote);
+			
 	Quote  *CurrentQuoteItem();
 	
 private:

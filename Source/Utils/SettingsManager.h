@@ -8,6 +8,7 @@
 
 #include <SupportDefs.h>
 #include <Message.h>
+#include "QuoteListItem.h"
 
 class BList;
 class SettingsManager {
@@ -15,6 +16,9 @@ public:
 	SettingsManager();
 	~SettingsManager();
 
+	void SetQuoteSize(QuoteSize size);
+	QuoteSize CurrentQuoteSize();
+	
 	bool HasSymbol(const char *symbol);
 	void RemoveSymbol(const char *symbol);
 	void AddSymbol(const char *symbol);
@@ -27,6 +31,7 @@ private:
 	
 	status_t LoadSettings(BMessage &message);
 	status_t SaveSettings(BMessage message);
+	
 	char *fFileName;
 	BList *fCurrentLoadedSymbols;
 };

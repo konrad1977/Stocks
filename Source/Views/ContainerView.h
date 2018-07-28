@@ -30,6 +30,7 @@ public:
 			void RequestData();	
 private:
 			void UpdateQuoteItemSizes(QuoteSize size);
+			void UpdateItemWithQuote(Quote *quote);
 			void HandleQuotes(BMessage message);
 			void LoadSavedData();
 			void SetupViews();

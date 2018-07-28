@@ -13,6 +13,7 @@
 #include <MessageRunner.h>
 #include <Alert.h>
 
+#include "SettingsManager.h"
 #include "Portfolio.h"
 #include "Quote.h"
 #include "QuoteListItem.h"
@@ -183,13 +184,18 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
 	if (fQuoteListView == NULL) {
 		return;
 	}
+
+	SettingsManager *manager = new SettingsManager();
+	manager->SetQuoteSize(size);
+	delete manager;
+	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
 		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
 		item->SetQuoteItemSize(size);
-		item->Update(fQuoteListView, be_plain_font);
-		fQuoteListView->InvalidateItem(i);
+		item->DrawItem(fQuoteListView, fQuoteListView->Bounds(), true);
 	}
+	fQuoteListView->Invalidate();
 }
 
 void
@@ -239,7 +245,7 @@ ContainerView::RemoveSelectedListItem() {
 	
 	int32 selectedIndex = fQuoteListView->CurrentSelection();
 	if (selectedIndex != -1) {
-		QuoteListItem  *listItem = (QuoteListItem*)fQuoteListView->ItemAt(selectedIndex);
+		QuoteListItem  *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(selectedIndex));
 		if (listItem && listItem->CurrentQuoteItem()) {
 			const char *symbol = listItem->CurrentQuoteItem()->symbol.String();
 			CurrentPortfolio()->Remove(symbol);
@@ -252,12 +258,32 @@ ContainerView::RemoveSelectedListItem() {
 	}
 }
 
+void ContainerView::UpdateItemWithQuote(Quote *quote) {
+
+	int32 itemCount = fQuoteListView->CountItems();
+	bool foundItem = false;
+	for(int32 i = 0; i<itemCount; i++) {
+		QuoteListItem *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
+		if (listItem && listItem->CurrentQuoteItem()->isEqual(*quote)) {
+			listItem->SetQuote(quote);
+			fQuoteListView->InvalidateItem(i);
+			foundItem = true;
+			return;
+		}
+	}
+	
+	SettingsManager *manager = new SettingsManager();
+	QuoteSize size = manager->CurrentQuoteSize();
+	delete manager;
+	
+	if (foundItem == false) {
+		fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
+	}
+}
+
 void
 ContainerView::HandleQuotes(BMessage message) {
 
-	if (fQuoteListView)
-		fQuoteListView->MakeEmpty();
-	
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
 		char *name;
@@ -276,7 +302,7 @@ ContainerView::HandleQuotes(BMessage message) {
 				continue;
 			}			
 			Quote *quote = new Quote(quoteMsg);
-			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant));
+			UpdateItemWithQuote(quote);
 		}
 	}
 }

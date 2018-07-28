@@ -53,7 +53,14 @@ QuoteListItem::TextColor() {
 	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 }
 
-void QuoteListItem::SetQuoteItemSize(QuoteSize size) {
+void
+QuoteListItem::SetQuote(Quote *quote) {
+	delete fQuote;
+	fQuote = quote;
+}
+
+void 
+QuoteListItem::SetQuoteItemSize(QuoteSize size) {
 	fQuoteSize = size;
 }
 
@@ -241,6 +248,4 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 			break;
 	}
 	SetHeight(height);
-	printf("Update called\n");
 }
-

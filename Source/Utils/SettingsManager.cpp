@@ -94,6 +94,25 @@ bool
 SettingsManager::HasSymbol(const char *symbol) {
 	return IndexOf(symbol) != -1;
 }
+
+void SettingsManager::SetQuoteSize(QuoteSize size) {
+	BMessage message;
+	LoadSettings(message);
+	if (message.AddInt32("size", int32(size)) != B_OK) {
+		printf("Couldnt add size\n");
+	}
+	SaveSettings(message);
+	printf("Set size in settings %d\n", int32(size));
+}
+
+QuoteSize 
+SettingsManager::CurrentQuoteSize() {
+	BMessage message;
+	LoadSettings(message);
+	int32 size = message.FindInt32("size");
+	printf("Size %d\n", size); 
+	return QuoteSize(size);
+}
 	
 BList *
 SettingsManager::LoadSymbols() {
@@ -123,10 +142,6 @@ SettingsManager::SaveSettings(BMessage message) {
 	
 	BPath path;
 	BFile file;
-	
-/*	app_info info;
-	be_roster->GetActiveAppInfo(&info);
-	message.AddRef("appLocation", &info.ref);*/
 	
 	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK) {
 		return B_ERROR;
