@@ -12,16 +12,19 @@
 #include <iostream>
 #include <Screen.h>
 #include <Window.h>
+#include "ListItemDrawer.h"
 
 QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize)
 	:BListItem()
 	,fIsReplicant(isReplicant)
 	,fQuote(quote) 
-	,fQuoteSize(quoteSize) {	
+	,fQuoteSize(quoteSize)
+	,fDrawer(NULL) {	
 }
 
 QuoteListItem::~QuoteListItem() {
 	delete fQuote;
+	delete fDrawer;
 }	
 
 Quote*
@@ -29,31 +32,14 @@ QuoteListItem::CurrentQuoteItem() {
 	return fQuote;
 }
 
-rgb_color
-QuoteListItem::BackgroundColor() {
-	if (fIsReplicant && IsSelected() == false) {
-		BScreen screen;		
-		rgb_color color = screen.DesktopColor();
-		color.alpha = 140;
-		return color;
-	}
-	return ui_color(B_LIST_BACKGROUND_COLOR);
+void
+QuoteListItem::SetQuote(Quote *quote) {
+	delete fQuote;
+	fQuote = quote;
 }
 
-rgb_color
-QuoteListItem::TextColor() {
-
-	if (fIsReplicant) {
-		rgb_color backgroundColor = BackgroundColor();
-		if ( backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127) {
-			rgb_color textColor = { 224, 220, 224 };
-			return textColor;
-		}
-	}
-	return ui_color( IsSelected() ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
-}
-
-void QuoteListItem::SetQuoteItemSize(QuoteSize size) {
+void 
+QuoteListItem::SetQuoteItemSize(QuoteSize size) {
 	fQuoteSize = size;
 }
 
@@ -62,70 +48,66 @@ QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
 		
 	BFont font(be_bold_font);
 	font.SetSize(15);
-	view->SetFont(&font);
-	
-	font_height fh;
-	font.GetHeight(&fh);
 
 	std::ostringstream percentText;
 	percentText << fQuote->changePercent * 100 << "%";
 
 	const char *percent = percentText.str().c_str();
-	const float width = font.StringWidth(percent);
-	
-	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fontHeight) / 2;
-	
-	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
-
+	rgb_color color;
 	if (fQuote->changePercent < 0)  {
-		view->SetHighColor(255,64,80);
+		color = { 255,64,80 };
 	} else {
-		view->SetHighColor(102,191,255);
+		color = { 102,191,255 };
 	}
-	view->DrawString( percent ); 
+	
+	DrawItemSettings settings = { frame, &font, &color, B_ALIGN_RIGHT };
+	fDrawer->DrawString(percent , settings);	
 }
 
-void
-QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
-		
-	BFont font(be_plain_font);
-	font.SetSize(14);
-	view->SetFont(&font);
+void 
+QuoteListItem::DrawSymbol(BView *view, BRect frame) {
+
+	BFont font(be_bold_font);
+	font.SetSize(15);	
 	
-	font_height fh;
-	font.GetHeight(&fh);
-	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fontHeight) / 2;
-	
-	view->MovePenTo( 12, frame.LeftBottom().y - (center + fh.descent));	
-	view->SetHighColor(TextColor());		
-	view->DrawString( fQuote->companyName.String() ); 
+	DrawItemSettings settings = { frame, &font }; 
+	fDrawer->DrawString(fQuote->symbol.String() , settings);	
 }
 
 void 
 QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
 		
 	BFont font(be_plain_font);
-	font.SetSize(15);
-	view->SetFont(&font);
-	
-	font_height fh;
-	font.GetHeight(&fh);
+	font.SetSize(13);
 
 	std::ostringstream changeStr;
 	changeStr << "$" << fQuote->change;
 
 	const char *change = changeStr.str().c_str();
-	const float width = font.StringWidth(change);
 	
-	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fontHeight) / 2;
-	
-	view->MovePenTo( frame.RightBottom().x - width - 12, frame.RightBottom().y - (center + fh.descent));	
+	DrawItemSettings settings = { frame, &font };
+	settings.align = B_ALIGN_RIGHT;
+	fDrawer->DrawString(change, settings);
+}
 
-	view->SetHighColor(TextColor());
-	view->DrawString( change ); 
+void
+QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
+
+	BFont font(be_plain_font);
+	font.SetSize(13);	
+	
+	DrawItemSettings settings = { frame, &font }; 
+	fDrawer->DrawString(fQuote->companyName.String() , settings);	
+}
+
+void 
+QuoteListItem::DrawMarket(BView *view, BRect frame) {
+
+	BFont font(be_plain_font);
+	font.SetSize(13);		
+
+	DrawItemSettings settings = { frame, &font };
+	fDrawer->DrawString(fQuote->primaryExchange.String(), settings);
 }
 
 void 
@@ -133,32 +115,28 @@ QuoteListItem::DrawLatestPrice(BView *view, BRect frame) {
 	
 	BFont font(be_bold_font);
 	font.SetSize(15);
-	view->SetFont(&font);
 	
-	font_height fh;
-	font.GetHeight(&fh);
-
 	std::ostringstream dollarStr;
 	dollarStr << "$" << fQuote->latestPrice;
-
 	const char *dollar = dollarStr.str().c_str();
-	
-	const float fontHeight = fh.ascent + fh.descent + fh.leading;
-	const float center = (frame.Height() - fontHeight) / 2;
-	
-	view->MovePenTo( 12, frame.RightBottom().y - (center + fh.descent));	
-	view->SetHighColor(TextColor());	
-	view->DrawString( dollar ); 
+
+	DrawItemSettings settings = { frame, &font };
+	fDrawer->DrawString(dollar, settings);
 }
 
 void 
 QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
-	
+		
 	BListView *parent = dynamic_cast<BListView *>(view);
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
 	
-	rgb_color backgroundColor = BackgroundColor();
+	if (fDrawer == NULL) {
+		fDrawer = new ListItemDrawer(parent, fIsReplicant);
+		fDrawer->SetInsets(BSize(10,0));
+	}
+	
+	rgb_color backgroundColor = fDrawer->BackgroundColor(IsSelected());
 	
 	if (IsSelected() && fIsReplicant == false) {
 		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
@@ -174,18 +152,23 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 		parent->FillRect(frame);
 	}
 	
-	parent->SetDrawingMode(B_OP_OVER);
+	parent->SetDrawingMode(B_OP_COPY);
+	parent->SetLowColor(backgroundColor);
 
 	switch (fQuoteSize) {
-		case SMALL:
+		case SMALL: {
+			fDrawer->SetInsets(BSize(5,0));
 			DrawSmallItem(parent, frame);
 			break;
-		case NORMAL:
+		}
+		case NORMAL: {
 			DrawNormalItem(parent, frame);
 			break;
-		case LARGE:
+		}
+		case LARGE: {
 			DrawLargeItem(parent, frame);
 			break;
+		}
 	}
 }
 
@@ -199,28 +182,40 @@ QuoteListItem::DrawSmallItem(BView *parent, BRect frame) {
 void 
 QuoteListItem::DrawNormalItem(BView *parent, BRect frame) {
 
-	BRect halfRect = frame.InsetBySelf(0,10);
-	halfRect.bottom -= frame.Height() / 2;
+	BRect halfRect = frame.InsetBySelf(0,5);
+	halfRect.bottom = frame.top + frame.Height() / 3.0;
 	
-	DrawCompanyName(parent, halfRect);
+	DrawSymbol(parent, halfRect);
 	DrawChangePercent(parent, halfRect);
 
 	halfRect.OffsetBy(0, halfRect.Height());
-	DrawLatestPrice(parent, halfRect);	
+
+	DrawCompanyName(parent, halfRect);
 	DrawChangeDollar(parent, halfRect);
+
+	halfRect.OffsetBy(0, halfRect.Height());
+	DrawLatestPrice(parent, halfRect);	
 }
 
 void 
 QuoteListItem::DrawLargeItem(BView *parent, BRect frame) {
-	BRect halfRect = frame.InsetBySelf(0,5);
-	halfRect.bottom -= frame.Height() / 2;
-	
-	DrawCompanyName(parent, halfRect);
-	DrawChangePercent(parent, halfRect);
 
-	halfRect.OffsetBy(0, halfRect.Height());
-	DrawLatestPrice(parent, halfRect);	
-	DrawChangeDollar(parent, halfRect);
+	BRect rect = frame.InsetBySelf(0,2);
+	rect.bottom = frame.top + frame.Height() / 4.0;
+	
+	DrawSymbol(parent, rect);
+	DrawChangePercent(parent, rect);
+
+	rect.OffsetBy(0, rect.Height());
+
+	DrawCompanyName(parent, rect);
+	DrawChangeDollar(parent, rect);
+
+	rect.OffsetBy(0, rect.Height());
+	DrawLatestPrice(parent, rect);	
+	
+	rect.OffsetBy(0, rect.Height());
+	DrawMarket(parent, rect);
 }
 
 void
@@ -231,16 +226,14 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 	float height = fh.ascent + fh.descent + fh.leading;
 	switch (fQuoteSize) {
 		case SMALL:
-			height += 12;
+			height += 14;
 			break;
 		case NORMAL:
 			height += 50;
 			break;
 		case LARGE:
-			height += 90;
+			height += 80;
 			break;
 	}
 	SetHeight(height);
-	printf("Update called\n");
 }
-

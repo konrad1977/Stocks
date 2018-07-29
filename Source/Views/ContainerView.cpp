@@ -13,6 +13,7 @@
 #include <MessageRunner.h>
 #include <Alert.h>
 
+#include "SettingsManager.h"
 #include "Portfolio.h"
 #include "Quote.h"
 #include "QuoteListItem.h"
@@ -30,6 +31,7 @@ ContainerView::ContainerView()
 	,fQuoteListView(NULL)
 	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
+	,fMessenger(NULL)
 	,fIsReplicant(false)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
@@ -45,6 +47,7 @@ ContainerView::ContainerView(BMessage *archive)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fStockRequester(NULL)
+	,fMessenger(NULL)
 	,fIsReplicant(true)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
@@ -58,6 +61,7 @@ ContainerView::ContainerView(BMessage *archive)
 ContainerView::~ContainerView() {
 	delete fStockRequester;
 	delete fAutoUpdateRunner;
+	delete fMessenger;
 }
 
 status_t
@@ -77,6 +81,21 @@ status_t
 ContainerView::SaveState(BMessage* into, bool deep) const {
 	status_t status;
 	return B_OK;
+}
+
+void
+ContainerView::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
+}
+
+void
+ContainerView::SendEmptyListMessage() {
+	BList *list = CurrentPortfolio()->CurrentSymbols();	
+	if (list == NULL || list->CountItems() == 0) {
+		BMessage emptyListMessage(kEmptyListMessage);
+		fMessenger->SendMessage(&emptyListMessage);
+	}
 }
 
 void
@@ -108,8 +127,8 @@ void
 ContainerView::AttachedToWindow() {
 	
 	CurrentPortfolio()->SetTarget(this);
-	
 	RequestData();
+	SendEmptyListMessage();
 	
 	BMessenger view(this);
 	bigtime_t seconds = 10;
@@ -130,6 +149,15 @@ ContainerView::MessageReceived(BMessage *message) {
 			break;
 		}
 
+		case kPortfolioAddedSymbolMessage: {
+			BString symbol;
+			if (message->FindString("symbol", &symbol) == B_OK) {
+				Requester()->Add(symbol.String());
+				RequestData();
+			}
+			break;
+		}
+		
 		case kUseSmallQuoteSize: {
 			UpdateQuoteItemSizes(SMALL);
 			break;
@@ -145,14 +173,6 @@ ContainerView::MessageReceived(BMessage *message) {
 			break;
 		}
 			
-		case kPortfolioAddedSymbolMessage: {
-			BString symbol;
-			if (message->FindString("symbol", &symbol) == B_OK) {
-				Requester()->Add(symbol.String());
-				RequestData();
-			}
-			break;
-		}
 		case kAutoUpdateMessage:{
 			RequestData();
 			break;
@@ -183,13 +203,18 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
 	if (fQuoteListView == NULL) {
 		return;
 	}
+
+	SettingsManager *manager = new SettingsManager();
+	manager->SetQuoteSize(size);
+	delete manager;
+	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
 		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
 		item->SetQuoteItemSize(size);
-		item->Update(fQuoteListView, be_plain_font);
-		fQuoteListView->InvalidateItem(i);
+		item->DrawItem(fQuoteListView, fQuoteListView->Bounds(), true);
 	}
+	fQuoteListView->Invalidate();
 }
 
 void
@@ -239,7 +264,7 @@ ContainerView::RemoveSelectedListItem() {
 	
 	int32 selectedIndex = fQuoteListView->CurrentSelection();
 	if (selectedIndex != -1) {
-		QuoteListItem  *listItem = (QuoteListItem*)fQuoteListView->ItemAt(selectedIndex);
+		QuoteListItem  *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(selectedIndex));
 		if (listItem && listItem->CurrentQuoteItem()) {
 			const char *symbol = listItem->CurrentQuoteItem()->symbol.String();
 			CurrentPortfolio()->Remove(symbol);
@@ -252,12 +277,42 @@ ContainerView::RemoveSelectedListItem() {
 	}
 }
 
+void ContainerView::UpdateItemWithQuote(Quote *quote) {
+
+	int32 itemCount = fQuoteListView->CountItems();
+	bool foundItem = false;
+	for(int32 i = 0; i<itemCount; i++) {
+		QuoteListItem *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
+		if (listItem && listItem->CurrentQuoteItem()->isEqual(*quote)) {
+			listItem->SetQuote(quote);
+			fQuoteListView->InvalidateItem(i);
+			foundItem = true;
+			return;
+		}
+	}
+	
+	SettingsManager *manager = new SettingsManager();
+	QuoteSize size = manager->CurrentQuoteSize();
+	delete manager;
+	
+	if (foundItem == false) {
+		fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
+	}
+}
+
 void
 ContainerView::HandleQuotes(BMessage message) {
+		
+	if (fQuoteListView == NULL) {
+		return;
+	}
 
-	if (fQuoteListView)
-		fQuoteListView->MakeEmpty();
+	fQuoteListView->MakeEmpty();	
 	
+	SettingsManager *manager = new SettingsManager();
+	QuoteSize size = manager->CurrentQuoteSize();
+	delete manager;
+
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
 		char *name;
@@ -276,7 +331,8 @@ ContainerView::HandleQuotes(BMessage message) {
 				continue;
 			}			
 			Quote *quote = new Quote(quoteMsg);
-			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant));
+			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
+			//UpdateItemWithQuote(quote);
 		}
 	}
 }

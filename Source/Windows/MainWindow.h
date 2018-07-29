@@ -35,6 +35,8 @@ private:
 	StockRequester 		*fStockRequester;
 	StockSymbolWindow 	*fStockSymbolWindow;
 	BList 				*fSymbolList;
+	bool 				fShowStockSymbolListWhenDone;
+	bool				fStockSymbolsLoaded;
 };
 
 #endif

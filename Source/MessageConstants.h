@@ -29,6 +29,6 @@ const uint32 kRemoveSelectedListItem		= 'RSLm';
 const uint32 kUseSmallQuoteSize				= 'USQs';
 const uint32 kUseNormalQuoteSize			= 'UNQs';
 const uint32 kUseLargeQuoteSize				= 'ULQs';
-
+const uint32 kEmptyListMessage				= 'ELMs';
 
 #endif // _H

@@ -9,6 +9,7 @@
 #include <SupportDefs.h>
 #include <Message.h>
 #include <String.h>
+#include <stdio.h>
 
 class Quote {
 public:
@@ -30,6 +31,11 @@ public:
 	double week52Low;
 	
 	void PrintToStream();
+		
+	bool isEqual(const Quote &other) {
+		return this->symbol == other.symbol;
+	}
+	
 private:
 
 };

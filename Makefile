@@ -32,6 +32,7 @@ SRCS = \
 	 Source/Utils/SettingsManager.cpp  \
 	 Source/Utils/UrlBuilder.cpp  \
 	 Source/Utils/Portfolio.cpp  \
+	 Source/Utils/ListItemDrawer.cpp  \
 	 Source/Views/ContainerView.cpp  \
 	 Source/Views/QuoteView.cpp  \
 	 Source/Views/SearchView.cpp  \
