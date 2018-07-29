@@ -18,7 +18,7 @@ enum QuoteSize {
 class ListItemDrawer;
 class QuoteListItem : public BListItem {
 public:
-	QuoteListItem(Quote *quote, bool replicant, QuoteSize quoteSize = SMALL);
+	QuoteListItem(Quote *quote, bool replicant, QuoteSize quoteSize = NORMAL);
 	~QuoteListItem();
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
@@ -34,6 +34,7 @@ private:
 			void DrawNormalItem(BView *view, BRect frame);
 			void DrawLargeItem(BView *view, BRect frame);
 			
+			void DrawSymbol(BView *view, BRect frame);
 			void DrawMarket(BView *view, BRect frame);
 			void DrawCompanyName(BView *view, BRect frame);
 			void DrawChangePercent(BView *view, BRect frame);

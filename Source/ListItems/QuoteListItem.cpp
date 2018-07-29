@@ -64,20 +64,21 @@ QuoteListItem::DrawChangePercent(BView *view, BRect frame) {
 	fDrawer->DrawString(percent , settings);	
 }
 
-void
-QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
-	BFont font(be_plain_font);
-	font.SetSize(14);	
+void 
+QuoteListItem::DrawSymbol(BView *view, BRect frame) {
+
+	BFont font(be_bold_font);
+	font.SetSize(15);	
 	
 	DrawItemSettings settings = { frame, &font }; 
-	fDrawer->DrawString(fQuote->companyName.String() , settings);	
+	fDrawer->DrawString(fQuote->symbol.String() , settings);	
 }
 
 void 
 QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
 		
 	BFont font(be_plain_font);
-	font.SetSize(15);
+	font.SetSize(13);
 
 	std::ostringstream changeStr;
 	changeStr << "$" << fQuote->change;
@@ -89,10 +90,21 @@ QuoteListItem::DrawChangeDollar(BView *view, BRect frame) {
 	fDrawer->DrawString(change, settings);
 }
 
+void
+QuoteListItem::DrawCompanyName(BView *view, BRect frame) {
+
+	BFont font(be_plain_font);
+	font.SetSize(13);	
+	
+	DrawItemSettings settings = { frame, &font }; 
+	fDrawer->DrawString(fQuote->companyName.String() , settings);	
+}
+
 void 
 QuoteListItem::DrawMarket(BView *view, BRect frame) {
+
 	BFont font(be_plain_font);
-	font.SetSize(14);		
+	font.SetSize(13);		
 
 	DrawItemSettings settings = { frame, &font };
 	fDrawer->DrawString(fQuote->primaryExchange.String(), settings);
@@ -108,7 +120,7 @@ QuoteListItem::DrawLatestPrice(BView *view, BRect frame) {
 	dollarStr << "$" << fQuote->latestPrice;
 	const char *dollar = dollarStr.str().c_str();
 
-	DrawItemSettings settings = { frame, &font };	
+	DrawItemSettings settings = { frame, &font };
 	fDrawer->DrawString(dollar, settings);
 }
 
@@ -121,7 +133,7 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	
 	if (fDrawer == NULL) {
 		fDrawer = new ListItemDrawer(parent, fIsReplicant);
-		fDrawer->SetInsets(BSize(12,0));
+		fDrawer->SetInsets(BSize(10,0));
 	}
 	
 	rgb_color backgroundColor = fDrawer->BackgroundColor(IsSelected());
@@ -144,15 +156,19 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 	parent->SetLowColor(backgroundColor);
 
 	switch (fQuoteSize) {
-		case SMALL:
+		case SMALL: {
+			fDrawer->SetInsets(BSize(5,0));
 			DrawSmallItem(parent, frame);
 			break;
-		case NORMAL:
+		}
+		case NORMAL: {
 			DrawNormalItem(parent, frame);
 			break;
-		case LARGE:
+		}
+		case LARGE: {
 			DrawLargeItem(parent, frame);
 			break;
+		}
 	}
 }
 
@@ -166,32 +182,40 @@ QuoteListItem::DrawSmallItem(BView *parent, BRect frame) {
 void 
 QuoteListItem::DrawNormalItem(BView *parent, BRect frame) {
 
-	BRect halfRect = frame.InsetBySelf(0,10);
-	halfRect.bottom = frame.top + frame.Height() / 2.0;
+	BRect halfRect = frame.InsetBySelf(0,5);
+	halfRect.bottom = frame.top + frame.Height() / 3.0;
 	
-	DrawCompanyName(parent, halfRect);
+	DrawSymbol(parent, halfRect);
 	DrawChangePercent(parent, halfRect);
 
 	halfRect.OffsetBy(0, halfRect.Height());
-	DrawLatestPrice(parent, halfRect);	
+
+	DrawCompanyName(parent, halfRect);
 	DrawChangeDollar(parent, halfRect);
+
+	halfRect.OffsetBy(0, halfRect.Height());
+	DrawLatestPrice(parent, halfRect);	
 }
 
 void 
 QuoteListItem::DrawLargeItem(BView *parent, BRect frame) {
 
-	BRect halfRect = frame.InsetBySelf(0,5);
-	halfRect.bottom = frame.top + frame.Height() / 4;
+	BRect rect = frame.InsetBySelf(0,2);
+	rect.bottom = frame.top + frame.Height() / 4.0;
 	
-	DrawMarket(parent, halfRect);
-	halfRect.OffsetBy(0, halfRect.Height());
+	DrawSymbol(parent, rect);
+	DrawChangePercent(parent, rect);
 
-	DrawCompanyName(parent, halfRect);
-	DrawChangePercent(parent, halfRect);
+	rect.OffsetBy(0, rect.Height());
 
-	halfRect.OffsetBy(0, halfRect.Height());
-	DrawLatestPrice(parent, halfRect);	
-	DrawChangeDollar(parent, halfRect);
+	DrawCompanyName(parent, rect);
+	DrawChangeDollar(parent, rect);
+
+	rect.OffsetBy(0, rect.Height());
+	DrawLatestPrice(parent, rect);	
+	
+	rect.OffsetBy(0, rect.Height());
+	DrawMarket(parent, rect);
 }
 
 void
@@ -208,7 +232,7 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 			height += 50;
 			break;
 		case LARGE:
-			height += 90;
+			height += 80;
 			break;
 	}
 	SetHeight(height);

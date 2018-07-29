@@ -6,8 +6,9 @@
 - The API is very extensive HaikuStocks only use a small part of whats possible
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/screenshot2.png" alt="Icon"/>
-  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/screenshot1.png" alt="Icon"/>
+  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/normal.png" alt="Icon"/>
+  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/small.png" alt="Icon"/>
+  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/large.png" alt="Icon"/>
 </p>
 
 ## Acknowledgements

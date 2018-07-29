@@ -311,6 +311,7 @@ ContainerView::HandleQuotes(BMessage message) {
 	
 	SettingsManager *manager = new SettingsManager();
 	QuoteSize size = manager->CurrentQuoteSize();
+	delete manager;
 
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
