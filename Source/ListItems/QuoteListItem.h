@@ -15,6 +15,7 @@ enum QuoteSize {
 	LARGE
 };
 
+class ListItemDrawer;
 class QuoteListItem : public BListItem {
 public:
 	QuoteListItem(Quote *quote, bool replicant, QuoteSize quoteSize = SMALL);
@@ -29,13 +30,11 @@ public:
 	Quote  *CurrentQuoteItem();
 	
 private:
-			rgb_color TextColor(); 
-			rgb_color BackgroundColor();
-			
 			void DrawSmallItem(BView *view, BRect frame);
 			void DrawNormalItem(BView *view, BRect frame);
 			void DrawLargeItem(BView *view, BRect frame);
 			
+			void DrawMarket(BView *view, BRect frame);
 			void DrawCompanyName(BView *view, BRect frame);
 			void DrawChangePercent(BView *view, BRect frame);
 			void DrawChangeDollar(BView *view, BRect frame);
@@ -43,6 +42,7 @@ private:
 			
 	Quote *fQuote;
 	QuoteSize fQuoteSize;
+	ListItemDrawer *fDrawer;
 	bool fIsReplicant;
 };
 
