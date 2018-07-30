@@ -19,9 +19,13 @@ public:
 	BString companyName;
 	BString symbol;
 	BString primaryExchange;
+	BString sector;
 	
 	double change; //In Dollar
 	double changePercent;
+	
+	double open;
+	double close;
 	
 	double high;
 	double low;
@@ -29,6 +33,9 @@ public:
 	double latestPrice;
 	double week52High;
 	double week52Low;
+	
+	int32 volume;
+	int32 avgVolume;
 	
 	void PrintToStream();
 		

@@ -27,7 +27,7 @@ public:
 	rgb_color TextColor(bool isSelected);
 	
 	void SetInsets(BSize insets);
-	
+	float Height(DrawItemSettings settings);
 	void DrawString(const char *text, DrawItemSettings settings);
 	
 private:
