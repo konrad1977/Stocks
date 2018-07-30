@@ -15,6 +15,11 @@ public:
 	~QuoteFormatter();
 	
 	rgb_color ChangeColor();
+
+	const char *ToString(float value) const;
+	const char *ToString(int32 value) const;
+	const char *ToString(double value) const;
+	
 	
 	const char *LatestPrice() const;
 	const char *ChangeString() const; 

@@ -28,6 +28,27 @@ QuoteFormatter::ChangeColor() {
 }
 
 const char *
+QuoteFormatter::ToString(double value) const {
+	BString str;
+	str << value;
+	return str.String();
+}
+
+const char *
+QuoteFormatter::ToString(float value) const {
+	BString str;
+	str << value;
+	return str.String();
+}
+
+const char *
+QuoteFormatter::ToString(int32 value) const {
+	BString str;
+	str << value;
+	return str.String();
+}
+
+const char *
 QuoteFormatter::LatestPrice() const {
 	BString str;
 	str << "$ " << fQuote->latestPrice;

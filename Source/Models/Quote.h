@@ -34,8 +34,8 @@ public:
 	double week52High;
 	double week52Low;
 	
-	int32 volume;
-	int32 avgVolume;
+	double volume;
+	double avgVolume;
 	
 	void PrintToStream();
 		

@@ -87,11 +87,14 @@ QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
 	BFont font(be_plain_font);
 	font.SetSize(13);
 
-	QuoteFormatter formatter(fQuote);
+	std::ostringstream change;
+	change << "$ " << fQuote->change;
+	
+	const char *str = change.str().c_str();
 	
 	DrawItemSettings settings = { frame, &font };
 	settings.align = align;
-	fDrawer->DrawString(formatter.LatestPrice(), settings);
+	fDrawer->DrawString(str, settings);
 }
 
 void
@@ -205,32 +208,31 @@ void
 QuoteListItem::DrawLargeItem( BRect frame) {
 	
 	QuoteFormatter formatter(fQuote);
-
-	BFont font(be_bold_font);
-	font.SetSize(16);
-	
 	BRect rect = frame.InsetBySelf(0,2);
 	rect.bottom = frame.top + frame.Height() / 7.0;
-
-	DrawSymbol(rect, B_ALIGN_CENTER);
-	rect.OffsetBySelf(0, rect.Height());
 	
-	DrawCompanyName(rect, B_ALIGN_CENTER);
-	rect.OffsetBySelf(0, rect.Height());
-	
-	DrawItemSettings settings = { rect, &font, NULL, B_ALIGN_CENTER };
+	BFont font(be_bold_font);
+	font.SetSize(13);
+		
+	//Row 1
+	DrawItemSettings settings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawText(fQuote->symbol.String(), settings);
+	settings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.LatestPrice(), settings);
 	rect.OffsetBySelf(0, fDrawer->Height(settings));
+	
+	//Row 2
+	font = be_plain_font;
+	font.SetSize(11);
+	settings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawText(fQuote->companyName.String(), settings);
 
 	rgb_color changeColor = formatter.ChangeColor();
-	
-	font.SetSize(12);
-	settings = { frame, &font, &changeColor, B_ALIGN_CENTER };
+	settings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
 	DrawText(formatter.ChangeString(), settings);
-
-	rect.OffsetBySelf(0, fDrawer->Height(settings) + 10 );
-
-	font.SetSize(10);	
+	rect.OffsetBySelf(0, fDrawer->Height(settings) * 2);
+	
+	//Row 3
 	settings = { rect, &font, NULL, B_ALIGN_LEFT };
 	
 	DrawText("Open", settings);
@@ -241,17 +243,47 @@ QuoteListItem::DrawLargeItem( BRect frame) {
 	settings.align = B_ALIGN_RIGHT;
 	DrawText("Low", settings);
 	
-	rect.OffsetBy(0, fDrawer->Height(settings));
-	font.SetSize(10.0);
-	
+	rect.OffsetBy(0, fDrawer->Height(settings));	
+	font = be_bold_font;
+	font.SetSize(12);
+
 	settings = { rect, &font, NULL };	
-	DrawText("106.54", settings);
+	DrawText(formatter.ToString(fQuote->open), settings);
 
 	settings.align = B_ALIGN_CENTER;
-	DrawText("108.5", settings);
+	DrawText(formatter.ToString(fQuote->high), settings);
 	
 	settings.align = B_ALIGN_RIGHT;
-	DrawText("103.1", settings);
+	DrawText(formatter.ToString(fQuote->low), settings);
+	
+	rect.OffsetBySelf(0, fDrawer->Height(settings) * 1.5);
+	
+	//row4
+	font = be_plain_font;
+	font.SetSize(11);
+	settings = { rect, &font, NULL, B_ALIGN_LEFT };
+	
+	DrawText("Avg. volume", settings);
+	
+	settings.align = B_ALIGN_CENTER;	
+	DrawText("52w. high", settings);
+	
+	settings.align = B_ALIGN_RIGHT;
+	DrawText("52w. low", settings);
+	
+	rect.OffsetBy(0, fDrawer->Height(settings));	
+
+	font = be_bold_font;
+	font.SetSize(12);
+
+	settings = { rect, &font, NULL };	
+	DrawText(formatter.ToString(int32(fQuote->avgVolume)), settings);
+
+	settings.align = B_ALIGN_CENTER;
+	DrawText(formatter.ToString(fQuote->week52High), settings);
+	
+	settings.align = B_ALIGN_RIGHT;
+	DrawText(formatter.ToString(fQuote->week52Low), settings);
 }
 
 void

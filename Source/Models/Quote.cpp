@@ -23,8 +23,8 @@ Quote::Quote(BMessage message) {
 	message.FindDouble("open", &open);
 	message.FindDouble("close", &close);
 
-	message.FindInt32("iexVolume", &volume);
-	message.FindInt32("avgTotalVolume", &avgVolume);	
+	message.FindDouble("iexVolume", &volume);
+	message.FindDouble("avgTotalVolume", &avgVolume);	
 	
 	message.FindDouble("latestPrice", &latestPrice);
 	message.FindDouble("week52High", &week52High);
