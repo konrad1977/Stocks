@@ -6,7 +6,10 @@
 #define QUOTELISTITEM_H
 
 #include <SupportDefs.h>
+#include <InterfaceDefs.h>
 #include <ListItem.h>
+
+#include "ListItemDrawer.h"
 #include "Quote.h"
 
 enum QuoteSize {
@@ -30,16 +33,18 @@ public:
 	Quote  *CurrentQuoteItem();
 	
 private:
-			void DrawSmallItem(BView *view, BRect frame);
-			void DrawNormalItem(BView *view, BRect frame);
-			void DrawLargeItem(BView *view, BRect frame);
+			void DrawSmallItem(BRect frame);
+			void DrawNormalItem(BRect frame);
+			void DrawLargeItem( BRect frame);
 			
-			void DrawSymbol(BView *view, BRect frame);
-			void DrawMarket(BView *view, BRect frame);
-			void DrawCompanyName(BView *view, BRect frame);
-			void DrawChangePercent(BView *view, BRect frame);
-			void DrawChangeDollar(BView *view, BRect frame);
-			void DrawLatestPrice(BView *view, BRect frame);
+			void DrawText(const char *text, DrawItemSettings settings);
+			
+			void DrawSymbol(BRect frame, alignment align = B_ALIGN_LEFT);
+			void DrawMarket(BRect frame, alignment align = B_ALIGN_LEFT);
+			void DrawCompanyName(BRect frame, alignment align = B_ALIGN_LEFT);
+			void DrawChangePercent(BRect frame, alignment align = B_ALIGN_RIGHT);
+			void DrawChangeDollar(BRect frame, alignment align = B_ALIGN_RIGHT);
+			void DrawLatestPrice(BRect frame, alignment align = B_ALIGN_LEFT);
 			
 	Quote *fQuote;
 	QuoteSize fQuoteSize;

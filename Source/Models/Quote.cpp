@@ -8,13 +8,23 @@
 #include <stdio.h>
 
 Quote::Quote(BMessage message) {
+
 	message.FindString("companyName", &companyName);
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);
+	message.FindString("sector", &sector);
+	
 	message.FindDouble("change", &change);
 	message.FindDouble("changePercent", &changePercent);
+	
 	message.FindDouble("high", &high);
 	message.FindDouble("low", &low);
+	
+	message.FindDouble("open", &open);
+	message.FindDouble("close", &close);
+
+	message.FindDouble("iexVolume", &volume);
+	message.FindDouble("avgTotalVolume", &avgVolume);	
 	
 	message.FindDouble("latestPrice", &latestPrice);
 	message.FindDouble("week52High", &week52High);
