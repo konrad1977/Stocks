@@ -194,6 +194,7 @@ ContainerView::MessageReceived(BMessage *message) {
 		}
 		
 		default:
+			BView::MessageReceived(message);
 			break;
 	}
 }
