@@ -6,6 +6,7 @@
 
 #include "QuoteFormatter.h"
 #include "Quote.h"
+#include "Constants.h"
 
 #include <String.h>
 
@@ -21,9 +22,9 @@ QuoteFormatter::~QuoteFormatter() {
 rgb_color 
 QuoteFormatter::ChangeColor() {
 	if (fQuote->changePercent < 0)  {
-		return { 255,64,80 };
+		return stockMinusColor;
 	} else {
-		return { 102,191,255 };
+		return stockPlusColor;
 	}
 }
 

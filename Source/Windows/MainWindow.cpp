@@ -5,10 +5,9 @@
 
 
 #include "MainWindow.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 #include "ContainerView.h"
 #include "StockSymbolWindow.h"
-#include "MessageConstants.h"
 #include "SymbolListItem.h"
 #include "StockRequester.h"
 

@@ -6,7 +6,7 @@
 
 #include "NetRequester.h"
 #include "Company.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 #include <Application.h>
 
 #include <Messenger.h>

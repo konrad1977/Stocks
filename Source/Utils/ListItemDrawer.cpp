@@ -5,7 +5,7 @@
 
 
 #include "ListItemDrawer.h"
-
+#include "Constants.h"
 #include <Screen.h>
 
 ListItemDrawer::ListItemDrawer(BView *parent, bool isReplicant)
@@ -35,15 +35,30 @@ ListItemDrawer::BackgroundColor(bool isSelected) {
 	return ui_color(B_LIST_BACKGROUND_COLOR);
 }
 
+bool 
+ListItemDrawer::IsDark() {
+	rgb_color backgroundColor = BackgroundColor(false);
+	return backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127;
+}
+
+rgb_color
+ListItemDrawer::TitleColor() {
+	if (IsDark()) {
+		return tint_color(TextColor(false), B_DARKEN_2_TINT);
+	} else {
+		return tint_color(TextColor(false), B_DARKEN_1_TINT);
+	}
+}
+
 rgb_color
 ListItemDrawer::TextColor(bool isSelected) {
 
 	if (fIsReplicant) {
-		rgb_color backgroundColor = BackgroundColor(isSelected);
-		if ( backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127) {
-			rgb_color textColor = { 224, 220, 224 };
-			return textColor;
-		}
+		if (IsDark()) {
+			return lightTextColor;
+		} else {
+			return darkTextColor;
+		}		
 	}
 	return ui_color( isSelected ? B_LIST_SELECTED_ITEM_TEXT_COLOR : B_LIST_ITEM_TEXT_COLOR);
 }

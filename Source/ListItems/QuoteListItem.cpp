@@ -12,7 +12,7 @@
 #include <iostream>
 #include <Screen.h>
 #include <Window.h>
-
+#include "Constants.h"
 #include "QuoteFormatter.h"
 
 QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize)
@@ -61,9 +61,9 @@ QuoteListItem::DrawChangePercent(BRect frame, alignment align) {
 	const char *percent = percentText.str().c_str();
 	rgb_color color;
 	if (fQuote->changePercent < 0)  {
-		color = { 255,64,80 };
+		color = stockMinusColor;
 	} else {
-		color = { 102,191,255 };
+		color = stockPlusColor;
 	}
 	
 	DrawItemSettings settings = { frame, &font, &color, align };
@@ -159,7 +159,7 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 		parent->FillRect(frame);
 	}
 	
-	parent->SetDrawingMode(B_OP_COPY);
+	parent->SetDrawingMode(B_OP_OVER);
 	parent->SetLowColor(backgroundColor);
 
 	switch (fQuoteSize) {
@@ -208,7 +208,7 @@ void
 QuoteListItem::DrawLargeItem( BRect frame) {
 	
 	QuoteFormatter formatter(fQuote);
-	BRect rect = frame.InsetBySelf(0,2);
+	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
 	
 	BFont font(be_bold_font);
@@ -230,10 +230,11 @@ QuoteListItem::DrawLargeItem( BRect frame) {
 	rgb_color changeColor = formatter.ChangeColor();
 	settings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
 	DrawText(formatter.ChangeString(), settings);
-	rect.OffsetBySelf(0, fDrawer->Height(settings) * 2);
+	rect.OffsetBySelf(0, fDrawer->Height(settings) * 1.5);
 	
+	rgb_color titleColor = fDrawer->TitleColor();
 	//Row 3
-	settings = { rect, &font, NULL, B_ALIGN_LEFT };
+	settings = { rect, &font, &titleColor, B_ALIGN_LEFT };
 	
 	DrawText("Open", settings);
 	
@@ -261,7 +262,7 @@ QuoteListItem::DrawLargeItem( BRect frame) {
 	//row4
 	font = be_plain_font;
 	font.SetSize(11);
-	settings = { rect, &font, NULL, B_ALIGN_LEFT };
+	settings = { rect, &font, &titleColor, B_ALIGN_LEFT };
 	
 	DrawText("Avg. volume", settings);
 	

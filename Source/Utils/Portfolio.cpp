@@ -7,7 +7,7 @@
 #include "Portfolio.h"
 
 #include "SettingsManager.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 
 #include <List.h>
 #include <Messenger.h>

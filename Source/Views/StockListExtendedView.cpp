@@ -7,7 +7,7 @@
 #include "StockListExtendedView.h"
 #include "Company.h"
 #include "QuoteView.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 
 #include <TextView.h>
 #include <StringView.h>

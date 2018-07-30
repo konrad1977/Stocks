@@ -11,7 +11,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "MessageConstants.h"
+#include "Constants.h"
 
 #include <GroupLayout.h>
 #include <GridLayout.h>
@@ -75,11 +75,11 @@ QuoteView::SetChange(float percent, float dollars) {
 	std::ostringstream text;
 
 	if (percent < 0 ) {
-		fChangePercent->SetHighColor(248,63,58);
+		fChangePercent->SetHighColor(stockMinusColor);
 		text << percent * 100 << "%" << " (" << "$" << dollars << ")";
 
 	} else {
-		fChangePercent->SetHighColor(44,104,233);
+		fChangePercent->SetHighColor(stockPlusColor);
 		text << "+" << percent * 100 << "%" << " (" << "$" << dollars << ")";
 
 	}

@@ -6,7 +6,7 @@
 
 #include "StockSymbolWindow.h"
 #include "StockRequester.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 #include "SymbolListItem.h"
 #include "StockSymbol.h"
 #include "SearchView.h"

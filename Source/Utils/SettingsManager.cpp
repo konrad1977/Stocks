@@ -4,7 +4,7 @@
  */
 
 #include "SettingsManager.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 
 #include <String.h>
 #include <Roster.h>

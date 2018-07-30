@@ -18,7 +18,7 @@
 #include "Quote.h"
 #include "QuoteListItem.h"
 #include "StockRequester.h"
-#include "MessageConstants.h"
+#include "Constants.h"
 #include <stdio.h>
 
 const float kDraggerSize = 7;

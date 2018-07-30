@@ -2,8 +2,18 @@
  * Copyright 2015 Your Name <your@email.address>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
+
+#include <GraphicsDefs.h>
+ 
 #ifndef MESSAGECONSTANTS_H
 #define MESSAGECONSTANTS_H
+
+//Colors
+const rgb_color lightTextColor 	= { 224,220,224 };
+const rgb_color darkTextColor 	= { 40,44,40 	};
+const rgb_color stockPlusColor	= { 30,201,158	};
+const rgb_color stockMinusColor	= { 255,64,80 	};
+
 
 
 //Messages
