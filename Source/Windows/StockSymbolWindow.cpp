@@ -244,7 +244,7 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 			if (message->FindString("message", &description) == B_OK) {
 				ShowAlert("Failed to fetch data", description.String());
 			} else {
-				ShowAlert("Failed to fetch data", "Couldnt parse JSON!");
+				ShowAlert("Failed to fetch data", "Couldn't parse JSON!");
 			}
 			break;
 		}

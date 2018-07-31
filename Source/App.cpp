@@ -8,7 +8,7 @@
 #include "MainWindow.h"
 #include <stdio.h>
 
-const char *kAppSignature = "application/x-vnd.konradsson.HaikuStocks";
+const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 
 App::App(void)
 	:BApplication(kAppSignature) {

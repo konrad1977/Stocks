@@ -5,7 +5,7 @@
 ## architecture of Haiku.
 
 # The name of the binary.
-NAME = HaikuStocks
+NAME = Stocks
 
 # The type of binary, must be one of:
 #	APP:	Application
@@ -15,7 +15,7 @@ NAME = HaikuStocks
 TYPE = APP
 
 # 	If you plan to use localization, specify the application's MIME signature.
-APP_MIME_SIG = x-vnd.konradsson.HaikuStocks
+APP_MIME_SIG = x-vnd.konradsson.Stocks
 
 #	The following lines tell Pe and Eddie where the SRCS, RDEFS, and RSRCS are
 #	so that Pe and Eddie can fill them in for you.
@@ -41,7 +41,7 @@ SRCS = \
 	 Source/Windows/MainWindow.cpp  \
 	 Source/Windows/StockSymbolWindow.cpp  \
 
-RDEFS = Source/HaikuStocks.rdef
+RDEFS = Source/Stocks.rdef
 
 #	Specify the resource definition files to use. Full or relative paths can be
 #	used.
