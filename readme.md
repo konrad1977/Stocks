@@ -6,7 +6,7 @@
 - This applicaition uses extrading.com api which is free of use and extremely fast.
 - About 8700 stocks can be added to your personal portfolio.
 - Nasdaq, NYSE, Cboe, CHX and more. 
-- All requests are made with batch requests (only one for all stock updates).
+- All stock updates are made with one single batch request.
 - The API is very extensive Stocks only use a small part of whats possible.
 - Fully open source and under MIT license.
 
