@@ -8,6 +8,7 @@
 
 #include <SupportDefs.h>
 #include <Window.h>
+#include "QuoteListItem.h"
 
 class StockRequester;
 class StockSymbolWindow;
@@ -21,6 +22,8 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	
 private:
+			void SetQuoteSize(QuoteSize size);
+			void InitQuoteSize();
 			void SetupViews();	
 			void DownloadStockSymbols();
 			void HandleStockSearchSymbols(BMessage *message);
@@ -37,6 +40,11 @@ private:
 	BList 				*fSymbolList;
 	bool 				fShowStockSymbolListWhenDone;
 	bool				fStockSymbolsLoaded;
+	
+	BMenuItem 			*fRemoveSelected;
+	BMenuItem			*fMinimalItem;
+	BMenuItem			*fNormalItem;
+	BMenuItem			*fExtenededItem;
 };
 
 #endif

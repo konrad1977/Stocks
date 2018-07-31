@@ -270,6 +270,7 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 			break;
 			
 		default:
+			BWindow::MessageReceived(message);
 			break;	
 	}
 }

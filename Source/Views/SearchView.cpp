@@ -48,6 +48,7 @@ SearchView::MessageReceived(BMessage *message) {
 		}
 		break;
 		default:
+			BView::MessageReceived(message);
 			break;
 	}
 }

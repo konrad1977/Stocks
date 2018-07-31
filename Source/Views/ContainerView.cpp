@@ -136,6 +136,14 @@ ContainerView::AttachedToWindow() {
 	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
 }
 
+
+void 
+ContainerView::ShowAlert(const char *title, const char *message) {
+	BAlert *alert = new BAlert(title, message, "Ok");
+	alert->SetType(B_INFO_ALERT);
+	alert->Go();
+}
+
 void
 ContainerView::MessageReceived(BMessage *message) {
 	
@@ -190,6 +198,14 @@ ContainerView::MessageReceived(BMessage *message) {
 		
 		case kPortfolioButtonPressedMessage: {	
 			CurrentPortfolio()->HandlePortfolioUpdate(message);
+			break;
+		}
+		
+		case B_ABOUT_REQUESTED: {
+			ShowAlert("Stocks", 
+			"Written by Mikael Konradsson, 2018\n"
+			"Icon design by Humdinger\n\n"
+			"Thanks for downloading!\n");	
 			break;
 		}
 		

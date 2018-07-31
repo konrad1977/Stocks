@@ -10,7 +10,9 @@
 #include "StockSymbolWindow.h"
 #include "SymbolListItem.h"
 #include "StockRequester.h"
+#include "SettingsManager.h"
 
+#include <Alert.h>
 #include <Application.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
@@ -33,6 +35,10 @@ MainWindow::MainWindow(BRect rect)
 	,fStockSymbolWindow(NULL)
 	,fShowStockSymbolListWhenDone(false)
 	,fStockSymbolsLoaded(false)	
+	,fRemoveSelected(NULL)
+	,fMinimalItem(NULL)
+	,fNormalItem(NULL)
+	,fExtenededItem(NULL)
 { 	
 	SetupViews();
 	DownloadStockSymbols();
@@ -73,14 +79,14 @@ MainWindow::SetupViews() {
 			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
 		.End()
 		.AddMenu("Edit")
-			.AddItem("Remove selected item", kRemoveSelectedListItem, 'R')
-			.AddSeparator()
-			.AddItem("Use small size", kUseSmallQuoteSize, 'S')
-			.AddItem("Use normal size", kUseNormalQuoteSize, 'N')
-			.AddItem("Use large size", kUseLargeQuoteSize, 'L')
+			.AddItem(fRemoveSelected = new BMenuItem("Remove selected item", new BMessage(kRemoveSelectedListItem), 'R'))
 		.End()
 		.AddMenu("Settings")
-			.AddItem("Find symbols...", kShowSearchWindowMessage, 'F')
+			.AddItem("Find stocks...", kShowSearchWindowMessage, 'F')
+			.AddSeparator()
+			.AddItem(fMinimalItem = new BMenuItem("Minimal quote information", new BMessage(kUseSmallQuoteSize), 'S'))
+			.AddItem(fNormalItem = new BMenuItem("Normal quote information", new BMessage(kUseNormalQuoteSize), 'N'))
+			.AddItem(fExtenededItem = new BMenuItem("Extended quote information", new BMessage(kUseLargeQuoteSize), 'L'))
 		.End();
 	
 	fContainerView = new ContainerView();
@@ -89,6 +95,8 @@ MainWindow::SetupViews() {
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(fContainerView);
+		
+	InitQuoteSize();
 }
 
 void
@@ -107,15 +115,57 @@ MainWindow::SendToContainerView(BMessage *message) {
 }
 
 void
+MainWindow::SetQuoteSize(QuoteSize size) {
+	
+	fMinimalItem->SetMarked(false);
+	fNormalItem->SetMarked(false);
+	fExtenededItem->SetMarked(false);
+	
+	switch (size) {
+		case SMALL:
+			fMinimalItem->SetMarked(true);
+			break;
+		case NORMAL:
+			fNormalItem->SetMarked(true);
+			break;
+		case LARGE:
+			fExtenededItem->SetMarked(true);
+	}
+}
+
+void 
+MainWindow::InitQuoteSize() {
+	SettingsManager manager;
+	QuoteSize size = manager.CurrentQuoteSize();
+	SetQuoteSize(size);
+}
+
+void
 MainWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
 	
 		case kRemoveSelectedListItem:
 		case kPortfolioButtonPressedMessage:
-		case kUseSmallQuoteSize:
-		case kUseNormalQuoteSize:
+		case B_ABOUT_REQUESTED: {
+			SendToContainerView(message);
+			break;
+		}
+		
+		case kUseSmallQuoteSize: {
+			SendToContainerView(message);
+			SetQuoteSize(SMALL);
+			break;
+		}
+
+		case kUseNormalQuoteSize: {
+			SendToContainerView(message);
+			SetQuoteSize(NORMAL);
+			break;
+		}
+
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
+			SetQuoteSize(LARGE);
 			break;
 		}
 		
@@ -142,11 +192,9 @@ MainWindow::MessageReceived(BMessage *message) {
 			ShowStockWindow();
 			break;
 		}
-		
-		case B_ABOUT_REQUESTED:
-			break;
-	
+			
 		default:
+			BWindow::MessageReceived(message);
 			break;
 	}
 }
