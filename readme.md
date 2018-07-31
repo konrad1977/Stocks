@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/Stocks-app.iom_64.png" width="64" height="64">
+
 # Haiku Stock application
 ----------------
 
