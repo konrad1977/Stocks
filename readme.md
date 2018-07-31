@@ -12,6 +12,9 @@
 </p>
 
 ## Acknowledgements
+----------------
+Icon design by Humdinger
+
 Follow me on:
 [Twitter](https:://twitter.com/konrad1977)
 
