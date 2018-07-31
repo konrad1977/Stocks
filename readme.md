@@ -3,9 +3,12 @@
 # Stocks
 ----------------
 
-- This applicaition uses extrading.com api which is free of use and extremely fast
-- All requests are made with batch requests (only one for all stock updates)
-- The API is very extensive Stocks only use a small part of whats possible
+- This applicaition uses extrading.com api which is free of use and extremely fast.
+- About 8700 stocks can be added to your personal portfolio.
+- Nasdaq, NYSE, Cboe, CHX and more. 
+- All requests are made with batch requests (only one for all stock updates).
+- The API is very extensive Stocks only use a small part of whats possible.
+- Fully open source and under MIT license.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/normal.png" alt="Icon"/>
