@@ -20,7 +20,7 @@ UrlBuilder::UrlBuilder(const char *base)
 
 UrlBuilder::~UrlBuilder() {
 	while(fSymbolList->CountItems()) {
-		char *str = (char *)fSymbolList->RemoveItem(0);
+		char *str = (char *)fSymbolList->RemoveItem(int32(0));
 		free(str);
 	}
 	delete fSymbolList;
