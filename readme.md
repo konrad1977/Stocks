@@ -1,11 +1,11 @@
 <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/Stocks-app.iom_64.png" width="64" height="64">
 
-# Haiku Stock application
+# Stocks
 ----------------
 
 - This applicaition uses extrading.com api which is free of use and extremely fast
 - All requests are made with batch requests (only one for all stock updates)
-- The API is very extensive HaikuStocks only use a small part of whats possible
+- The API is very extensive Stocks only use a small part of whats possible
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/normal.png" alt="Icon"/>
@@ -22,4 +22,4 @@ Follow me on:
 
 ## MIT License
 ----------------
-HaikuStocks is available under the MIT license. See the LICENSE file for more info.
+Stocks is available under the MIT license. See the LICENSE file for more info.
