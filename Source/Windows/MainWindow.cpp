@@ -14,6 +14,8 @@
 
 #include <Alert.h>
 #include <Application.h>
+#include <Catalog.h>
+
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Locale.h>
@@ -27,8 +29,11 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "MainWindow"
+
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, "Portfolio", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fMenuBar(NULL) 
 	,fSymbolList(NULL)
 	,fStockRequester(NULL)

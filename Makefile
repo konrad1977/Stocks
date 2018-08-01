@@ -21,25 +21,14 @@ APP_MIME_SIG = x-vnd.konradsson.Stocks
 #	so that Pe and Eddie can fill them in for you.
 #
 SRCS = \
-	 Source/App.cpp  \
-	 Source/ListItems/QuoteListItem.cpp  \
-	 Source/ListItems/SymbolListItem.cpp  \
-	 Source/Models/Company.cpp  \
-	 Source/Models/Quote.cpp  \
-	 Source/Models/StockSymbol.cpp  \
-	 Source/Requesters/NetRequester.cpp  \
-	 Source/Requesters/StockRequester.cpp  \
-	 Source/Utils/SettingsManager.cpp  \
-	 Source/Utils/UrlBuilder.cpp  \
-	 Source/Utils/Portfolio.cpp  \
-	 Source/Utils/ListItemDrawer.cpp  \
-	 Source/Utils/QuoteFormatter.cpp  \
-	 Source/Views/ContainerView.cpp  \
-	 Source/Views/QuoteView.cpp  \
-	 Source/Views/SearchView.cpp  \
-	 Source/Views/StockListExtendedView.cpp  \
-	 Source/Windows/MainWindow.cpp  \
-	 Source/Windows/StockSymbolWindow.cpp  \
+	$(wildcard Source/*.cpp) \
+	$(wildcard Source/ListItems/*.cpp) \
+	$(wildcard Source/Models/*.cpp) \
+	$(wildcard Source/Requesters/*.cpp) \
+	$(wildcard Source/Utils/*.cpp) \
+	$(wildcard Source/Views/*.cpp) \
+	$(wildcard Source/Windows/*.cpp) \
+
 
 RDEFS = Source/Stocks.rdef
 
@@ -91,7 +80,7 @@ OPTIMIZE :=
 # 	will recreate only the "locales/en.catkeys" file. Use it as a template
 # 	for creating catkeys for other languages. All localization files must be
 # 	placed in the "locales" subdirectory.
-# LOCALES = de en es it pl ro sv uk
+LOCALES = en sv
 
 #	Specify all the preprocessor symbols to be defined. The symbols will not
 #	have their values set automatically; you must supply the value (if any) to
