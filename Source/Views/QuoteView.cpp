@@ -19,6 +19,10 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <Box.h>
+#include <Catalog.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "QuoteView"
 
 QuoteView::QuoteView()
 	:BBox("QuoteView")
@@ -103,7 +107,6 @@ QuoteView::SetQuote(Quote *quote, bool hasQuote) {
 	fHasQuote = hasQuote;
 	
 	SetupButton(hasQuote);
-	printf("Has quote %s\n ", hasQuote ? "YES" : "NO");
 	
 	delete fQuote;
 	fQuote = quote;
@@ -117,7 +120,7 @@ QuoteView::SetQuote(Quote *quote, bool hasQuote) {
 
 void
 QuoteView::SetupButton(bool hasQuote) {
-	fPortfolioButton->SetLabel(hasQuote ? "Remove from portfolio" : "Add to portfolio");
+	fPortfolioButton->SetLabel(hasQuote ? B_TRANSLATE("Remove from portfolio") : B_TRANSLATE("Add to portfolio"));
 }
 
 BBox *
@@ -153,7 +156,7 @@ QuoteView::InitLayout() {
 	SetLayout(groupLayout);
 
 	if (fPortfolioButton == NULL) {
-		fPortfolioButton = new BButton("Portfolio", "Add to portfolio", new BMessage(kPortfolioButtonPressedMessage));
+		fPortfolioButton = new BButton("Portfolio", B_TRANSLATE("Add to portfolio"), new BMessage(kPortfolioButtonPressedMessage));
 	}	
 	fPortfolioButton->SetTarget(this);
 	
@@ -166,10 +169,10 @@ QuoteView::InitLayout() {
 		.SetInsets(5,5,5,5)
 		.Add(fChangePercent)
 		.Add(MakeSeparator())
-		.Add(MakeTitleGroup("Latest price", fTitle))
+		.Add(MakeTitleGroup(B_TRANSLATE("Latest price"), fTitle))
 		.Add(MakeSeparator())
-		.Add(MakeTitleGroup("52 week high", f52High))
-		.Add(MakeTitleGroup("52 week low", f52Low))
+		.Add(MakeTitleGroup(B_TRANSLATE("52 week high"), f52High))
+		.Add(MakeTitleGroup(B_TRANSLATE("52 week low"), f52Low))
 		.AddGlue()
 		.Add(buttonGroup)
 		.TopView();

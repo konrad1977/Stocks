@@ -15,8 +15,12 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#include <Catalog.h>
 #include <string.h>
 #include <String.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "SearchView"
 
 SearchView::SearchView(BRect rect)
 	:BView(rect, "SearchView", B_FOLLOW_TOP | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
@@ -58,7 +62,7 @@ void SearchView::SetNumberOfHits(int32 hits) {
 		return;
 	
 	BString str;
-	str << "Stock symbols found: " << hits;	
+	str << B_TRANSLATE("Items found: ") << hits;	
 	fHitsView->SetText(str.String());
 }
 
@@ -71,7 +75,7 @@ SearchView::SetTarget(BHandler *handler) {
 BTextControl *
 SearchView::TextControl() {
 	if (fSearchTextControl == NULL) {
-		fSearchTextControl = new BTextControl("Filter", "Filter", "Name or Symbol", NULL);
+		fSearchTextControl = new BTextControl("Filter", B_TRANSLATE("Filter"), B_TRANSLATE("Name or symbol"), NULL);
 		fSearchTextControl->SetModificationMessage(new BMessage(kSearchTextChangedMessage));
 		fSearchTextControl->SetTarget(this);
 	}

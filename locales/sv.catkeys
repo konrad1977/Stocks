@@ -1,2 +1,23 @@
-1	Swedish	x-vnd.konradsson.Stocks	1805414430
+1	Swedish	x-vnd.konradsson.Stocks	2710851901
+52 week high	QuoteView		52 veckors högsta
+Find stocks...	StockSymbolWindow		Sök aktier...
+Network error	StockSymbolWindow		Nätverksfel
+Extended mode	MainWindow		Extendat läge
+Remove from portfolio	QuoteView		Ta bort från portfölj
+Latest price	QuoteView		Senaste pris
+File	MainWindow		Fil
+Name or symbol	SearchView		Namn eller förkortning
+Quit	MainWindow		Avsluta
+Remove selected item	MainWindow		Ta bort markerad aktie
+Find stocks...	MainWindow		Sök aktier...
+Edit	MainWindow		Redigera
 Portfolio	MainWindow		Portfölj
+Items found: 	SearchView		Antal träffar: 
+52 week low	QuoteView		52 veckors lägsta
+Mini mode	MainWindow		Mini läge
+Normal mode	MainWindow		Normal läge
+Filter	SearchView		Filtrera
+Failed to parse data	StockSymbolWindow		Kunde inte tolka datat
+About...	MainWindow		Om...
+Add to portfolio	QuoteView		Lägg till i portfölj
+Settings	MainWindow		Inställningar

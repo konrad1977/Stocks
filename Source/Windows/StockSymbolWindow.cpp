@@ -16,14 +16,17 @@
 #include "SettingsManager.h"
 
 #include <Alert.h>
+#include <Catalog.h>
 #include <ListView.h>
 #include <ScrollView.h>
 #include <stdio.h>
 #include <List.h>
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "StockSymbolWindow"
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(200,200,900,720), "Find stock symbols", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
+	:BWindow(BRect(200,200,900,720), B_TRANSLATE("Find stocks..."), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
 	,fMessenger(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
@@ -67,7 +70,6 @@ StockSymbolWindow::SetStockSymbols(BList *symbols) {
 
 bool
 StockSymbolWindow::QuitRequested() {
-	printf("QuitRequested\n");
 	if (fMessenger == NULL) {
 		return true;
 	}
@@ -242,9 +244,9 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 		case kUpdateFailed: {
 			BString description;
 			if (message->FindString("message", &description) == B_OK) {
-				ShowAlert("Failed to fetch data", description.String());
+				ShowAlert(B_TRANSLATE("Network error"), description.String());
 			} else {
-				ShowAlert("Failed to fetch data", "Couldn't parse JSON!");
+				ShowAlert(B_TRANSLATE("Network error"), B_TRANSLATE("Failed to parse data"));
 			}
 			break;
 		}

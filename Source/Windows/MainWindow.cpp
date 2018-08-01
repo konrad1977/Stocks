@@ -78,20 +78,20 @@ MainWindow::SetupViews() {
 	SetLayout(layout);
 	
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
-		.AddMenu("Main")
-			.AddItem("About...", B_ABOUT_REQUESTED, 'A')
+		.AddMenu(B_TRANSLATE("File"))
+			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
 			.AddSeparator()
-			.AddItem("Quit", B_QUIT_REQUESTED, 'Q')
+			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
 		.End()
-		.AddMenu("Edit")
-			.AddItem(fRemoveSelected = new BMenuItem("Remove selected item", new BMessage(kRemoveSelectedListItem), 'R'))
+		.AddMenu(B_TRANSLATE("Edit"))
+			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
 		.End()
-		.AddMenu("Settings")
-			.AddItem("Find stocks...", kShowSearchWindowMessage, 'F')
+		.AddMenu(B_TRANSLATE("Settings"))
+			.AddItem(B_TRANSLATE("Find stocks..."), kShowSearchWindowMessage, 'F')
 			.AddSeparator()
-			.AddItem(fMinimalItem = new BMenuItem("Minimal quote information", new BMessage(kUseSmallQuoteSize), 'S'))
-			.AddItem(fNormalItem = new BMenuItem("Normal quote information", new BMessage(kUseNormalQuoteSize), 'N'))
-			.AddItem(fExtenededItem = new BMenuItem("Extended quote information", new BMessage(kUseLargeQuoteSize), 'L'))
+			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), 'S'))
+			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), 'N'))
+			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), 'L'))
 		.End();
 	
 	fContainerView = new ContainerView();
