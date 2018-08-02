@@ -11,6 +11,7 @@
 #include "QuoteListItem.h"
 
 class StockRequester;
+class SettingsWindow;
 class StockSymbolWindow;
 class BMenuBar;
 class ContainerView;
@@ -31,12 +32,15 @@ private:
 			void SendToContainerView(BMessage *message);
 				
 	StockSymbolWindow 	*SymbolWindow();
+	SettingsWindow		*CurrentSettingWindow();
 	
 	BMenuBar 			*fMenuBar;		
 	ContainerView 		*fContainerView;
 	
 	StockRequester 		*fStockRequester;
 	StockSymbolWindow 	*fStockSymbolWindow;
+	SettingsWindow		*fSettingsWindow;
+	
 	BList 				*fSymbolList;
 	bool 				fShowStockSymbolListWhenDone;
 	bool				fStockSymbolsLoaded;

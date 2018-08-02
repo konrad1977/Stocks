@@ -11,6 +11,7 @@
 #include "SymbolListItem.h"
 #include "StockRequester.h"
 #include "SettingsManager.h"
+#include "SettingsWindow.h"
 
 #include <Alert.h>
 #include <Application.h>
@@ -33,7 +34,7 @@
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL) 
 	,fSymbolList(NULL)
 	,fStockRequester(NULL)
@@ -44,6 +45,7 @@ MainWindow::MainWindow(BRect rect)
 	,fMinimalItem(NULL)
 	,fNormalItem(NULL)
 	,fExtenededItem(NULL)
+	,fSettingsWindow(NULL)
 { 	
 	SetupViews();
 	DownloadStockSymbols();
@@ -89,9 +91,11 @@ MainWindow::SetupViews() {
 		.AddMenu(B_TRANSLATE("Settings"))
 			.AddItem(B_TRANSLATE("Find stocks..."), kShowSearchWindowMessage, 'F')
 			.AddSeparator()
-			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), 'S'))
-			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), 'N'))
-			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), 'L'))
+			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), '1'))
+			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), '2'))
+			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), '3'))
+			.AddSeparator()
+			.AddItem(B_TRANSLATE("Settings"), kShowSettingsWindowMessage, 'S')
 		.End();
 	
 	fContainerView = new ContainerView();
@@ -112,11 +116,19 @@ MainWindow::ShowStockWindow() {
 	}
 }
 
+SettingsWindow*
+MainWindow::CurrentSettingWindow() {
+	if (fSettingsWindow == NULL) {
+		fSettingsWindow = new SettingsWindow();
+		fSettingsWindow->SetTarget(this);
+	}
+	return fSettingsWindow;
+}
+
 void
 MainWindow::SendToContainerView(BMessage *message) {
-	BMessenger *messenger = new BMessenger(fContainerView);
-	messenger->SendMessage(message);
-	delete messenger;
+	BMessenger messenger(fContainerView);
+	messenger.SendMessage(message);
 }
 
 void
@@ -171,6 +183,16 @@ MainWindow::MessageReceived(BMessage *message) {
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
 			SetQuoteSize(LARGE);
+			break;
+		}
+		
+		case kQuitSettingsWindowMessage: {
+			fSettingsWindow = NULL;
+			break;
+		}
+
+		case kShowSettingsWindowMessage: {
+			CurrentSettingWindow()->Show();
 			break;
 		}
 		

@@ -33,6 +33,9 @@ const uint32 kPortfolioAddedSymbolMessage	= 'PAMe';
 //GUID
 const uint32 kHideSearchWindowMessaage 		= 'SWCm';
 const uint32 kShowSearchWindowMessage 		= 'SSWm';
+const uint32 kShowSettingsWindowMessage		= 'SsWm';
+const uint32 kQuitSettingsWindowMessage		= 'QSWm';
+
 const uint32 kSearchTextChangedMessage 		= 'STCm';
 const uint32 kSymbolListSelectionChanged 	= 'SLSc';
 const uint32 kRemoveSelectedListItem		= 'RSLm';
