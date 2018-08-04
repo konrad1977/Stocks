@@ -116,7 +116,6 @@ SettingsManager::SetTransparency(uint8 transparency) {
 		message.AddUInt8("Transparency", transparency);
 	}
 	SaveSettings(message);
-	message.PrintToStream();	
 }
 
 void 
@@ -129,7 +128,6 @@ SettingsManager::SetQuoteSize(QuoteSize size) {
 		message.AddInt32("size", int32(size));
 	}
 	SaveSettings(message);
-	message.PrintToStream();	
 }
 
 QuoteSize 

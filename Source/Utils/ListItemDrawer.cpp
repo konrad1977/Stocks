@@ -30,8 +30,8 @@ ListItemDrawer::BackgroundColor(bool isSelected) {
 	if (fIsReplicant && isSelected == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		SettingsManager manager;
-		color.alpha = manager.Transparency();
+		//SettingsManager manager;
+		color.alpha =  140; //manager.Transparency();
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);
