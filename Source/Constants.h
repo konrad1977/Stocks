@@ -44,4 +44,6 @@ const uint32 kUseNormalQuoteSize			= 'UNQs';
 const uint32 kUseLargeQuoteSize				= 'ULQs';
 const uint32 kEmptyListMessage				= 'ELMs';
 
+const uint32 kTransparencyChangeMessage		= 'TCHm';
+
 #endif // _H

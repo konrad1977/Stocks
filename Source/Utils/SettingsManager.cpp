@@ -95,7 +95,32 @@ SettingsManager::HasSymbol(const char *symbol) {
 	return IndexOf(symbol) != -1;
 }
 
-void SettingsManager::SetQuoteSize(QuoteSize size) {
+uint8
+SettingsManager::Transparency() {	
+	uint8 value = 127;
+	
+	BMessage message;
+	LoadSettings(message);
+	if (message.FindUInt8("Transparency", &value) != B_OK) {
+		return 127;
+	}
+	return value;
+}
+
+void
+SettingsManager::SetTransparency(uint8 transparency) {
+	BMessage message;
+	LoadSettings(message);
+	
+	if (message.ReplaceUInt8("Transparency", transparency) != B_OK) {
+		message.AddUInt8("Transparency", transparency);
+	}
+	SaveSettings(message);
+	message.PrintToStream();	
+}
+
+void 
+SettingsManager::SetQuoteSize(QuoteSize size) {
 	BMessage message;
 	LoadSettings(message);
 	

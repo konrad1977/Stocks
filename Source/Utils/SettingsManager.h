@@ -15,7 +15,10 @@ class SettingsManager {
 public:
 	SettingsManager();
 	~SettingsManager();
-
+	
+	void SetTransparency(uint8 transparency);
+	uint8 Transparency();
+	
 	void SetQuoteSize(QuoteSize size);
 	QuoteSize CurrentQuoteSize();
 	

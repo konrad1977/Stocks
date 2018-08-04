@@ -9,6 +9,7 @@
 #include <SupportDefs.h>
 #include <Window.h>
 
+class BSlider;
 class BMessenger;
 class BHandler;
 class SettingsWindow : public BWindow {
@@ -20,7 +21,11 @@ public:
 	virtual bool QuitRequested();
 			void SetTarget(BHandler *handler);
 private:
+			void InitLayout();
+			void InitSavedValues();
 	BMessenger *fMessenger;
+	
+	BSlider *fTransparencySlider;
 };
 
 

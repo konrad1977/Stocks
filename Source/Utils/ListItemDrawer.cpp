@@ -6,6 +6,7 @@
 
 #include "ListItemDrawer.h"
 #include "Constants.h"
+#include "SettingsManager.h"
 #include <Screen.h>
 
 ListItemDrawer::ListItemDrawer(BView *parent, bool isReplicant)
@@ -29,7 +30,8 @@ ListItemDrawer::BackgroundColor(bool isSelected) {
 	if (fIsReplicant && isSelected == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		color.alpha = 140;
+		SettingsManager manager;
+		color.alpha = manager.Transparency();
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);

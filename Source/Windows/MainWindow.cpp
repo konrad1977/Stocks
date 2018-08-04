@@ -192,7 +192,7 @@ MainWindow::MessageReceived(BMessage *message) {
 		}
 
 		case kShowSettingsWindowMessage: {
-			CurrentSettingWindow()->Show();
+			CurrentSettingWindow()->Show();			
 			break;
 		}
 		
