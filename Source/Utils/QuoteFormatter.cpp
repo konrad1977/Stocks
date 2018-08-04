@@ -21,11 +21,7 @@ QuoteFormatter::~QuoteFormatter() {
 
 rgb_color 
 QuoteFormatter::ChangeColor() {
-	if (fQuote->changePercent < 0)  {
-		return stockMinusColor;
-	} else {
-		return stockPlusColor;
-	}
+	return fQuote->changePercent < 0 ? stockMinusColor : stockPlusColor;
 }
 
 const char *

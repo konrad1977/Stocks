@@ -19,7 +19,7 @@
 
 SettingsManager::SettingsManager()
 	:fFileName(NULL) {
-	fFileName = strdup("HaikuStocks");
+	fFileName = strdup("Stocks");
 }
 
 SettingsManager::~SettingsManager() {
