@@ -2,13 +2,15 @@
  * Copyright 2015 Your Name <your@email.address>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
+ 
 #ifndef CONTAINERVIEW_H
 #define CONTAINERVIEW_H
 
 #include <SupportDefs.h>
-#include <View.h>
+#include <interface/View.h>
 #include "QuoteListItem.h"
 
+class SettingsManager;
 class StockRequester;
 class Portfolio;
 class BDragger;
@@ -45,6 +47,7 @@ private:
 	
 	StockRequester	*Requester();	
 	Portfolio		*CurrentPortfolio();
+	SettingsManager *CurrentSettingsManager();
 	
 	BDragger 		*fDragger;	
 	BListView 		*fQuoteListView;
@@ -54,6 +57,7 @@ private:
 	BMessageRunner	*fAutoUpdateRunner;
 	StockRequester  *fStockRequester;
 	Portfolio 		*fPortfolio;
+	SettingsManager *fSettingsManager;
 	
 	thread_id		fDownloadThread;
 	bool 			fIsReplicant;

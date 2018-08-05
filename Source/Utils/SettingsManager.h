@@ -8,15 +8,18 @@
 
 #include <SupportDefs.h>
 #include <Message.h>
+#include <Path.h>
 #include "QuoteListItem.h"
 
 class BList;
 class BLocker;
+class BMessenger;
 class SettingsManager {
 public:
 	SettingsManager();
 	~SettingsManager();
 	
+	void SetTarget(BHandler *handler);
 	void SetTransparency(uint8 transparency);
 	uint8 Transparency();
 	
@@ -27,12 +30,16 @@ public:
 	void RemoveSymbol(const char *symbol);
 	void AddSymbol(const char *symbol);
 	
+	void StartMonitoring(BHandler *handler);
+	
 	void SaveSymbols(BList *list);
 	BList *LoadSymbols();
 	
 private:
-	int32 	IndexOf(const char *symbol);
 
+	const char* SavePath();
+	
+	int32 	IndexOf(const char *symbol);
 	void 	SaveWithLock(BMessage *message);
 	
 	status_t LoadSettings(BMessage &message);
@@ -41,7 +48,7 @@ private:
 	char *fFileName;
 	BList *fCurrentLoadedSymbols;
 	BLocker *fLocker;
+	
 };
-
 
 #endif // _H

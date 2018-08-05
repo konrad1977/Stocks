@@ -6,22 +6,27 @@
 #include "SettingsManager.h"
 #include "Constants.h"
 
-#include <Locker.h>
-#include <String.h>
-#include <Roster.h>
-#include <Message.h>
-#include <Entry.h>
-#include <Path.h>
-#include <FindDirectory.h>
-#include <File.h>
+#include <support/Locker.h>
+#include <support/String.h>
+#include <support/List.h>
+
+#include <app/Roster.h>
+#include <app/Message.h>
+
+#include <storage/Entry.h>
+#include <storage/Path.h>
+#include <storage/FindDirectory.h>
+#include <storage/File.h>
+#include <storage/Node.h>
+#include <storage/NodeMonitor.h>
+
 #include <string.h>
-#include <List.h>
 #include <stdio.h>
 
 SettingsManager::SettingsManager()
 	:fFileName(NULL)
 	,fCurrentLoadedSymbols(NULL)
-	,fLocker(NULL)	{
+	,fLocker(NULL) {
 	
 	fFileName = strdup("Stocks");
 	fLocker = new BLocker("SettingsLocker");
@@ -30,6 +35,19 @@ SettingsManager::SettingsManager()
 SettingsManager::~SettingsManager() {
 	free(fFileName);
 	delete fLocker;
+}
+
+void 
+SettingsManager::StartMonitoring(BHandler *handler) {
+	BNode node;
+	node.SetTo( SavePath() );
+	
+	node_ref ref;
+	node.GetNodeRef( &ref );
+	
+	if (node.InitCheck() == B_OK) {
+		watch_node(&ref, B_WATCH_ALL, handler );
+	}
 }
 
 void 
@@ -92,7 +110,7 @@ SettingsManager::SaveSymbols(BList *list) {
 		return;
 	}
 	
-	printf("%s::%s=%d\n", "SettingsManager", __FUNCTION__, list->CountItems());
+	//printf("%s::%s=%d\n", "SettingsManager", __FUNCTION__, list->CountItems());
 
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		const char *symbol = static_cast<const char *>(list->ItemAtFast(index));
@@ -113,9 +131,10 @@ SettingsManager::HasSymbol(const char *symbol) {
 
 uint8
 SettingsManager::Transparency() {	
-	uint8 value = 127;
 	
+	uint8 value = 127;	
 	BMessage message;
+	
 	LoadSettings(message);
 	if (message.FindUInt8("Transparency", &value) != B_OK) {
 		return 127;
@@ -137,7 +156,7 @@ SettingsManager::SetTransparency(uint8 transparency) {
 void 
 SettingsManager::SetQuoteSize(QuoteSize size) {
 
-	printf("%s::%s(%d)\n", "SettingsManager", __FUNCTION__, (int)size);
+	//printf("%s::%s(%d)\n", "SettingsManager", __FUNCTION__, (int)size);
 	
 	BMessage message;
 	LoadSettings(message);
@@ -147,7 +166,6 @@ SettingsManager::SetQuoteSize(QuoteSize size) {
 		message.AddUInt8("size", uint8(size));
 	}
 	SaveWithLock(&message);
-	message.PrintToStream();
 }
 
 QuoteSize 
@@ -195,18 +213,24 @@ SettingsManager::SaveWithLock(BMessage *message) {
 	fLocker->Unlock();
 }
 
+const char *
+SettingsManager::SavePath() {
+	
+	BPath path;
+	
+	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK) {
+		return NULL;
+	}
+	
+	path.Append(fFileName);
+	return path.Path();
+}
+
 status_t 
 SettingsManager::SaveSettings(BMessage message) {
 	
-	BPath path;
 	BFile file;
-	
-	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK) {
-		return B_ERROR;
-	}
-	path.Append(fFileName);
-
-	file.SetTo(path.Path(), B_WRITE_ONLY | B_ERASE_FILE | B_CREATE_FILE);
+	file.SetTo(SavePath(), B_WRITE_ONLY | B_ERASE_FILE | B_CREATE_FILE);
 	
 	if (file.InitCheck() != B_OK) {
 		return B_ERROR;
@@ -221,15 +245,9 @@ SettingsManager::SaveSettings(BMessage message) {
 status_t
 SettingsManager::LoadSettings(BMessage &message) {
 	
-	BPath path;
 	BFile file;
 	
-	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK) {
-		return B_ERROR;
-	}
-	path.Append(fFileName);
-	
-	file.SetTo(path.Path(), B_READ_ONLY);
+	file.SetTo(SavePath(), B_READ_ONLY);
 	if (file.InitCheck() != B_OK) {
 		return B_ERROR;
 	}

@@ -36,7 +36,10 @@ ContainerView::ContainerView()
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
 	,fPortfolio(NULL)
+	,fSettingsManager(NULL)
 {	
+	fSettingsManager = new SettingsManager();
+	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	SetupViews();
 	LoadSavedData();
@@ -52,7 +55,10 @@ ContainerView::ContainerView(BMessage *archive)
 	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
 	,fPortfolio(NULL)
+	,fSettingsManager(NULL)
 {	
+	fSettingsManager = new SettingsManager();
+
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
 	LoadSavedData();
@@ -62,6 +68,7 @@ ContainerView::~ContainerView() {
 	delete fStockRequester;
 	delete fAutoUpdateRunner;
 	delete fMessenger;
+	delete fSettingsManager;
 }
 
 status_t
@@ -139,6 +146,8 @@ ContainerView::AttachedToWindow() {
 	RequestData();
 	SendEmptyListMessage();
 	InitAutoUpdate();
+
+	fSettingsManager->StartMonitoring(this);	
 	
 	BView::AttachedToWindow();
 }
@@ -154,6 +163,9 @@ void
 ContainerView::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
+		case B_NODE_MONITOR:
+			RequestData();
+		break;
 		case kPortfolioRemovedSymbolMessage:  {
 			BString symbol;
 			if (message->FindString("symbol", &symbol) == B_OK) {
@@ -228,11 +240,7 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
 		return;
 	}
 
-	SettingsManager manager;
-	manager.SetQuoteSize(size);
-	
-	QuoteSize testSize = manager.CurrentQuoteSize();
-	printf("%d %d\n", size, testSize);
+	fSettingsManager->SetQuoteSize(size);
 	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
@@ -303,29 +311,6 @@ ContainerView::RemoveSelectedListItem() {
 	}
 }
 
-/*void ContainerView::UpdateItemWithQuote(Quote *quote) {
-
-	int32 itemCount = fQuoteListView->CountItems();
-	bool foundItem = false;
-	for(int32 i = 0; i<itemCount; i++) {
-		QuoteListItem *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
-		if (listItem && listItem->CurrentQuoteItem()->isEqual(*quote)) {
-			listItem->SetQuote(quote);
-			fQuoteListView->InvalidateItem(i);
-			foundItem = true;
-			return;
-		}
-	}
-	
-	SettingsManager *manager = new SettingsManager();
-	QuoteSize size = manager->CurrentQuoteSize();
-	delete manager;
-	
-	if (foundItem == false) {
-		fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
-	}
-}
-*/
 void
 ContainerView::HandleQuotes(BMessage message) {
 		
@@ -333,9 +318,7 @@ ContainerView::HandleQuotes(BMessage message) {
 		return;
 	}
 
-	SettingsManager manager;
-	QuoteSize size = manager.CurrentQuoteSize();
-	printf("ContainerView::%s QuoteSize(%d)\n", __FUNCTION__, size);
+	QuoteSize size = fSettingsManager->CurrentQuoteSize();
 
 	fQuoteListView->MakeEmpty();	
 	
@@ -359,7 +342,6 @@ ContainerView::HandleQuotes(BMessage message) {
 			
 			Quote *quote = new Quote(quoteMsg);
 			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
-			//UpdateItemWithQuote(quote);
 		}
 	}
 }
@@ -368,7 +350,8 @@ void
 ContainerView::SetupViews() {
 	
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
-	fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
+	if (fIsReplicant)
+		fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
 
 	BSize draggerSize = BSize(kDraggerSize,kDraggerSize);
 	

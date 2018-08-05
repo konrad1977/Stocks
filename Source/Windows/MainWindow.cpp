@@ -133,7 +133,7 @@ MainWindow::SendToContainerView(BMessage *message) {
 }
 
 void
-MainWindow::SetQuoteSize(QuoteSize size) {
+MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size) {
 	
 	fMinimalItem->SetMarked(false);
 	fNormalItem->SetMarked(false);
@@ -153,9 +153,7 @@ MainWindow::SetQuoteSize(QuoteSize size) {
 
 void 
 MainWindow::InitQuoteSize() {
-	SettingsManager manager;
-	QuoteSize size = manager.CurrentQuoteSize();
-	SetQuoteSize(size);
+	SetSelectedMenuFromQuoteSize(SettingsManager().CurrentQuoteSize());
 }
 
 void
@@ -171,19 +169,19 @@ MainWindow::MessageReceived(BMessage *message) {
 		
 		case kUseSmallQuoteSize: {
 			SendToContainerView(message);
-			SetQuoteSize(SMALL);
+			SetSelectedMenuFromQuoteSize(SMALL);
 			break;
 		}
 
 		case kUseNormalQuoteSize: {
 			SendToContainerView(message);
-			SetQuoteSize(NORMAL);
+			SetSelectedMenuFromQuoteSize(NORMAL);
 			break;
 		}
 
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
-			SetQuoteSize(LARGE);
+			SetSelectedMenuFromQuoteSize(LARGE);
 			break;
 		}
 		
@@ -204,7 +202,6 @@ MainWindow::MessageReceived(BMessage *message) {
 		
 		case kHideSearchWindowMessaage: {
 			fStockSymbolWindow = NULL;
-			printf("kHideSearchWindowMessaage\n");
 			break;
 		}
 		

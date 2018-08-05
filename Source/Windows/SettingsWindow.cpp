@@ -76,8 +76,8 @@ SettingsWindow::InitLayout() {
 
 void
 SettingsWindow::MessageReceived(BMessage *message) {
-	message->PrintToStream();
 	switch (message->what) {
+
 		case kTransparencyChangeMessage: {
 			uint8 newValue = static_cast<uint8>(fTransparencySlider->Value());
 			SettingsManager manager;

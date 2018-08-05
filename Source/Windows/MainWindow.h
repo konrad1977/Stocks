@@ -23,7 +23,7 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	
 private:
-			void SetQuoteSize(QuoteSize size);
+			void SetSelectedMenuFromQuoteSize(QuoteSize size);
 			void InitQuoteSize();
 			void SetupViews();	
 			void DownloadStockSymbols();
