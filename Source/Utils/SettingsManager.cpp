@@ -71,7 +71,7 @@ SettingsManager::IndexOf(const char *symbol) {
 	}
 	
 	for(int32 i = 0; i<list->CountItems(); i++) {
-		char *sym = (char *)list->ItemAtFast(i);
+		char *sym = static_cast<char *>(list->ItemAtFast(i));
 		if (strcasecmp(sym, symbol) == 0) {
 			delete list;
 			return i;
@@ -83,27 +83,19 @@ SettingsManager::IndexOf(const char *symbol) {
 
 void 
 SettingsManager::SaveSymbols(BList *list) {
+
+	BMessage message;
+	LoadSettings(message);
+	message.RemoveName("Symbols");
 	
 	if (list == NULL) {
 		return;
 	}
-
+	
 	printf("%s::%s=%d\n", "SettingsManager", __FUNCTION__, list->CountItems());
-	
-	BMessage message;
-	
-	if (list->IsEmpty()) {
-		printf("IsEmpty\n");
-		LoadSettings(message);
-		message.RemoveName("Symbols");
-		SaveWithLock(&message);
-		return;
-	}	
 
-	printf("List is not empty\n");
-		
 	for (int32 index = 0; index<list->CountItems(); index++) {
-		const char *symbol = (const char *)list->ItemAtFast(index);
+		const char *symbol = static_cast<const char *>(list->ItemAtFast(index));
 		if (symbol == NULL) {
 			continue;
 		}
@@ -144,22 +136,33 @@ SettingsManager::SetTransparency(uint8 transparency) {
 
 void 
 SettingsManager::SetQuoteSize(QuoteSize size) {
+
+	printf("%s::%s(%d)\n", "SettingsManager", __FUNCTION__, (int)size);
+	
 	BMessage message;
 	LoadSettings(message);
-	
-	int32 value = int32(size);
-	if (message.ReplaceInt32("size", value) != B_OK) {
-		message.AddInt32("size", int32(size));
+		
+	uint8 value = uint8(size);
+	if (message.ReplaceUInt8("size", value) != B_OK) {
+		message.AddUInt8("size", uint8(size));
 	}
 	SaveWithLock(&message);
+	message.PrintToStream();
 }
 
 QuoteSize 
 SettingsManager::CurrentQuoteSize() {
+
+	printf("%s::%s\n", "SettingsManager", __FUNCTION__);
+
 	BMessage message;
 	LoadSettings(message);
-	int32 size = message.FindInt32("size");
-	return QuoteSize(size);
+	
+	uint8 size = 1;
+	if (message.FindUInt8("size", &size) == B_OK) {
+		return QuoteSize(size);
+	}
+	return NORMAL;
 }
 	
 BList *

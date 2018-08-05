@@ -20,7 +20,7 @@ UrlBuilder::UrlBuilder(const char *base)
 
 UrlBuilder::~UrlBuilder() {
 	while(fSymbolList->CountItems()) {
-		char *str = (char *)fSymbolList->RemoveItem(int32(0));
+		char *str = static_cast<char *>(fSymbolList->RemoveItem(int32(0)));
 		free(str);
 	}
 	delete fSymbolList;
@@ -33,7 +33,7 @@ UrlBuilder::IndexOfSymbol(const char *symbol) {
 		return -1;
 	
 	for (int32 i = 0; i<fSymbolList->CountItems(); i++) {
-		char *sym = (char *)fSymbolList->ItemAtFast(i);
+		char *sym = static_cast<char *>(fSymbolList->ItemAtFast(i));
 		if (strcasecmp(sym, symbol) == 0) {
 			return i;
 		}
@@ -50,7 +50,7 @@ UrlBuilder::CreateBatchPath() {
 	BString format;
 	const int32 count = fSymbolList->CountItems();
 	for (int32 i = 0; i<count; i++) {
-		char *symbol = (char *)fSymbolList->ItemAt(i);
+		char *symbol = static_cast<char *>(fSymbolList->ItemAt(i));
 		if (i == count-1) {
 			format << symbol;
 		} else {
@@ -91,7 +91,7 @@ UrlBuilder::AddSymbol(const char *symbol) {
 		free(copyStr);
 		return;
 	}
-	fSymbolList->AddItem((void*)copyStr);
+	fSymbolList->AddItem(static_cast<void*>(copyStr));
 }
 
 void

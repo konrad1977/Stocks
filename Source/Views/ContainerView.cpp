@@ -102,7 +102,7 @@ void
 ContainerView::LoadSavedData() {
 	BList *list = CurrentPortfolio()->CurrentSymbols();	
 	for (int32 index = 0; index<list->CountItems(); index++) {
-		char *symbol = (char *)list->ItemAt(index);
+		char *symbol = static_cast<char *>(list->ItemAt(index));
 		Requester()->Add(symbol);
 	}	
 }
@@ -231,6 +231,9 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
 	SettingsManager manager;
 	manager.SetQuoteSize(size);
 	
+	QuoteSize testSize = manager.CurrentQuoteSize();
+	printf("%d %d\n", size, testSize);
+	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
 		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
@@ -247,7 +250,7 @@ ContainerView::DownloadData() {
 	Requester()->ResetUrlList();	
 	
 	for (int32 index = 0; index<list->CountItems(); index++) {
-		char *symbol = (char *)list->ItemAt(index);
+		char *symbol = static_cast<char *>(list->ItemAt(index));
 		Requester()->Add(symbol);
 	}
 	Requester()->RequestBatchData();
@@ -300,7 +303,7 @@ ContainerView::RemoveSelectedListItem() {
 	}
 }
 
-void ContainerView::UpdateItemWithQuote(Quote *quote) {
+/*void ContainerView::UpdateItemWithQuote(Quote *quote) {
 
 	int32 itemCount = fQuoteListView->CountItems();
 	bool foundItem = false;
@@ -322,7 +325,7 @@ void ContainerView::UpdateItemWithQuote(Quote *quote) {
 		fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
 	}
 }
-
+*/
 void
 ContainerView::HandleQuotes(BMessage message) {
 		
@@ -332,7 +335,7 @@ ContainerView::HandleQuotes(BMessage message) {
 
 	SettingsManager manager;
 	QuoteSize size = manager.CurrentQuoteSize();
-	printf("Size %d\n", size);
+	printf("ContainerView::%s QuoteSize(%d)\n", __FUNCTION__, size);
 
 	fQuoteListView->MakeEmpty();	
 	
