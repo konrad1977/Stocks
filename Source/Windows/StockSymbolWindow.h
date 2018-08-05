@@ -51,7 +51,7 @@ private:
 	BList 					*fCurrentFilter;
 	
 	BMessenger 				*fMessenger;
-	bool fHasFilter;	
+	bool 					fHasFilter;	
 };
 
 #endif // _H

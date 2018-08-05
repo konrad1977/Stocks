@@ -48,10 +48,13 @@ StockRequester::DownloadSymbols() {
 
 void 
 StockRequester::RequestBatchData() {
-		
+
+	if (fBuilder->IsBatchRequestValid() == false) {
+		return;
+	}
+	
 	NetRequester requester(fHandler, QUOTE);	
 	const char *requestUrl = fBuilder->CreateBatchPath();
-	printf("%s\n", requestUrl);
 	RunRequest(requestUrl, &requester);
 }
 

@@ -23,6 +23,7 @@ public:
 	
 	const char *LatestPrice() const;
 	const char *ChangeString() const; 
+	const char *ChangeDollar() const;
 	
 private:
 	Quote *fQuote;

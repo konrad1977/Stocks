@@ -17,10 +17,10 @@
 
 QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize)
 	:BListItem()
-	,fIsReplicant(isReplicant)
 	,fQuote(quote) 
 	,fQuoteSize(quoteSize)
-	,fDrawer(NULL) {	
+	,fDrawer(NULL)	
+	,fIsReplicant(isReplicant) {	
 }
 
 QuoteListItem::~QuoteListItem() {
@@ -67,7 +67,7 @@ QuoteListItem::DrawChangePercent(BRect frame, alignment align) {
 	}
 	
 	DrawItemSettings settings = { frame, &font, &color, align };
-	fDrawer->DrawString(percent , settings);	
+	DrawText(percent , settings);	
 }
 
 void 
@@ -87,14 +87,9 @@ QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
 	BFont font(be_plain_font);
 	font.SetSize(13);
 
-	std::ostringstream change;
-	change << "$ " << fQuote->change;
-	
-	const char *str = change.str().c_str();
-	
-	DrawItemSettings settings = { frame, &font };
-	settings.align = align;
-	fDrawer->DrawString(str, settings);
+	QuoteFormatter formatter(fQuote);
+	DrawItemSettings settings = { frame, &font, NULL, align };
+	DrawText(formatter.ChangeDollar(), settings);
 }
 
 void
@@ -104,7 +99,7 @@ QuoteListItem::DrawCompanyName(BRect frame, alignment align) {
 	font.SetSize(13);	
 	
 	DrawItemSettings settings = { frame, &font, NULL, align }; 
-	fDrawer->DrawString(fQuote->companyName.String() , settings);	
+	DrawText(fQuote->companyName.String() , settings);	
 }
 
 void 
@@ -122,13 +117,10 @@ QuoteListItem::DrawLatestPrice(BRect frame, alignment align) {
 	
 	BFont font(be_bold_font);
 	font.SetSize(15);
-	
-	std::ostringstream dollarStr;
-	dollarStr << "$" << fQuote->latestPrice;
-	const char *dollar = dollarStr.str().c_str();
 
+	QuoteFormatter formatter(fQuote);
 	DrawItemSettings settings = { frame, &font, NULL, align };
-	fDrawer->DrawString(dollar, settings);
+	DrawText(formatter.LatestPrice(), settings);
 }
 
 void 
@@ -191,7 +183,7 @@ QuoteListItem::DrawNormalItem(BRect frame) {
 
 	BRect rect = frame.InsetBySelf(0,5);
 	rect.bottom = frame.top + frame.Height() / 3.0;
-	
+
 	DrawSymbol(rect);
 	DrawChangePercent(rect);
 

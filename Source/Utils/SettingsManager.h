@@ -11,6 +11,7 @@
 #include "QuoteListItem.h"
 
 class BList;
+class BLocker;
 class SettingsManager {
 public:
 	SettingsManager();
@@ -31,12 +32,15 @@ public:
 	
 private:
 	int32 	IndexOf(const char *symbol);
+
+	void 	SaveWithLock(BMessage *message);
 	
 	status_t LoadSettings(BMessage &message);
 	status_t SaveSettings(BMessage message);
 	
 	char *fFileName;
 	BList *fCurrentLoadedSymbols;
+	BLocker *fLocker;
 };
 
 

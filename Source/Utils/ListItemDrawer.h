@@ -18,6 +18,7 @@ struct DrawItemSettings {
 	alignment align;
 };
 
+class SettingsManager;
 class ListItemDrawer {
 public:
 	ListItemDrawer(BView *parent, bool isReplicant);
@@ -36,6 +37,7 @@ private:
 	void DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color = NULL);
 
 	BView 	*fParent;
+	SettingsManager *fSettingsManager;
 	BSize 	fInsets;
 	bool 	fIsReplicant;
 };

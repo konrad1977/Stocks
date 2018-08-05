@@ -53,8 +53,15 @@ QuoteFormatter::LatestPrice() const {
 }
 
 const char *
+QuoteFormatter::ChangeDollar() const {
+	BString str;
+	str << "$ " << fQuote->change;
+	return str.String();
+}
+
+const char *
 QuoteFormatter::ChangeString() const {
 	BString str;
-	str << "$ " << fQuote->change << " (" << fQuote->changePercent << "%)";
+	str << ChangeDollar() << " (" << fQuote->changePercent << "%)";
 	return str.String();
 }

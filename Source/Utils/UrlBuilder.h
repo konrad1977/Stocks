@@ -24,7 +24,8 @@ public:
 	void RemoveSymbol(const char *symbol);
 	void AddSymbol(const char *symbol);
 	void MakeEmpty();
-
+	
+	bool IsBatchRequestValid() const;
 	const char *CreateBatchPath();	
 	
 	void SetCompany(const char*name);
@@ -35,10 +36,10 @@ private:
 	int32 	IndexOfSymbol(const char *symbol);
 	bool	HasSymbol(const char *symbol);
 
-	BList *fSymbolList;
 	BString fBaseUrl;
 	BString fBuffer; 
 	BString fBatchBuffer;
+	BList *fSymbolList;
 };
 
 #endif // _H

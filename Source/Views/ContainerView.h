@@ -30,6 +30,7 @@ public:
 			void SetTarget(BHandler *handler);
 			void RequestData();	
 private:
+			void InitAutoUpdate();
 			void ShowAlert(const char *title, const char *message);
 			void SendEmptyListMessage();
 			void UpdateQuoteItemSizes(QuoteSize size);

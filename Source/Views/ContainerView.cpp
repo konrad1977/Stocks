@@ -124,18 +124,24 @@ ContainerView::Requester() {
 }
 
 void
-ContainerView::AttachedToWindow() {
-	
-	CurrentPortfolio()->SetTarget(this);
-	RequestData();
-	SendEmptyListMessage();
-	
+ContainerView::InitAutoUpdate() {
+
 	BMessenger view(this);
 	bigtime_t seconds = 10;
 	BMessage autoUpdateMessage(kAutoUpdateMessage);
 	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
 }
 
+void
+ContainerView::AttachedToWindow() {
+	
+	CurrentPortfolio()->SetTarget(this);
+	RequestData();
+	SendEmptyListMessage();
+	InitAutoUpdate();
+	
+	BView::AttachedToWindow();
+}
 
 void 
 ContainerView::ShowAlert(const char *title, const char *message) {
@@ -217,13 +223,13 @@ ContainerView::MessageReceived(BMessage *message) {
 
 void
 ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
+
 	if (fQuoteListView == NULL) {
 		return;
 	}
 
-	SettingsManager *manager = new SettingsManager();
-	manager->SetQuoteSize(size);
-	delete manager;
+	SettingsManager manager;
+	manager.SetQuoteSize(size);
 	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
@@ -324,12 +330,12 @@ ContainerView::HandleQuotes(BMessage message) {
 		return;
 	}
 
+	SettingsManager manager;
+	QuoteSize size = manager.CurrentQuoteSize();
+	printf("Size %d\n", size);
+
 	fQuoteListView->MakeEmpty();	
 	
-	SettingsManager *manager = new SettingsManager();
-	QuoteSize size = manager->CurrentQuoteSize();
-	delete manager;
-
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
 		char *name;
@@ -347,6 +353,7 @@ ContainerView::HandleQuotes(BMessage message) {
 			if (currentMessage.FindMessage("quote", &quoteMsg) != B_OK) {
 				continue;
 			}			
+			
 			Quote *quote = new Quote(quoteMsg);
 			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
 			//UpdateItemWithQuote(quote);

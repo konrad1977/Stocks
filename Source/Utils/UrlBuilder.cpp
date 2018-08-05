@@ -61,16 +61,16 @@ UrlBuilder::CreateBatchPath() {
 	return fBatchBuffer;
 }
 
+bool 
+UrlBuilder::IsBatchRequestValid() const {
+	return fSymbolList->IsEmpty() == false;
+}
+
 void
 UrlBuilder::RemoveSymbol(const char *symbol) {
 	int32 index = IndexOfSymbol(symbol);
 	if (index != -1) {
 		free(fSymbolList->RemoveItem(index));
-	}
-	
-	for(int32 i = 0; i<fSymbolList->CountItems(); i++) {
-		char *symbols = (char*)fSymbolList->ItemAt(i);
-		printf("%s\n", symbols);
 	}
 }
 

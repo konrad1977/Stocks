@@ -27,14 +27,15 @@
 
 StockSymbolWindow::StockSymbolWindow()
 	:BWindow(BRect(200,200,900,720), B_TRANSLATE("Find stocks..."), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
-	,fMessenger(NULL)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
 	,fSymbolListView(NULL)
+	,fScrollView(NULL)
 	,fStockSymbolListItems(NULL)
 	,fCurrentFilter(NULL)
-	,fHasFilter(false) 
-{
+	,fMessenger(NULL)
+	,fHasFilter(false)  {
+	
 	InitLayout();	
 }
 

@@ -36,17 +36,18 @@
 MainWindow::MainWindow(BRect rect) 
 	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL) 
-	,fSymbolList(NULL)
+	,fContainerView(NULL)
 	,fStockRequester(NULL)
 	,fStockSymbolWindow(NULL)
+	,fSettingsWindow(NULL)
+	,fSymbolList(NULL)
 	,fShowStockSymbolListWhenDone(false)
 	,fStockSymbolsLoaded(false)	
 	,fRemoveSelected(NULL)
 	,fMinimalItem(NULL)
 	,fNormalItem(NULL)
-	,fExtenededItem(NULL)
-	,fSettingsWindow(NULL)
-{ 	
+	,fExtenededItem(NULL) {
+ 	
 	SetupViews();
 	DownloadStockSymbols();
 }
@@ -95,7 +96,7 @@ MainWindow::SetupViews() {
 			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), '2'))
 			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), '3'))
 			.AddSeparator()
-			.AddItem(B_TRANSLATE("Settings"), kShowSettingsWindowMessage, 'S')
+			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
 		.End();
 	
 	fContainerView = new ContainerView();

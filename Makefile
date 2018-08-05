@@ -73,7 +73,7 @@ LOCAL_INCLUDE_PATHS =
 
 #	Specify the level of optimization that you want. Specify either NONE (O0),
 #	SOME (O1), FULL (O2), or leave blank (for the default optimization level).
-OPTIMIZE :=
+OPTIMIZE := O0
 
 # 	Specify the codes for languages you are going to support in this
 # 	application. The default "en" one must be provided too. "make catkeys"
@@ -91,15 +91,15 @@ DEFINES =
 
 #	Specify the warning level. Either NONE (suppress all warnings),
 #	ALL (enable all warnings), or leave blank (enable default warnings).
-WARNINGS =
+WARNINGS = ALL
 
 #	With image symbols, stack crawls in the debugger are meaningful.
 #	If set to "TRUE", symbols will be created.
-SYMBOLS :=
+SYMBOLS := TRUE
 
 #	Includes debug information, which allows the binary to be debugged easily.
 #	If set to "TRUE", debug info will be created.
-DEBUGGER :=
+DEBUGGER := TRUE
 
 #	Specify any additional compiler flags to be used.
 COMPILER_FLAGS =

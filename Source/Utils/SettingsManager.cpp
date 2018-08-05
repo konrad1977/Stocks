@@ -6,6 +6,7 @@
 #include "SettingsManager.h"
 #include "Constants.h"
 
+#include <Locker.h>
 #include <String.h>
 #include <Roster.h>
 #include <Message.h>
@@ -18,16 +19,24 @@
 #include <stdio.h>
 
 SettingsManager::SettingsManager()
-	:fFileName(NULL) {
+	:fFileName(NULL)
+	,fCurrentLoadedSymbols(NULL)
+	,fLocker(NULL)	{
+	
 	fFileName = strdup("Stocks");
+	fLocker = new BLocker("SettingsLocker");
 }
 
 SettingsManager::~SettingsManager() {
 	free(fFileName);
+	delete fLocker;
 }
 
 void 
 SettingsManager::RemoveSymbol(const char *symbol) {
+
+	printf("%s::%s\n", "SettingsManager", __FUNCTION__);
+	
 	int32 index = IndexOf(symbol);
 	if (index != -1) {
 		BList *list = LoadSymbols();
@@ -39,6 +48,8 @@ SettingsManager::RemoveSymbol(const char *symbol) {
 
 void
 SettingsManager::AddSymbol(const char *symbol) {
+
+	printf("%s::%s\n", "SettingsManager", __FUNCTION__);
 
 	if (HasSymbol(symbol)) {
 		return;
@@ -73,11 +84,24 @@ SettingsManager::IndexOf(const char *symbol) {
 void 
 SettingsManager::SaveSymbols(BList *list) {
 	
-	if (list == NULL || list->IsEmpty()) {
+	if (list == NULL) {
+		return;
+	}
+
+	printf("%s::%s=%d\n", "SettingsManager", __FUNCTION__, list->CountItems());
+	
+	BMessage message;
+	
+	if (list->IsEmpty()) {
+		printf("IsEmpty\n");
+		LoadSettings(message);
+		message.RemoveName("Symbols");
+		SaveWithLock(&message);
 		return;
 	}	
-	
-	BMessage previousSave;	
+
+	printf("List is not empty\n");
+		
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		const char *symbol = (const char *)list->ItemAtFast(index);
 		if (symbol == NULL) {
@@ -85,9 +109,9 @@ SettingsManager::SaveSymbols(BList *list) {
 		}
 		BMessage symbolMsg;
 		symbolMsg.AddString("Symbol", symbol);
-		previousSave.AddMessage("Symbols", &symbolMsg);
+		message.AddMessage("Symbols", &symbolMsg);
 	}
-	SaveSettings(previousSave);
+	SaveWithLock(&message);
 }
 
 bool
@@ -115,7 +139,7 @@ SettingsManager::SetTransparency(uint8 transparency) {
 	if (message.ReplaceUInt8("Transparency", transparency) != B_OK) {
 		message.AddUInt8("Transparency", transparency);
 	}
-	SaveSettings(message);
+	SaveWithLock(&message);
 }
 
 void 
@@ -127,7 +151,7 @@ SettingsManager::SetQuoteSize(QuoteSize size) {
 	if (message.ReplaceInt32("size", value) != B_OK) {
 		message.AddInt32("size", int32(size));
 	}
-	SaveSettings(message);
+	SaveWithLock(&message);
 }
 
 QuoteSize 
@@ -135,7 +159,6 @@ SettingsManager::CurrentQuoteSize() {
 	BMessage message;
 	LoadSettings(message);
 	int32 size = message.FindInt32("size");
-	printf("Size %d\n", size); 
 	return QuoteSize(size);
 }
 	
@@ -160,6 +183,13 @@ SettingsManager::LoadSymbols() {
 		index++;
 	}	
 	return list;
+}
+
+void
+SettingsManager::SaveWithLock(BMessage *message) {
+	fLocker->Lock();
+	SaveSettings(*message);
+	fLocker->Unlock();
 }
 
 status_t 
@@ -187,7 +217,7 @@ SettingsManager::SaveSettings(BMessage message) {
 
 status_t
 SettingsManager::LoadSettings(BMessage &message) {
-
+	
 	BPath path;
 	BFile file;
 	

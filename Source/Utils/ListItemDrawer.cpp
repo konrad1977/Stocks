@@ -12,12 +12,13 @@
 ListItemDrawer::ListItemDrawer(BView *parent, bool isReplicant)
 	:fParent(parent)
 	,fIsReplicant(isReplicant)
+	,fSettingsManager(NULL)
 	,fInsets(BSize(5,5)) {
-
+	fSettingsManager = new SettingsManager();
 }
 	
 ListItemDrawer::~ListItemDrawer() {
-	
+	delete fSettingsManager;
 }
 
 void 
@@ -30,8 +31,7 @@ ListItemDrawer::BackgroundColor(bool isSelected) {
 	if (fIsReplicant && isSelected == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		//SettingsManager manager;
-		color.alpha =  140; //manager.Transparency();
+		color.alpha = fSettingsManager->Transparency();
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);

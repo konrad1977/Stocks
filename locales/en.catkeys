@@ -1,4 +1,4 @@
-1	English	x-vnd.konradsson.Stocks	2710851901
+1	English	x-vnd.konradsson.Stocks	3214379226
 52 week high	QuoteView		52 week high
 Find stocks...	StockSymbolWindow		Find stocks...
 Network error	StockSymbolWindow		Network error
@@ -16,8 +16,10 @@ Items found: 	SearchView		Items found:
 52 week low	QuoteView		52 week low
 Mini mode	MainWindow		Mini mode
 Normal mode	MainWindow		Normal mode
+Settings	SettingsWindow		Settings
 Filter	SearchView		Filter
 Failed to parse data	StockSymbolWindow		Failed to parse data
 About...	MainWindow		About...
 Add to portfolio	QuoteView		Add to portfolio
 Settings	MainWindow		Settings
+Settings...	MainWindow		Settings...
