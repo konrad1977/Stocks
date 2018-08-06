@@ -66,6 +66,7 @@ ContainerView::ContainerView(BMessage *archive)
 
 ContainerView::~ContainerView() {
 	delete fStockRequester;
+	delete fPortfolio;
 	delete fAutoUpdateRunner;
 	delete fMessenger;
 	delete fSettingsManager;
@@ -86,7 +87,6 @@ ContainerView::Instantiate(BMessage* archive) {
 
 status_t	
 ContainerView::SaveState(BMessage* into, bool deep) const {
-	status_t status;
 	return B_OK;
 }
 
@@ -350,6 +350,7 @@ void
 ContainerView::SetupViews() {
 	
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	
 	if (fIsReplicant)
 		fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
 

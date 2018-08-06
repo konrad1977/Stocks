@@ -297,4 +297,5 @@ QuoteListItem::Update(BView *view, const BFont *font) {
 			break;
 	}
 	SetHeight(height);
+	SetWidth(800);
 }

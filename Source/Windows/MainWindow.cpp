@@ -49,6 +49,7 @@ MainWindow::MainWindow(BRect rect)
 	,fExtenededItem(NULL) {
  	
 	SetupViews();
+	InitQuoteSize();
 	DownloadStockSymbols();
 }
 
@@ -71,42 +72,6 @@ MainWindow::SymbolWindow() {
 		fStockSymbolWindow->SetTarget(this);	
 	}
 	return fStockSymbolWindow;
-}
-
-void
-MainWindow::SetupViews() {
-
-	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
-	layout->SetSpacing(0);
-	SetLayout(layout);
-	
-	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
-		.AddMenu(B_TRANSLATE("File"))
-			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
-			.AddSeparator()
-			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
-		.End()
-		.AddMenu(B_TRANSLATE("Edit"))
-			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
-		.End()
-		.AddMenu(B_TRANSLATE("Settings"))
-			.AddItem(B_TRANSLATE("Find stocks..."), kShowSearchWindowMessage, 'F')
-			.AddSeparator()
-			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), '1'))
-			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), '2'))
-			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), '3'))
-			.AddSeparator()
-			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
-		.End();
-	
-	fContainerView = new ContainerView();
-	fContainerView->SetTarget(this);
-	
-	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.Add(fMenuBar)
-		.Add(fContainerView);
-		
-	InitQuoteSize();
 }
 
 void
@@ -253,3 +218,36 @@ MainWindow::HandleStockSearchSymbols(BMessage *message) {
 	}
 }
 
+void
+MainWindow::SetupViews() {
+
+	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
+	layout->SetSpacing(0);
+	SetLayout(layout);
+	
+	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
+		.AddMenu(B_TRANSLATE("File"))
+			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
+			.AddSeparator()
+			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
+		.End()
+		.AddMenu(B_TRANSLATE("Edit"))
+			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
+		.End()
+		.AddMenu(B_TRANSLATE("Settings"))
+			.AddItem(B_TRANSLATE("Find stocks..."), kShowSearchWindowMessage, 'F')
+			.AddSeparator()
+			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), '1'))
+			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), '2'))
+			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), '3'))
+			.AddSeparator()
+			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
+		.End();
+	
+	fContainerView = new ContainerView();
+	fContainerView->SetTarget(this);
+	
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.Add(fMenuBar)
+		.Add(fContainerView);
+}
