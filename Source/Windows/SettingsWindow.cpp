@@ -23,6 +23,7 @@ SettingsWindow::SettingsWindow()
 	:BWindow(BRect(0,0, 480, 320), B_TRANSLATE("Settings"), B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS | B_CLOSE_ON_ESCAPE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS )
 	,fMessenger(NULL)
 	,fTransparencySlider(NULL)
+	,fRefreshRateSlider(NULL)
 {
 	InitLayout();
 	InitSavedValues();
@@ -49,7 +50,28 @@ SettingsWindow::QuitRequested() {
 void 
 SettingsWindow::InitSavedValues() {
 	SettingsManager manager;
-	fTransparencySlider->SetValue(static_cast<int32>(manager.Transparency()));
+
+	const uint8 transparency = manager.Transparency();
+	const uint8 refreshRate = manager.RefreshRate();
+
+	fTransparencySlider->SetValue(static_cast<int32>(transparency));
+	fRefreshRateSlider->SetValue(static_cast<int32>(refreshRate));
+	UpdateTransparencyLabel(transparency);
+	UpdateRefrehLabel(refreshRate);
+}
+
+void 
+SettingsWindow::UpdateTransparencyLabel(uint8 value) {
+	BString str = fTransparencyLabel;
+	str << " " << value;
+	fTransparencySlider->SetLabel(str.String());
+}
+
+void 
+SettingsWindow::UpdateRefrehLabel(uint8 value) {
+	BString str = fRefreshLabel;
+	str << " " << value;
+	fRefreshRateSlider->SetLabel(str.String());
 }
 
 void 
@@ -58,12 +80,22 @@ SettingsWindow::InitLayout() {
 	BGroupLayout *groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
 
-	fTransparencySlider = new BSlider("Transparency", "Replicant transparency", new BMessage(kTransparencyChangeMessage), 0, 255, B_HORIZONTAL);
-	fTransparencySlider->SetLimitLabels("0", "255");
+	fTransparencyLabel = "Replicant transparency: ";
+	
+	fTransparencySlider = new BSlider("Transparency", fTransparencyLabel.String(), new BMessage(kTransparencyChangedMessage), 0, 255, B_HORIZONTAL);
+	fTransparencySlider->SetModificationMessage(new BMessage(kTransparenyModificationMessage));
+	//fTransparencySlider->SetLimitLabels("0", "255");
+
+	fRefreshLabel = "Refresh interval (in seconds): ";
+	
+	fRefreshRateSlider = new BSlider("Refresh", fRefreshLabel.String(), new BMessage(kRefreshChangedMessage), 1, 300, B_HORIZONTAL);
+	//fRefreshRateSlider->SetLimitLabels("1", "300");
+	fRefreshRateSlider->SetModificationMessage(new BMessage(kRefreshModificationMessage));
 	
 	BGroupLayout *transparencyGroup = BLayoutBuilder::Group<>(B_VERTICAL)
-		.SetInsets(5,10)
-		.Add(fTransparencySlider);
+		.SetInsets(15,10)
+		.Add(fTransparencySlider)
+		.Add(fRefreshRateSlider);
 	
 
 	BGroupLayout *settingsGroup = BLayoutBuilder::Group<>(B_VERTICAL)
@@ -77,10 +109,29 @@ void
 SettingsWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
 
-		case kTransparencyChangeMessage: {
+		case kTransparencyChangedMessage: {
 			uint8 newValue = static_cast<uint8>(fTransparencySlider->Value());
 			SettingsManager manager;
 			manager.SetTransparency(newValue);
+			break;
+		}
+		
+		case kTransparenyModificationMessage: {
+			uint8 newValue = static_cast<uint8>(fTransparencySlider->Value());
+			UpdateTransparencyLabel(newValue);
+			break;
+		}
+
+		case kRefreshChangedMessage: {
+			uint8 newValue = static_cast<uint8>(fRefreshRateSlider->Value());
+			SettingsManager manager;
+			manager.SetRefreshRate(newValue);
+			break;
+		}
+		
+		case kRefreshModificationMessage: {
+			uint8 newValue = static_cast<uint8>(fRefreshRateSlider->Value());
+			UpdateRefrehLabel(newValue);
 			break;
 		}
 		

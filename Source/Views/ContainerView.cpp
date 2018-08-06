@@ -132,9 +132,14 @@ ContainerView::Requester() {
 
 void
 ContainerView::InitAutoUpdate() {
-
+	
+	delete fAutoUpdateRunner;
+	SettingsManager manager;
+	
 	BMessenger view(this);
-	bigtime_t seconds = 10;
+	bigtime_t seconds = static_cast<bigtime_t>(manager.RefreshRate());
+	
+	printf("Refresh rate %d\n", seconds);
 	BMessage autoUpdateMessage(kAutoUpdateMessage);
 	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
 }
@@ -163,9 +168,13 @@ void
 ContainerView::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
-		case B_NODE_MONITOR:
+
+		case B_NODE_MONITOR: {
+			InitAutoUpdate();
 			RequestData();
-		break;
+			break;
+		}
+		
 		case kPortfolioRemovedSymbolMessage:  {
 			BString symbol;
 			if (message->FindString("symbol", &symbol) == B_OK) {

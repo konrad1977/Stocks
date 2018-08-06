@@ -7,6 +7,7 @@
 
 
 #include <SupportDefs.h>
+#include <support/String.h>
 #include <Window.h>
 
 class BSlider;
@@ -23,9 +24,14 @@ public:
 private:
 			void InitLayout();
 			void InitSavedValues();
-	BMessenger *fMessenger;
-	
-	BSlider *fTransparencySlider;
+			void UpdateTransparencyLabel(uint8 value);
+			void UpdateRefrehLabel(uint8 value);
+			
+	BMessenger 	*fMessenger;	
+	BSlider 	*fTransparencySlider;
+	BSlider 	*fRefreshRateSlider;
+	BString 	fTransparencyLabel;
+	BString 	fRefreshLabel;
 };
 
 

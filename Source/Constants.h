@@ -44,6 +44,10 @@ const uint32 kUseNormalQuoteSize			= 'UNQs';
 const uint32 kUseLargeQuoteSize				= 'ULQs';
 const uint32 kEmptyListMessage				= 'ELMs';
 
-const uint32 kTransparencyChangeMessage		= 'TCHm';
+const uint32 kTransparencyChangedMessage		= 'TCHm';
+const uint32 kTransparenyModificationMessage 	= 'TcHm';
+const uint32 kRefreshChangedMessage				= 'RCMm';
+const uint32 kRefreshModificationMessage		= 'RMMc';
+
 
 #endif // _H

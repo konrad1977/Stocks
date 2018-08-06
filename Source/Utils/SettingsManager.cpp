@@ -129,6 +129,30 @@ SettingsManager::HasSymbol(const char *symbol) {
 	return IndexOf(symbol) != -1;
 }
 
+void 
+SettingsManager::SetRefreshRate(uint8 seconds) {
+
+	BMessage message;
+	LoadSettings(message);
+	
+	if (message.ReplaceUInt8("Refresh", seconds) != B_OK) {
+		message.AddUInt8("Refresh", seconds);
+	}
+	SaveWithLock(&message);
+}
+
+uint8 
+SettingsManager::RefreshRate() {
+	uint8 value = 60;	
+	BMessage message;
+	
+	LoadSettings(message);
+	if (message.FindUInt8("Refresh", &value) != B_OK) {
+		return 60;
+	}
+	return value;
+}
+
 uint8
 SettingsManager::Transparency() {	
 	
@@ -214,7 +238,7 @@ SettingsManager::SaveWithLock(BMessage *message) {
 }
 
 const char *
-SettingsManager::SavePath() {
+SettingsManager::SavePath() const {
 	
 	BPath path;
 	

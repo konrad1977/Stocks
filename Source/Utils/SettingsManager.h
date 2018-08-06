@@ -22,6 +22,9 @@ public:
 	void SetTarget(BHandler *handler);
 	void SetTransparency(uint8 transparency);
 	uint8 Transparency();
+
+	void SetRefreshRate(uint8 seconds);
+	uint8 RefreshRate();
 	
 	void SetQuoteSize(QuoteSize size);
 	QuoteSize CurrentQuoteSize();
@@ -37,7 +40,7 @@ public:
 	
 private:
 
-	const char* SavePath();
+	const char* SavePath() const;
 	
 	int32 	IndexOf(const char *symbol);
 	void 	SaveWithLock(BMessage *message);
