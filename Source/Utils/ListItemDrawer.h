@@ -28,18 +28,18 @@ public:
 	rgb_color TextColor(bool isSelected);
 	rgb_color TitleColor();
 	
-	void SetInsets(BSize insets);
-	float Height(DrawItemSettings settings);
-	void DrawString(const char *text, DrawItemSettings settings);
+			void SetInsets(BSize insets);
+			float Height(DrawItemSettings settings);
+			void DrawString(const char *text, DrawItemSettings settings);
 	
 private:
-	bool IsDark();
-	void DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color = NULL);
+			bool IsDark();
+			void DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color = NULL);
 
-	BView 	*fParent;
+	BView 			*fParent;
 	SettingsManager *fSettingsManager;
-	BSize 	fInsets;
-	bool 	fIsReplicant;
+	BSize 			fInsets;
+	bool 			fIsReplicant;
 };
 
 

@@ -18,9 +18,9 @@
 
 NetRequester::NetRequester(BHandler *handler, StockRequestType type)
 	: BUrlProtocolListener()
-	,fType(type) 	
-	,fHandler(handler) {
-		
+	,fHandler(handler)	
+	,fType(type) {
+	
 }
 
 NetRequester::~NetRequester() {
@@ -83,7 +83,7 @@ NetRequester::HandleCompanyInformation(BMessage message) {
 }
 
 void 
-NetRequester::_HandleData(BString data) {
+NetRequester::HandleData(BString data) {
 		
 	BMessage parsedData;
 	BJson parser;
@@ -125,6 +125,5 @@ NetRequester::RequestCompleted(BUrlRequest* caller, bool success) {
 	
 	BString jsonString;
 	jsonString.SetTo(static_cast<const char*>(fResponseData.Buffer()), fResponseData.BufferLength());
-	
-	_HandleData(jsonString);
+	HandleData(jsonString);
 }

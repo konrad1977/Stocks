@@ -29,14 +29,14 @@ ContainerView::ContainerView()
 	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
-	,fStockRequester(NULL)
 	,fCurrentSymbols(NULL)
 	,fMessenger(NULL)
-	,fIsReplicant(false)
-	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
+	,fStockRequester(NULL)
 	,fPortfolio(NULL)
 	,fSettingsManager(NULL)
+	,fDownloadThread(-1)
+	,fIsReplicant(false)
 {	
 	fSettingsManager = new SettingsManager();
 	
@@ -49,13 +49,14 @@ ContainerView::ContainerView(BMessage *archive)
 	:BView(archive)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
-	,fStockRequester(NULL)
+	,fCurrentSymbols(NULL)
 	,fMessenger(NULL)
-	,fIsReplicant(true)
-	,fDownloadThread(-1)
 	,fAutoUpdateRunner(NULL)
+	,fStockRequester(NULL)
 	,fPortfolio(NULL)
 	,fSettingsManager(NULL)
+	,fDownloadThread(-1)
+	,fIsReplicant(true)
 {	
 	fSettingsManager = new SettingsManager();
 
@@ -74,9 +75,7 @@ ContainerView::~ContainerView() {
 
 status_t
 ContainerView::Archive(BMessage* into, bool deep) const {
-	
-	status_t status;
-	status = into->AddString("add_on", kAppSignature);
+	into->AddString("add_on", kAppSignature);
 	return BView::Archive(into, false);
 }
 
@@ -139,7 +138,6 @@ ContainerView::InitAutoUpdate() {
 	BMessenger view(this);
 	bigtime_t seconds = static_cast<bigtime_t>(manager.RefreshRate());
 	
-	printf("Refresh rate %d\n", seconds);
 	BMessage autoUpdateMessage(kAutoUpdateMessage);
 	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
 }

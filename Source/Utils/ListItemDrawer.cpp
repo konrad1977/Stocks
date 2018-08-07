@@ -11,9 +11,10 @@
 
 ListItemDrawer::ListItemDrawer(BView *parent, bool isReplicant)
 	:fParent(parent)
-	,fIsReplicant(isReplicant)
 	,fSettingsManager(NULL)
-	,fInsets(BSize(5,5)) {
+	,fInsets(BSize(5,5))
+	,fIsReplicant(isReplicant)	{
+	
 	fSettingsManager = new SettingsManager();
 }
 	
@@ -108,6 +109,8 @@ ListItemDrawer::DrawString(const char *text, BRect frame, const BFont *font, ali
 			fParent->MovePenTo( center, frame.RightBottom().y - horizontalCenter);	
 			break;
 		}
+		default:
+			break;
 	}
 	
 	if (color == NULL) {

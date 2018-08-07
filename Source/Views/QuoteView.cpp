@@ -27,12 +27,13 @@
 QuoteView::QuoteView()
 	:BBox("QuoteView")
 	,fMessenger(NULL)
-	,fQuote(NULL)
+	,fPortfolioButton(NULL)
 	,fTitle(NULL)
 	,f52High(NULL)
 	,f52Low(NULL)
 	,fChangePercent(NULL)
-	,fPortfolioButton(NULL)	{	
+	,fQuote(NULL)
+	,fHasQuote(false) {	
 	
 	fTitle = new BStringView("Title", "");
 	f52High = new BStringView("52High", "");

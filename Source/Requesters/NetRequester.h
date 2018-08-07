@@ -24,18 +24,18 @@ public:
 	virtual ~NetRequester();
 	virtual	void ResponseStarted(BUrlRequest* caller);
 	virtual	void DataReceived(BUrlRequest* caller, const char* data, off_t position, ssize_t size);
-	virtual	void RequestCompleted(BUrlRequest* caller, bool success);					
+	virtual	void RequestCompleted(BUrlRequest* caller, bool success);		
+	
 private:
-	void _HandleData(BString data);
+			void HandleData(BString data);
 			void HandleQuoteBatch(BMessage message);
 			void HandleQuote(BMessage message);
 			void HandleStockSymbols(BMessage message);
 			void HandleCompanyInformation(BMessage message);
 
-	BHandler 	*fHandler;
-	BMallocIO	fResponseData;
-	StockRequestType fType;
+	BHandler 			*fHandler;
+	StockRequestType 	fType;
+	BMallocIO			fResponseData;
 };
-
 
 #endif // _H

@@ -25,8 +25,8 @@ StockListExtendedView::StockListExtendedView(BRect rect)
 	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, 0 ) 
 	,fDescriptionTextView(NULL)
 	,fTitleStringView(NULL)
+	,fMessenger(NULL)	
 	,fCompany(NULL)
-	,fMessenger(NULL)
 	,fQuoteView(NULL) {
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));

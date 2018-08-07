@@ -16,9 +16,9 @@
 #include <String.h>
 
 Portfolio::Portfolio()
-	:fMessenger(NULL)
-	,fSettingsManager(NULL)
-	,fCurrentSymbols(NULL) {
+	:fCurrentSymbols(NULL)
+	,fMessenger(NULL)
+	,fSettingsManager(NULL) {
 	
 	fSettingsManager = new SettingsManager();
 	fCurrentSymbols = new BList();

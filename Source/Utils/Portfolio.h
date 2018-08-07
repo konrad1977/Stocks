@@ -28,7 +28,6 @@ private:
 
 	void NotifyAdd(const char *symbol);
 	void NotifyRemove(const char *symbol);
-	
 	void Load();
 	
 	BList 			*fCurrentSymbols;

@@ -1,6 +1,8 @@
-1	English	x-vnd.konradsson.Stocks	3214379226
+1	English	x-vnd.konradsson.Stocks	693118256
 52 week high	QuoteView		52 week high
 Find stocks...	StockSymbolWindow		Find stocks...
+Settings...	MainWindow		Settings...
+Refresh interval (in seconds): 	SettingsWindow		Refresh interval (in seconds): 
 Network error	StockSymbolWindow		Network error
 Extended mode	MainWindow		Extended mode
 Remove from portfolio	QuoteView		Remove from portfolio
@@ -14,6 +16,7 @@ Edit	MainWindow		Edit
 Portfolio	MainWindow		Portfolio
 Items found: 	SearchView		Items found: 
 52 week low	QuoteView		52 week low
+Replicant transparency:	SettingsWindow		Replicant transparency:
 Mini mode	MainWindow		Mini mode
 Normal mode	MainWindow		Normal mode
 Settings	SettingsWindow		Settings
@@ -22,4 +25,3 @@ Failed to parse data	StockSymbolWindow		Failed to parse data
 About...	MainWindow		About...
 Add to portfolio	QuoteView		Add to portfolio
 Settings	MainWindow		Settings
-Settings...	MainWindow		Settings...

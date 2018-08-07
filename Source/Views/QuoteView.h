@@ -34,14 +34,15 @@ private:
 		
 		BBox *MakeSeparator() const; 
 	
+	BMessenger 	*fMessenger;
 	BButton 	*fPortfolioButton;
 	BStringView *fTitle;
 	BStringView *f52High;
 	BStringView *f52Low;
 	BStringView *fChangePercent;
+	
 	Quote *fQuote;
 	bool fHasQuote;
-	BMessenger 	*fMessenger;
 };
 
 

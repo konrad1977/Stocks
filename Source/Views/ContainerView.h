@@ -32,6 +32,11 @@ public:
 			void SetTarget(BHandler *handler);
 			void RequestData();	
 private:
+
+	StockRequester	*Requester();	
+	Portfolio		*CurrentPortfolio();
+	SettingsManager *CurrentSettingsManager();
+	
 			void InitAutoUpdate();
 			void ShowAlert(const char *title, const char *message);
 			void SendEmptyListMessage();
@@ -44,11 +49,7 @@ private:
 			void DownloadData();
 			void RemoveSelectedListItem();
 	static int32 DownloadDataFunc(void *cookie);	
-	
-	StockRequester	*Requester();	
-	Portfolio		*CurrentPortfolio();
-	SettingsManager *CurrentSettingsManager();
-	
+		
 	BDragger 		*fDragger;	
 	BListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;

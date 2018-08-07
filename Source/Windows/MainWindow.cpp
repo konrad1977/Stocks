@@ -34,7 +34,7 @@
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
 MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
+	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fMenuBar(NULL) 
 	,fContainerView(NULL)
 	,fStockRequester(NULL)
