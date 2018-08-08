@@ -116,7 +116,7 @@ ContainerView::LoadSavedData() {
 Portfolio*
 ContainerView::CurrentPortfolio() {
 	if (fPortfolio == NULL) {
-		fPortfolio = new Portfolio();
+		fPortfolio = new Portfolio("Portfolio");
 	}
 	return fPortfolio;
 }

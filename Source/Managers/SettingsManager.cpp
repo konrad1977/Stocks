@@ -25,7 +25,6 @@
 
 SettingsManager::SettingsManager()
 	:fFileName(NULL)
-	,fCurrentLoadedSymbols(NULL)
 	,fLocker(NULL) {
 	
 	fFileName = strdup("Stocks");

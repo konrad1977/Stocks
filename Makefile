@@ -26,6 +26,7 @@ SRCS = \
 	$(wildcard Source/Models/*.cpp) \
 	$(wildcard Source/Requesters/*.cpp) \
 	$(wildcard Source/Utils/*.cpp) \
+	$(wildcard Source/Managers/*.cpp) \
 	$(wildcard Source/Views/*.cpp) \
 	$(wildcard Source/Windows/*.cpp) \
 
@@ -87,7 +88,7 @@ LOCALES = en sv
 #	use. For example, setting DEFINES to "DEBUG=1" will cause the compiler
 #	option "-DDEBUG=1" to be used. Setting DEFINES to "DEBUG" would pass
 #	"-DDEBUG" on the compiler's command line.
-DEFINES =
+DEFINES = DEBUG
 
 #	Specify the warning level. Either NONE (suppress all warnings),
 #	ALL (enable all warnings), or leave blank (enable default warnings).
@@ -95,14 +96,14 @@ WARNINGS = ALL
 
 #	With image symbols, stack crawls in the debugger are meaningful.
 #	If set to "TRUE", symbols will be created.
-SYMBOLS :=
+SYMBOLS := TRUE
 
 #	Includes debug information, which allows the binary to be debugged easily.
 #	If set to "TRUE", debug info will be created.
-DEBUGGER :=
+DEBUGGER := TRUE
 
 #	Specify any additional compiler flags to be used.
-COMPILER_FLAGS =
+COMPILER_FLAGS = 
 
 #	Specify any additional linker flags to be used.
 LINKER_FLAGS =
