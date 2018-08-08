@@ -49,5 +49,8 @@ const uint32 kTransparenyModificationMessage 	= 'TcHm';
 const uint32 kRefreshChangedMessage				= 'RCMm';
 const uint32 kRefreshModificationMessage		= 'RMMc';
 
+// portfolio and portfoliomanager
+const uint32 kCreateNewPortfolioMessage			= 'CNPm';
+
 
 #endif // _H

@@ -18,7 +18,7 @@ public:
 	PortfolioManager(BHandler *handler);
 	~PortfolioManager();
 
-			void AddPortfolio(Portfolio *portfolio);
+			bool AddPortfolio(Portfolio *portfolio);
 			void RemovePortfolio(Portfolio *portfolio);
 			BList *Portfolios() const;
 	status_t 	 Save();

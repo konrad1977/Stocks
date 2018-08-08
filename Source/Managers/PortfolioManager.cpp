@@ -31,11 +31,14 @@ PortfolioManager::~PortfolioManager() {
 	delete fPortfolioList;
 }
 
-void 
+bool 
 PortfolioManager::AddPortfolio(Portfolio *portfolio) {
 	if (HasPortfolio(portfolio) == false ) {
 		fPortfolioList->AddItem(reinterpret_cast<void*>(portfolio));
+		Save();
+		return true;
 	}
+	return false;
 }
 
 void 

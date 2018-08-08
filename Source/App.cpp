@@ -7,6 +7,7 @@
 #include "App.h"
 #include "MainWindow.h"
 #include "PortfolioManager.h"
+#include "PortfolioManagerWindow.h"
 #include "Portfolio.h"
 #include <stdio.h>
 
@@ -18,6 +19,9 @@ App::App(void)
 	,fPortfolioManager(NULL) {
 	
 	fPortfolioManager = new PortfolioManager(this);
+	
+	PortfolioManagerWindow *window = new PortfolioManagerWindow(fPortfolioManager);	
+	window->Show();
 	
 	//fWindow = new MainWindow(BRect(150,150,420,540));
 	//fWindow->Show();		
