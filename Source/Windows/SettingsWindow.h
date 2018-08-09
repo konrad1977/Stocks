@@ -10,12 +10,13 @@
 #include <support/String.h>
 #include <Window.h>
 
+class Portfolio;
 class BSlider;
 class BMessenger;
 class BHandler;
 class SettingsWindow : public BWindow {
 public:
-	SettingsWindow();
+	SettingsWindow(Portfolio *portfolio);
 	~SettingsWindow();
 	
 	virtual void MessageReceived(BMessage *message);
@@ -30,8 +31,10 @@ private:
 	BMessenger 	*fMessenger;	
 	BSlider 	*fTransparencySlider;
 	BSlider 	*fRefreshRateSlider;
+	Portfolio	*fPortfolio;
 	BString 	fTransparencyLabel;
 	BString 	fRefreshLabel;
+
 };
 
 

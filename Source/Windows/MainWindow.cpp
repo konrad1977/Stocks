@@ -69,7 +69,7 @@ SettingsWindow*
 MainWindow::CurrentSettingWindow() 
 {
 	if (fSettingsWindow == NULL) {
-		fSettingsWindow = new SettingsWindow();
+		fSettingsWindow = new SettingsWindow(fPortfolio);
 		fSettingsWindow->SetTarget(this);
 	}
 	return fSettingsWindow;
@@ -104,7 +104,7 @@ MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size)
 void 
 MainWindow::InitQuoteSize() 
 {
-	SetSelectedMenuFromQuoteSize(SettingsManager().CurrentQuoteSize());
+	SetSelectedMenuFromQuoteSize(fPortfolio->CurrentQuoteSize());
 }
 
 void 

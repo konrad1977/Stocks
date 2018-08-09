@@ -37,7 +37,6 @@ private:
 			void DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color = NULL);
 
 	BView 			*fParent;
-	SettingsManager *fSettingsManager;
 	BSize 			fInsets;
 	bool 			fIsReplicant;
 };

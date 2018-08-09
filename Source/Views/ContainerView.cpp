@@ -64,11 +64,7 @@ ContainerView::ContainerView(BMessage *archive)
 	}
 	
 	fSettingsManager = new SettingsManager();
-
-	if (BMessage *msg = fSettingsManager->MessageForPortfolio(portfolioName)) {
-		fPortfolio = new Portfolio(portfolioName);
-		fPortfolio->Load(*msg);
-	}
+	fPortfolio = new Portfolio(portfolioName);
 	
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
@@ -143,10 +139,9 @@ void
 ContainerView::InitAutoUpdate() {
 	
 	delete fAutoUpdateRunner;
-	SettingsManager manager;
 	
 	BMessenger view(this);
-	bigtime_t seconds = static_cast<bigtime_t>(manager.RefreshRate());
+	bigtime_t seconds = static_cast<bigtime_t>(fPortfolio->RefreshRate());
 	
 	BMessage autoUpdateMessage(kAutoUpdateMessage);
 	fAutoUpdateRunner = new BMessageRunner(view, &autoUpdateMessage, (bigtime_t) seconds * 1000 * 1000);
@@ -262,7 +257,7 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size)
 		return;
 	}
 
-	fSettingsManager->SetQuoteSize(size);
+	fPortfolio->SetQuoteSize(size);
 	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
@@ -274,8 +269,8 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size)
 }
 
 void
-ContainerView::DownloadData() {
-	
+ContainerView::DownloadData() 
+{	
 	BList *list = fPortfolio->CurrentSymbols();
 	Requester()->ResetUrlList();	
 	
@@ -287,7 +282,8 @@ ContainerView::DownloadData() {
 }
 
 int32 
-ContainerView::DownloadDataFunc(void *cookie) {
+ContainerView::DownloadDataFunc(void *cookie) 
+{
 	ContainerView *view = static_cast<ContainerView *>(cookie);
 	view->DownloadData();
 	return 0;
@@ -314,7 +310,8 @@ ContainerView::StopActiveRequest()
 }
 
 void 
-ContainerView::RemoveSelectedListItem() {
+ContainerView::RemoveSelectedListItem() 
+{
 	if (fQuoteListView == NULL) {
 		return;
 	}
@@ -335,14 +332,13 @@ ContainerView::RemoveSelectedListItem() {
 }
 
 void
-ContainerView::HandleQuotes(BMessage message) {
-		
+ContainerView::HandleQuotes(BMessage message) 
+{		
 	if (fQuoteListView == NULL) {
 		return;
 	}
 
-	QuoteSize size = fSettingsManager->CurrentQuoteSize();
-
+	QuoteSize size = fPortfolio->CurrentQuoteSize();
 	fQuoteListView->MakeEmpty();	
 	
 	BMessage symbolMessage;			

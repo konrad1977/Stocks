@@ -18,31 +18,41 @@ Portfolio::Portfolio(BString name)
 	:fName(name)
 	,fCurrentSymbols(NULL)
 	,fMessenger(NULL)
-	,fSettingsManager(NULL) {
+	,fSettingsManager(NULL)
+	,fTransparency(127)	
+	,fRereshInterval(60)
+	,fQuoteSize(NORMAL)
+{
 	
 	fSettingsManager = new SettingsManager();
+
 	fCurrentSymbols = new BList();
-	Load();
+	if (BMessage *msg = fSettingsManager->MessageForPortfolio(name)) {
+		Load(*msg);
+	}
 }
 
-Portfolio::~Portfolio() {
+Portfolio::~Portfolio() 
+{
 	delete fMessenger;
 	delete fSettingsManager;
 	delete fCurrentSymbols;
 }
 
 BString
-Portfolio::Name() {
+Portfolio::Name() 
+{
 	return fName;
 }
 
 BList*
-Portfolio::CurrentSymbols() {
-	Load();
+Portfolio::CurrentSymbols() 
+{
 	return fCurrentSymbols;
 }
 
-void Portfolio::Add(const char *symbol) {
+void Portfolio::Add(const char *symbol) 
+{
 	if (HasSymbol(symbol) == true) {
 		return;
 	}
@@ -51,7 +61,8 @@ void Portfolio::Add(const char *symbol) {
 	NotifyAdd(symbol);
 }
 	
-void Portfolio::Remove(const char *symbol) {
+void Portfolio::Remove(const char *symbol) 
+{
 	int32 index = IndexOf(symbol);
 	if (index == -1) {
 		return;
@@ -61,28 +72,67 @@ void Portfolio::Remove(const char *symbol) {
 }
 
 void
-Portfolio::NotifyAdd(const char *symbol) {	
+Portfolio::NotifyAdd(const char *symbol) 
+{	
 	BMessage message(kPortfolioAddedSymbolMessage);
 	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
 }
 
 void
-Portfolio::NotifyRemove(const char *symbol) {
+Portfolio::NotifyRemove(const char *symbol) 
+{
 	BMessage message(kPortfolioRemovedSymbolMessage);
 	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
 }
 
 void 
-Portfolio::SetTarget(BHandler *handler) {
+Portfolio::SetTarget(BHandler *handler) 
+{
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
+void 
+Portfolio::SetRefreshRate(uint8 seconds) 
+{
+	fRereshInterval = seconds;
+}
+
+uint8 
+Portfolio::RefreshRate() const
+{
+	return fRereshInterval;
+}
+
+uint8
+Portfolio::Transparency() const
+{		
+	return fTransparency;
+}
+
+QuoteSize 
+Portfolio::CurrentQuoteSize() const
+{
+	return fQuoteSize;
+}
+
+void
+Portfolio::SetTransparency(uint8 transparency) 
+{
+	fTransparency = transparency;
+}
+
+void 
+Portfolio::SetQuoteSize(QuoteSize size) 
+{	
+	fQuoteSize = size;
+}
+
 int32 
-Portfolio::IndexOf(const char *symbol) {
-	
+Portfolio::IndexOf(const char *symbol) 
+{	
 	if (fCurrentSymbols == NULL) {
 		return -1;
 	}
@@ -98,19 +148,14 @@ Portfolio::IndexOf(const char *symbol) {
 }
 	
 bool 
-Portfolio::HasSymbol(const char *symbol) {
+Portfolio::HasSymbol(const char *symbol) 
+{
 	return IndexOf(symbol) != -1;
 }
 
 void
-Portfolio::Load() {
-	//fCurrentSymbols->MakeEmpty();
-	//fCurrentSymbols = fSettingsManager->LoadSymbols();
-}
-
-void
-Portfolio::HandlePortfolioUpdate(BMessage *message) {
-
+Portfolio::HandlePortfolioUpdate(BMessage *message) 
+{
 	BString symbol;
 	bool removeFromPortfolio = false;
 
@@ -122,7 +167,8 @@ Portfolio::HandlePortfolioUpdate(BMessage *message) {
 }
 
 void 
-Portfolio::PrintToStream() {
+Portfolio::PrintToStream() 
+{
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
 		const char *symbol = static_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
@@ -134,8 +180,8 @@ Portfolio::PrintToStream() {
 }
 
 status_t 	
-Portfolio::Save(BMessage& message) {
-
+Portfolio::Save(BMessage& message) 
+{
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
 		const char *symbol = static_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
@@ -146,12 +192,25 @@ Portfolio::Save(BMessage& message) {
 		symbolMsg.AddString("Symbol", symbol);
 		message.AddMessage("Symbols", &symbolMsg);
 	}
+
+	if (message.ReplaceUInt8("Refresh", fRereshInterval) != B_OK) {
+		message.AddUInt8("Refresh", fRereshInterval);
+	}	
+	
+	if (message.ReplaceUInt8("Transparency", fTransparency) != B_OK) {
+		message.AddUInt8("Transparency", fTransparency);
+	}
+
+	uint8 value = uint8(fQuoteSize);
+	if (message.ReplaceUInt8("size", value) != B_OK) {
+		message.AddUInt8("size", uint8(value));
+	}		
 	return B_OK; //TODO
 }
 
 status_t
-Portfolio::Load(BMessage& message) {
-	
+Portfolio::Load(BMessage& message) 
+{	
 	if (fCurrentSymbols == NULL) {
 		return B_ERROR;
 	}
@@ -166,5 +225,22 @@ Portfolio::Load(BMessage& message) {
 		}
 		index++;
 	}
+
+	uint8 size = 1;
+	if (message.FindUInt8("size", &size) == B_OK) {
+		fQuoteSize = QuoteSize(size);
+	} else {
+		fQuoteSize = NORMAL;
+	}
+	
+	if (message.FindUInt8("Transparency", &fTransparency) != B_OK) {
+		fTransparency = 127;
+	}
+	
+	
+	if (message.FindUInt8("Refresh", &fRereshInterval) != B_OK) {
+		fRereshInterval = 60;
+	}
+		
 	return B_OK; //TODO
 }

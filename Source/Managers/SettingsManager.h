@@ -20,14 +20,6 @@ public:
 	~SettingsManager();
 	
 	void SetTarget(BHandler *handler);
-	void SetTransparency(uint8 transparency);
-	uint8 Transparency();
-
-	void SetRefreshRate(uint8 seconds);
-	uint8 RefreshRate();
-	
-	void SetQuoteSize(QuoteSize size);
-	QuoteSize CurrentQuoteSize();
 	
 	BMessage* MessageForPortfolio(BString name);
 	

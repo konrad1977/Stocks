@@ -7,6 +7,7 @@
 
 #include <SupportDefs.h>
 #include <support/String.h>
+#include "QuoteListItem.h"
 
 class BList;
 class BHandler;
@@ -18,36 +19,44 @@ public:
 	Portfolio(BString name);
 	~Portfolio();
 
-	BString Name();
-	
+	void SetTransparency(uint8 transparency);
+	void SetRefreshRate(uint8 seconds);
+	void SetQuoteSize(QuoteSize size);
 	void SetTarget(BHandler *handler);
 	void Add(const char *symbol);
 	void Remove(const char *symbol);
-	
 	void HandlePortfolioUpdate(BMessage *message);
+	
+	uint8 Transparency() const;
+	uint8 RefreshRate() const;
+	QuoteSize CurrentQuoteSize() const;
+	
+	BString Name();	
 	BList *CurrentSymbols();
-			
-	status_t 	Save(BMessage &message);
-	status_t 	Load(BMessage &message);
+	
+	status_t Save(BMessage &message);
+	status_t Load(BMessage &message);
 	
 	bool IsEqual(const Portfolio &other) {
 		return this->fName == other.fName;
 	}
-	void PrintToStream();
 	
+	void PrintToStream();	
 private:
 
 	int32 IndexOf(const char *symbol);
 	bool HasSymbol(const char *symbol);
-
+	
 	void NotifyAdd(const char *symbol);
 	void NotifyRemove(const char *symbol);
-	void Load();
 	
 	BString 		fName;
 	BList 			*fCurrentSymbols;
 	BMessenger 		*fMessenger;
 	SettingsManager *fSettingsManager;
+	uint8 			fTransparency;
+	uint8 			fRereshInterval;
+	QuoteSize 		fQuoteSize;
 };
 
 
