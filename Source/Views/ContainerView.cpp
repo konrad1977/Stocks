@@ -25,7 +25,7 @@ const float kDraggerSize = 7;
 
 extern const char *kAppSignature;
 
-ContainerView::ContainerView()
+ContainerView::ContainerView(Portfolio *portfolio)
 	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
@@ -33,7 +33,7 @@ ContainerView::ContainerView()
 	,fMessenger(NULL)
 	,fAutoUpdateRunner(NULL)
 	,fStockRequester(NULL)
-	,fPortfolio(NULL)
+	,fPortfolio(portfolio)
 	,fSettingsManager(NULL)
 	,fDownloadThread(-1)
 	,fIsReplicant(false)

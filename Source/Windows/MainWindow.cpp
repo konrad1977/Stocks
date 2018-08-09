@@ -12,6 +12,7 @@
 #include "StockRequester.h"
 #include "SettingsManager.h"
 #include "SettingsWindow.h"
+#include "Portfolio.h"
 
 #include <Alert.h>
 #include <Application.h>
@@ -33,8 +34,8 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
-MainWindow::MainWindow(BRect rect) 
-	:BWindow(rect, B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+MainWindow::MainWindow(Portfolio *portfolio) 
+	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fMenuBar(NULL) 
 	,fContainerView(NULL)
 	,fStockRequester(NULL)
@@ -46,11 +47,13 @@ MainWindow::MainWindow(BRect rect)
 	,fRemoveSelected(NULL)
 	,fMinimalItem(NULL)
 	,fNormalItem(NULL)
-	,fExtenededItem(NULL) {
+	,fExtenededItem(NULL)
+	,fPortfolio(portfolio) {
  	
 	SetupViews();
+	SetTitle( fPortfolio->Name() );
 	InitQuoteSize();
-	DownloadStockSymbols();
+	//DownloadStockSymbols();
 }
 
 MainWindow::~MainWindow() {
@@ -244,7 +247,7 @@ MainWindow::SetupViews() {
 			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
 		.End();
 	
-	fContainerView = new ContainerView();
+	fContainerView = new ContainerView(fPortfolio);
 	fContainerView->SetTarget(this);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)

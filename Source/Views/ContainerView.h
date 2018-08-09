@@ -19,7 +19,7 @@ class BListView;
 class BList;
 class ContainerView : public BView {
 public:
-	ContainerView();
+	ContainerView(Portfolio *portfolio);
 	ContainerView(BMessage *archive);
 	~ContainerView();
 	

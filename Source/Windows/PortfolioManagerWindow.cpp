@@ -9,6 +9,7 @@
 #include "PortfolioWindow.h"
 #include "Portfolio.h"
 #include "Constants.h"
+#include "MainWindow.h"
 
 #include <Catalog.h>
 #include <Autolock.h>
@@ -63,6 +64,7 @@ PortfolioManagerWindow::InitLayout()
 	
 
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fListView->SetInvocationMessage(new BMessage(kPortfolioManagerSelectMessage));
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
@@ -113,6 +115,16 @@ PortfolioManagerWindow::ReloadPortfolios()
 	}
 }
 
+void 
+PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
+	if (portfolio == NULL) {
+		return;
+	}
+	
+	MainWindow *window = new MainWindow(portfolio);
+	window->Show();
+}
+
 void
 PortfolioManagerWindow::MessageReceived(BMessage *message) {
 	switch (message->what) {
@@ -132,6 +144,16 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		case kNewPortfolioCreated: {
 			ReloadPortfolios();
 			printf("New portfolio added\n");
+			break;
+		}
+		
+		case kPortfolioManagerSelectMessage: {
+			int32 index = 0;
+			if (message->FindInt32("index", &index) == B_OK) {
+				BList *portfolios = fPortfolioManager->Portfolios();
+				Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(index));
+				ShowWindowWithPortfolio(portfolio);
+			}
 			break;
 		}
 		

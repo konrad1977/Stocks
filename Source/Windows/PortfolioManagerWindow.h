@@ -11,6 +11,7 @@
 
 class BListView;
 class BMenuBar;
+class Portfolio;
 class PortfolioWindow;
 class PortfolioManager;
 class PortfolioManagerWindow : public BWindow {
@@ -24,6 +25,7 @@ private:
 			void InitLayout();
 			void ReloadPortfolios();
 			
+			void ShowWindowWithPortfolio(Portfolio *portfolio);
 			void HandleNewPortfolioMessage(BMessage &message);
 			void HandleAlreadyExist(BString previousName);
 			

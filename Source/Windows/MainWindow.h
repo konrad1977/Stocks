@@ -15,9 +15,10 @@ class SettingsWindow;
 class StockSymbolWindow;
 class BMenuBar;
 class ContainerView;
+class Portfolio;
 class MainWindow: public BWindow {
 public:
-	MainWindow(BRect rect);	
+	MainWindow(Portfolio *portfolio);	
 	~MainWindow();
 	
 	virtual void MessageReceived(BMessage *message);
@@ -49,6 +50,7 @@ private:
 	BMenuItem			*fMinimalItem;
 	BMenuItem			*fNormalItem;
 	BMenuItem			*fExtenededItem;
+	Portfolio			*fPortfolio;
 };
 
 #endif
