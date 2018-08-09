@@ -10,6 +10,10 @@
 #include "Portfolio.h"
 #include "Constants.h"
 #include "MainWindow.h"
+#include "StockRequester.h"
+#include "StockSymbolWindow.h"
+#include "StockSymbol.h"
+#include "SymbolListItem.h"
 
 #include <Catalog.h>
 #include <Autolock.h>
@@ -24,28 +28,36 @@
 
 #include <posix/stdio.h>
 
-const uint32 kNewPortfolio	= 'kNPFM';
+const uint32 kNewPortfolio	= 'kNPM';
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
 PortfolioManagerWindow::PortfolioManagerWindow() 
 	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	,fStockRequester(NULL)
+	,fStockSymbolWindow(NULL)
 	,fPortfolioWindow(NULL)
 	,fPortfolioManager(NULL)
 	,fMenuBar(NULL)
 	,fListView(NULL)
+	,fSymbolList(NULL)
+	,fShowStockSymbolListWhenDone(false)
+	,fStockSymbolsLoaded(false)
 {
 	fPortfolioManager = new PortfolioManager(this);
-
+	
+	DownloadStockSymbols();
 	InitLayout();
-	CenterOnScreen();
 	ReloadPortfolios();
+	CenterOnScreen();
 }
 	
 PortfolioManagerWindow::~PortfolioManagerWindow() 
 {
 	delete fPortfolioWindow;
+	delete fPortfolioManager;
+	delete fStockRequester;
 }
 
 void
@@ -59,6 +71,7 @@ PortfolioManagerWindow::InitLayout()
 		.AddMenu(B_TRANSLATE("File"))
 			.AddItem(B_TRANSLATE("New..."), kNewPortfolio, 'N')
 			.AddSeparator()
+			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
 			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
 		.End();
 	
@@ -69,6 +82,33 @@ PortfolioManagerWindow::InitLayout()
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(fListView);
+}
+
+StockSymbolWindow *
+PortfolioManagerWindow::SymbolWindow()
+{
+	if (fStockSymbolWindow == NULL) {
+		fStockSymbolWindow = new StockSymbolWindow();
+	}
+	return fStockSymbolWindow;
+}
+
+void 
+PortfolioManagerWindow::DownloadStockSymbols() 
+{
+	if (fStockRequester == NULL) {
+		fStockRequester = new StockRequester(this);
+	}
+	fStockRequester->DownloadSymbols();
+}
+
+void
+PortfolioManagerWindow::ShowStockWindow() 
+{
+	if (SymbolWindow()->IsHidden() || SymbolWindow()->IsMinimized()) {
+		SymbolWindow()->SetStockSymbols(fSymbolList);
+		SymbolWindow()->Show();				
+	}
 }
 
 void
@@ -122,12 +162,52 @@ PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
 	}
 	
 	MainWindow *window = new MainWindow(portfolio);
+	window->SetTarget(this);
+	SymbolWindow()->SetTarget(window);
 	window->Show();
+}
+
+void 
+PortfolioManagerWindow::HandleStockSearchSymbols(BMessage *message) {
+	
+	BMessage symbolMessage;
+	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
+		char *name;
+		uint32 type;
+		int32 count;
+				
+		if (fSymbolList == NULL) {
+			fSymbolList = new BList();
+		}
+				
+		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
+			BMessage currentMessage;
+			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
+				StockSymbol *symbol = new StockSymbol(currentMessage);
+				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
+				fSymbolList->AddItem(symbolListItem);
+			}
+		}
+	}
+	
+	fStockSymbolsLoaded = true;
+	if (fShowStockSymbolListWhenDone) {
+		ShowStockWindow();
+	}
 }
 
 void
 PortfolioManagerWindow::MessageReceived(BMessage *message) {
+	
 	switch (message->what) {
+		case kPortfolioManagerSaveMessage: {
+			fPortfolioManager->Save();
+			break;
+		}
+		case B_ABOUT_REQUESTED: {
+			printf("Todo not implemented\n");
+			break;
+		}
 		case kNewPortfolio: {
 			if (fPortfolioWindow == NULL) {
 				fPortfolioWindow = new PortfolioWindow(this);
@@ -135,7 +215,12 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			fPortfolioWindow->Show();
 			break;
 		}
-			
+
+		case kUpdateSymbolMessage: { 
+			HandleStockSearchSymbols(message);
+			break;		
+		}		
+		
 		case kPortfolioQuitMessage: {
 			fPortfolioWindow = NULL;
 			break;
@@ -144,6 +229,11 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		case kNewPortfolioCreated: {
 			ReloadPortfolios();
 			printf("New portfolio added\n");
+			break;
+		}
+		
+		case kShowSearchWindowMessage: {
+			ShowStockWindow();
 			break;
 		}
 		

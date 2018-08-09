@@ -11,6 +11,8 @@
 
 class BListView;
 class BMenuBar;
+class StockSymbolWindow;
+class StockRequester;
 class Portfolio;
 class PortfolioWindow;
 class PortfolioManager;
@@ -22,17 +24,29 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	
 private:
+	StockSymbolWindow* SymbolWindow();
+	
+			void DownloadStockSymbols();
+			void ShowStockWindow();
 			void InitLayout();
 			void ReloadPortfolios();
 			
 			void ShowWindowWithPortfolio(Portfolio *portfolio);
-			void HandleNewPortfolioMessage(BMessage &message);
 			void HandleAlreadyExist(BString previousName);
 			
+			void HandleNewPortfolioMessage(BMessage &message);
+			void HandleStockSearchSymbols(BMessage *message);
+
+	StockRequester		*fStockRequester;
+	StockSymbolWindow 	*fStockSymbolWindow;	
 	PortfolioWindow 	*fPortfolioWindow;
 	PortfolioManager 	*fPortfolioManager;
 	BMenuBar 			*fMenuBar;
 	BListView 			*fListView;
+	
+	BList 				*fSymbolList;
+	bool 				fShowStockSymbolListWhenDone;
+	bool				fStockSymbolsLoaded;	
 };
 
 #endif // _H

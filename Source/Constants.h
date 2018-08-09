@@ -24,11 +24,7 @@ const uint32 kUpdateQuoteBatchMessage 		= 'Uqbm';
 const uint32 kUpdateFailed 					= 'UFMb';
 
 const uint32 kAutoUpdateMessage 			= 'UAUm';
-const uint32 kPortfolioButtonPressedMessage = 'PSBm';
 const uint32 kSaveSettingsMessage 			= 'PREm';
-const uint32 kPortfolioRemovedSymbolMessage	= 'PRMe';
-const uint32 kPortfolioAddedSymbolMessage	= 'PAMe';
-
 
 //GUID
 const uint32 kHideSearchWindowMessaage 		= 'SWCm';
@@ -50,10 +46,14 @@ const uint32 kRefreshChangedMessage				= 'RCMm';
 const uint32 kRefreshModificationMessage		= 'RMMc';
 
 // portfolio and portfoliomanager
-const uint32 kCreateNewPortfolioMessage			= 'CNPm';
-const uint32 kNewPortfolioCreated				= 'kNPC';
-const uint32 kPortfolioQuitMessage				= 'kPQM';
-const uint32 kPortfolioManagerSelectMessage	 	= 'PMSc';
+const uint32 kCreateNewPortfolioMessage		= 'CNPm';
+const uint32 kNewPortfolioCreated			= 'kNPC';
+const uint32 kPortfolioQuitMessage			= 'kPQM';
+const uint32 kPortfolioManagerSelectMessage	= 'PMSc';
+const uint32 kPortfolioManagerSaveMessage	= 'SAVe';
+const uint32 kPortfolioButtonPressedMessage = 'PSBm';
+const uint32 kPortfolioRemovedSymbolMessage	= 'PRMe';
+const uint32 kPortfolioAddedSymbolMessage	= 'PAMe';
 
 
 #endif // _H

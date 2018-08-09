@@ -48,7 +48,7 @@ void Portfolio::Add(const char *symbol) {
 	}
 	
 	fCurrentSymbols->AddItem((void*)symbol);
-	//NotifyAdd(symbol);
+	NotifyAdd(symbol);
 }
 	
 void Portfolio::Remove(const char *symbol) {
@@ -57,7 +57,7 @@ void Portfolio::Remove(const char *symbol) {
 		return;
 	}
 	fCurrentSymbols->RemoveItem(index);
-	//NotifyRemove(symbol);
+	NotifyRemove(symbol);
 }
 
 void

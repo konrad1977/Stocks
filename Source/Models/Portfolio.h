@@ -33,7 +33,6 @@ public:
 	bool IsEqual(const Portfolio &other) {
 		return this->fName == other.fName;
 	}
-	
 	void PrintToStream();
 	
 private:

@@ -18,6 +18,7 @@
 #include <Application.h>
 #include <Catalog.h>
 
+#include <Messenger.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
 #include <Locale.h>
@@ -35,58 +36,38 @@
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
 MainWindow::MainWindow(Portfolio *portfolio) 
-	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL) 
 	,fContainerView(NULL)
 	,fStockRequester(NULL)
-	,fStockSymbolWindow(NULL)
 	,fSettingsWindow(NULL)
-	,fSymbolList(NULL)
-	,fShowStockSymbolListWhenDone(false)
-	,fStockSymbolsLoaded(false)	
 	,fRemoveSelected(NULL)
 	,fMinimalItem(NULL)
 	,fNormalItem(NULL)
 	,fExtenededItem(NULL)
-	,fPortfolio(portfolio) {
- 	
+	,fMessenger(NULL)
+	,fPortfolio(portfolio) 
+{ 	
 	SetupViews();
 	SetTitle( fPortfolio->Name() );
 	InitQuoteSize();
-	//DownloadStockSymbols();
 }
 
-MainWindow::~MainWindow() {
+MainWindow::~MainWindow() 
+{
 	delete fStockRequester;
-}
-
-void 
-MainWindow::DownloadStockSymbols() {
-	if (fStockRequester == NULL) {
-		fStockRequester = new StockRequester(this);
-	}
-	fStockRequester->DownloadSymbols();
-}
-
-StockSymbolWindow *
-MainWindow::SymbolWindow() {
-	if (fStockSymbolWindow == NULL) {		
-		fStockSymbolWindow = new StockSymbolWindow();
-		fStockSymbolWindow->SetTarget(this);	
-	}
-	return fStockSymbolWindow;
+	delete fMessenger;
 }
 
 void
-MainWindow::ShowStockWindow() {
-	if (SymbolWindow()->IsHidden() || SymbolWindow()->IsMinimized()) {
-		SymbolWindow()->SetStockSymbols(fSymbolList);
-		SymbolWindow()->Show();				
-	}
+MainWindow::SetTarget(BHandler *handler) {
+	delete fMessenger;
+	fMessenger = new BMessenger(handler);
 }
 
 SettingsWindow*
-MainWindow::CurrentSettingWindow() {
+MainWindow::CurrentSettingWindow() 
+{
 	if (fSettingsWindow == NULL) {
 		fSettingsWindow = new SettingsWindow();
 		fSettingsWindow->SetTarget(this);
@@ -95,14 +76,15 @@ MainWindow::CurrentSettingWindow() {
 }
 
 void
-MainWindow::SendToContainerView(BMessage *message) {
+MainWindow::SendToContainerView(BMessage *message) 
+{
 	BMessenger messenger(fContainerView);
 	messenger.SendMessage(message);
 }
 
 void
-MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size) {
-	
+MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size)
+{	
 	fMinimalItem->SetMarked(false);
 	fNormalItem->SetMarked(false);
 	fExtenededItem->SetMarked(false);
@@ -120,36 +102,49 @@ MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size) {
 }
 
 void 
-MainWindow::InitQuoteSize() {
+MainWindow::InitQuoteSize() 
+{
 	SetSelectedMenuFromQuoteSize(SettingsManager().CurrentQuoteSize());
 }
 
+void 
+MainWindow::SendSaveMessage() 
+{
+	BMessage saveMessage(kPortfolioManagerSaveMessage);
+	fMessenger->SendMessage(&saveMessage);
+}
+
 void
-MainWindow::MessageReceived(BMessage *message) {
+MainWindow::MessageReceived(BMessage *message) 
+{	
 	switch (message->what) {
 	
 		case kRemoveSelectedListItem:
 		case kPortfolioButtonPressedMessage:
 		case B_ABOUT_REQUESTED: {
 			SendToContainerView(message);
+			SendSaveMessage();
 			break;
 		}
 		
 		case kUseSmallQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(SMALL);
+			SendSaveMessage();
 			break;
 		}
 
 		case kUseNormalQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(NORMAL);
+			SendSaveMessage();
 			break;
 		}
 
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(LARGE);
+			SendSaveMessage();
 			break;
 		}
 		
@@ -163,26 +158,25 @@ MainWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		
-		case kUpdateSymbolMessage: { 
-			HandleStockSearchSymbols(message);
-			break;		
-		}
-		
 		case kHideSearchWindowMessaage: {
-			fStockSymbolWindow = NULL;
+			printf("Remove\n");
+			//fStockSymbolWindow = NULL;
 			break;
 		}
 		
 		case kEmptyListMessage: {
-			if (fStockSymbolsLoaded) {
+			printf("Portfolio stock is empty show find stocks\n");
+			/*if (fStockSymbolsLoaded) {
 				ShowStockWindow();
 				return;
 			}
 			fShowStockSymbolListWhenDone = true;
-			break;
+			break;*/
 		}
+		
 		case kShowSearchWindowMessage: {
-			ShowStockWindow();
+			BMessage message(kShowSearchWindowMessage);
+			fMessenger->SendMessage(&message);
 			break;
 		}
 			
@@ -192,48 +186,14 @@ MainWindow::MessageReceived(BMessage *message) {
 	}
 }
 
-void 
-MainWindow::HandleStockSearchSymbols(BMessage *message) {
-	BMessage symbolMessage;
-			
-	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
-		char *name;
-		uint32 type;
-		int32 count;
-				
-		if (fSymbolList == NULL) {
-			fSymbolList = new BList();
-		}
-				
-		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
-			BMessage currentMessage;
-			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
-				StockSymbol *symbol = new StockSymbol(currentMessage);
-				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
-				fSymbolList->AddItem(symbolListItem);
-			}
-		}
-	}
-	
-	fStockSymbolsLoaded = true;
-	if (fShowStockSymbolListWhenDone) {
-		ShowStockWindow();
-	}
-}
-
 void
-MainWindow::SetupViews() {
-
+MainWindow::SetupViews() 
+{
 	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
 	layout->SetSpacing(0);
 	SetLayout(layout);
 	
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
-		.AddMenu(B_TRANSLATE("File"))
-			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
-			.AddSeparator()
-			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
-		.End()
 		.AddMenu(B_TRANSLATE("Edit"))
 			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
 		.End()

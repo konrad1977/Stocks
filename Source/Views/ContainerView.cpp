@@ -57,15 +57,26 @@ ContainerView::ContainerView(BMessage *archive)
 	,fSettingsManager(NULL)
 	,fDownloadThread(-1)
 	,fIsReplicant(true)
-{	
+{		
+	BString portfolioName;
+	if (archive->FindString("PortfolioName", &portfolioName) != B_OK) {
+		return;
+	}
+	
 	fSettingsManager = new SettingsManager();
 
+	if (BMessage *msg = fSettingsManager->MessageForPortfolio(portfolioName)) {
+		fPortfolio = new Portfolio(portfolioName);
+		fPortfolio->Load(*msg);
+	}
+	
 	SetViewColor(B_TRANSPARENT_COLOR);
 	SetupViews();
 	LoadSavedData();
 }
 
-ContainerView::~ContainerView() {
+ContainerView::~ContainerView() 
+{
 	delete fStockRequester;
 	delete fPortfolio;
 	delete fAutoUpdateRunner;
@@ -74,30 +85,36 @@ ContainerView::~ContainerView() {
 }
 
 status_t
-ContainerView::Archive(BMessage* into, bool deep) const {
+ContainerView::Archive(BMessage* into, bool deep) const 
+{
 	into->AddString("add_on", kAppSignature);
+	into->AddString("PortfolioName", fPortfolio->Name());
 	return BView::Archive(into, false);
 }
 
 BArchivable*	
-ContainerView::Instantiate(BMessage* archive) {
+ContainerView::Instantiate(BMessage* archive) 
+{
 	return new ContainerView(archive);
 }
 
 status_t	
-ContainerView::SaveState(BMessage* into, bool deep) const {
+ContainerView::SaveState(BMessage* into, bool deep) const 
+{
 	return B_OK;
 }
 
 void
-ContainerView::SetTarget(BHandler *handler) {
+ContainerView::SetTarget(BHandler *handler) 
+{
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 void
-ContainerView::SendEmptyListMessage() {
-	BList *list = CurrentPortfolio()->CurrentSymbols();	
+ContainerView::SendEmptyListMessage() 
+{
+	BList *list = fPortfolio->CurrentSymbols();	
 	if (list == NULL || list->CountItems() == 0) {
 		BMessage emptyListMessage(kEmptyListMessage);
 		fMessenger->SendMessage(&emptyListMessage);
@@ -105,20 +122,13 @@ ContainerView::SendEmptyListMessage() {
 }
 
 void
-ContainerView::LoadSavedData() {
-	BList *list = CurrentPortfolio()->CurrentSymbols();	
+ContainerView::LoadSavedData() 
+{
+	BList *list = fPortfolio->CurrentSymbols();	
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		char *symbol = static_cast<char *>(list->ItemAt(index));
 		Requester()->Add(symbol);
 	}	
-}
-
-Portfolio*
-ContainerView::CurrentPortfolio() {
-	if (fPortfolio == NULL) {
-		fPortfolio = new Portfolio("Portfolio");
-	}
-	return fPortfolio;
 }
 
 StockRequester* 
@@ -143,9 +153,9 @@ ContainerView::InitAutoUpdate() {
 }
 
 void
-ContainerView::AttachedToWindow() {
-	
-	CurrentPortfolio()->SetTarget(this);
+ContainerView::AttachedToWindow() 
+{	
+	fPortfolio->SetTarget(this);
 	RequestData();
 	SendEmptyListMessage();
 	InitAutoUpdate();
@@ -156,15 +166,16 @@ ContainerView::AttachedToWindow() {
 }
 
 void 
-ContainerView::ShowAlert(const char *title, const char *message) {
+ContainerView::ShowAlert(const char *title, const char *message) 
+{
 	BAlert *alert = new BAlert(title, message, "Ok");
 	alert->SetType(B_INFO_ALERT);
 	alert->Go();
 }
 
 void
-ContainerView::MessageReceived(BMessage *message) {
-	
+ContainerView::MessageReceived(BMessage *message) 
+{	
 	switch (message->what) {
 
 		case B_NODE_MONITOR: {
@@ -183,10 +194,13 @@ ContainerView::MessageReceived(BMessage *message) {
 		}
 
 		case kPortfolioAddedSymbolMessage: {
+			printf("Portfolio add\n");
+			
 			BString symbol;
 			if (message->FindString("symbol", &symbol) == B_OK) {
 				Requester()->Add(symbol.String());
 				RequestData();
+				printf("%s\n", symbol.String());
 			}
 			break;
 		}
@@ -222,7 +236,8 @@ ContainerView::MessageReceived(BMessage *message) {
 		}
 		
 		case kPortfolioButtonPressedMessage: {	
-			CurrentPortfolio()->HandlePortfolioUpdate(message);
+			printf("kPortfolioButtonPressedMessage\n");
+			fPortfolio->HandlePortfolioUpdate(message);
 			break;
 		}
 		
@@ -241,8 +256,8 @@ ContainerView::MessageReceived(BMessage *message) {
 }
 
 void
-ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
-
+ContainerView::UpdateQuoteItemSizes(QuoteSize size) 
+{
 	if (fQuoteListView == NULL) {
 		return;
 	}
@@ -261,7 +276,7 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size) {
 void
 ContainerView::DownloadData() {
 	
-	BList *list = CurrentPortfolio()->CurrentSymbols();
+	BList *list = fPortfolio->CurrentSymbols();
 	Requester()->ResetUrlList();	
 	
 	for (int32 index = 0; index<list->CountItems(); index++) {
@@ -279,8 +294,8 @@ ContainerView::DownloadDataFunc(void *cookie) {
 }
 
 void
-ContainerView::RequestData() {
-	
+ContainerView::RequestData() 
+{	
 	StopActiveRequest();
 	
 	fDownloadThread = spawn_thread(&DownloadDataFunc, "Download Data", B_NORMAL_PRIORITY, this);
@@ -289,7 +304,8 @@ ContainerView::RequestData() {
 }
 
 void
-ContainerView::StopActiveRequest() {
+ContainerView::StopActiveRequest() 
+{
 	if (fDownloadThread == -1) {
 		return;
 	}
@@ -308,7 +324,7 @@ ContainerView::RemoveSelectedListItem() {
 		QuoteListItem  *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(selectedIndex));
 		if (listItem && listItem->CurrentQuoteItem()) {
 			const char *symbol = listItem->CurrentQuoteItem()->symbol.String();
-			CurrentPortfolio()->Remove(symbol);
+			fPortfolio->Remove(symbol);
 			fQuoteListView->RemoveItem(selectedIndex);
 		}
 	} else {
@@ -354,8 +370,8 @@ ContainerView::HandleQuotes(BMessage message) {
 }
 
 void
-ContainerView::SetupViews() {
-	
+ContainerView::SetupViews() 
+{	
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
 	
 	if (fIsReplicant)

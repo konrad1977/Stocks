@@ -34,7 +34,6 @@ public:
 private:
 
 	StockRequester	*Requester();	
-	Portfolio		*CurrentPortfolio();
 	SettingsManager *CurrentSettingsManager();
 	
 			void InitAutoUpdate();

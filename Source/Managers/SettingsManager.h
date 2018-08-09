@@ -28,25 +28,17 @@ public:
 	
 	void SetQuoteSize(QuoteSize size);
 	QuoteSize CurrentQuoteSize();
-
+	
+	BMessage* MessageForPortfolio(BString name);
+	
 	void StartMonitoring(BHandler *handler);
 	
-	bool HasSymbol(const char *symbol);
-	void RemoveSymbol(const char *symbol);
-	void AddSymbol(const char *symbol);
-	
-	
-	void SaveSymbols(BList *list);
-	BList *LoadSymbols();
-
 	status_t LoadSettings(BMessage &message);
 	status_t SaveSettings(BMessage message);	
 	
 private:
 
 	const char* SavePath() const;
-	
-	int32 	IndexOf(const char *symbol);
 	void 	SaveWithLock(BMessage *message);
 	
 	char 	*fFileName;

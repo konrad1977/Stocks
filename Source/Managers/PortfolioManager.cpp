@@ -26,14 +26,16 @@ PortfolioManager::PortfolioManager(BHandler *handler)
 	Load();
 }
 
-PortfolioManager::~PortfolioManager() {
+PortfolioManager::~PortfolioManager() 
+{
 	delete fSettingsManager;
 	delete fMessenger;
 	delete fPortfolioList;
 }
 
 bool 
-PortfolioManager::AddPortfolio(Portfolio *portfolio) {
+PortfolioManager::AddPortfolio(Portfolio *portfolio) 
+{
 	if (HasPortfolio(portfolio) == false ) {
 		fPortfolioList->AddItem(reinterpret_cast<void*>(portfolio));
 		Save();
@@ -46,7 +48,8 @@ PortfolioManager::AddPortfolio(Portfolio *portfolio) {
 }
 
 void 
-PortfolioManager::RemovePortfolio(Portfolio *portfolio) {
+PortfolioManager::RemovePortfolio(Portfolio *portfolio) 
+{
 	const int32 items = fPortfolioList->CountItems();
 	
 	for (int32 i = 0; i<items; i++) {
@@ -80,12 +83,14 @@ PortfolioManager::HasPortfolio(Portfolio *portfolio) {
 }
 
 BList *
-PortfolioManager::Portfolios() const {
+PortfolioManager::Portfolios() const 
+{
 	return fPortfolioList;
 }
 
 void 
-PortfolioManager::PrintToStream() {
+PortfolioManager::PrintToStream() 
+{
 	if (fPortfolioList == NULL || fPortfolioList->CountItems() == 0) {
 		printf("No portfolios found\n");
 	}
@@ -124,8 +129,8 @@ PortfolioManager::Save() {
 }
 
 status_t 
-PortfolioManager::Load() {
-
+PortfolioManager::Load() 
+{
 	BMessage message;
 	fSettingsManager->LoadSettings(message);
 
@@ -140,7 +145,6 @@ PortfolioManager::Load() {
 		}
 		index++;
 	}	
-	message.PrintToStream();
 	PrintToStream();
 	return B_OK; //TODO
 }
