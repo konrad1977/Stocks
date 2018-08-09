@@ -18,6 +18,7 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#include <interface/ListView.h>
 #include <interface/MenuBar.h>
 
 #include <posix/stdio.h>
@@ -27,14 +28,18 @@ const uint32 kNewPortfolio	= 'kNPFM';
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
-PortfolioManagerWindow::PortfolioManagerWindow(PortfolioManager *manager) 
+PortfolioManagerWindow::PortfolioManagerWindow() 
 	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fPortfolioWindow(NULL)
-	,fPortfolioManager(manager)
+	,fPortfolioManager(NULL)
 	,fMenuBar(NULL)
+	,fListView(NULL)
 {
+	fPortfolioManager = new PortfolioManager(this);
+
 	InitLayout();
 	CenterOnScreen();
+	ReloadPortfolios();
 }
 	
 PortfolioManagerWindow::~PortfolioManagerWindow() 
@@ -56,9 +61,26 @@ PortfolioManagerWindow::InitLayout()
 			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
 		.End();
 	
+
+	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
-		.AddGlue();
+		.Add(fListView);
+}
+
+void
+PortfolioManagerWindow::HandleAlreadyExist(BString previousName) 
+{
+	printf("HandleAlreadyExist(%s)\n", previousName.String());
+	
+	if (fPortfolioWindow == NULL) {
+		fPortfolioWindow = new PortfolioWindow(this);
+		fPortfolioWindow->SetAlreadyExistingName(previousName);
+		fPortfolioWindow->Show();
+	} else {
+		fPortfolioWindow->Activate();
+	}
 }
 
 void
@@ -67,18 +89,27 @@ PortfolioManagerWindow::HandleNewPortfolioMessage(BMessage &message)
 	BString portFolioName;
 	if (message.FindString("PortfolioName", &portFolioName) == B_OK ) {
 		Portfolio *portfolio = new Portfolio(portFolioName);
-		if (fPortfolioManager->AddPortfolio(portfolio)) {
-//			BAutolock locker(fPortfolioWindow);
-			fPortfolioWindow->Quit();		
-			
-		} else {
-			if (fPortfolioWindow == NULL) {
-				fPortfolioWindow = new PortfolioWindow(this);
-			}
-			fPortfolioWindow->SetAlreadyExistingName(portFolioName);
-			fPortfolioWindow->Activate();	
-			printf("Already exist\n");
+		if (fPortfolioManager->AddPortfolio(portfolio) == false ) {
+			fPortfolioWindow = NULL;
+			HandleAlreadyExist(portFolioName);
 		}
+	}
+}
+
+void 
+PortfolioManagerWindow::ReloadPortfolios()
+{
+	BList *portfolios = fPortfolioManager->Portfolios();
+	if (portfolios == NULL) {
+		return;
+	}
+
+	fListView->MakeEmpty();
+	
+	const int32 items = portfolios->CountItems();
+	for (int32 i = 0; i<items; i++) {
+		Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(i));
+		fListView->AddItem( new BStringItem(portfolio->Name().String()));
 	}
 }
 
@@ -90,6 +121,17 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 				fPortfolioWindow = new PortfolioWindow(this);
 			}
 			fPortfolioWindow->Show();
+			break;
+		}
+			
+		case kPortfolioQuitMessage: {
+			fPortfolioWindow = NULL;
+			break;
+		}
+		
+		case kNewPortfolioCreated: {
+			ReloadPortfolios();
+			printf("New portfolio added\n");
 			break;
 		}
 		

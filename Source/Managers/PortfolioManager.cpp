@@ -7,6 +7,7 @@
 #include "PortfolioManager.h"
 #include "Portfolio.h"
 #include "SettingsManager.h"
+#include "Constants.h"
 
 #include <Handler.h>
 #include <Messenger.h>
@@ -36,6 +37,9 @@ PortfolioManager::AddPortfolio(Portfolio *portfolio) {
 	if (HasPortfolio(portfolio) == false ) {
 		fPortfolioList->AddItem(reinterpret_cast<void*>(portfolio));
 		Save();
+		
+		BMessage message(kNewPortfolioCreated);
+		fMessenger->SendMessage(&message);
 		return true;
 	}
 	return false;

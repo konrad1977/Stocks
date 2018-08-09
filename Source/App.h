@@ -8,7 +8,6 @@
 #include <SupportDefs.h>
 #include <Application.h>
 
-class PortfolioManager;
 class App: public BApplication {
 public:
 	App(void);		
@@ -17,7 +16,6 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	
 private:	
-	PortfolioManager 	*fPortfolioManager; 
 };
 
 

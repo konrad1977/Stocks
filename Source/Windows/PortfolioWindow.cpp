@@ -44,6 +44,8 @@ PortfolioWindow::MessageReceived(BMessage *message)
 			BString name(fNameControl->Text());
 			message.AddString("PortfolioName", name);
 			fMessenger->SendMessage(&message);
+			QuitRequested();
+			Quit();
 			break;
 		}
 		default:
@@ -54,13 +56,12 @@ PortfolioWindow::MessageReceived(BMessage *message)
 void 
 PortfolioWindow::SetAlreadyExistingName(BString name)
 {
-	Lock();
 	TextControl()->SetText(name);
-	Unlock();
 }
 
 BTextControl *
-PortfolioWindow::TextControl() {
+PortfolioWindow::TextControl() 
+{
 	if (fNameControl == NULL) {
 		fNameControl = new BTextControl("Name", B_TRANSLATE("Portfolio name:"), B_TRANSLATE("Name"), NULL);
 	}
@@ -81,4 +82,12 @@ PortfolioWindow::InitLayout()
 		.SetInsets(10,10,10,10)
 		.Add(TextControl())
 		.Add(createButton);
+}
+
+bool
+PortfolioWindow::QuitRequested()
+{
+	BMessage message(kPortfolioQuitMessage);
+	fMessenger->SendMessage(&message);
+	return true;
 }

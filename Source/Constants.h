@@ -51,6 +51,8 @@ const uint32 kRefreshModificationMessage		= 'RMMc';
 
 // portfolio and portfoliomanager
 const uint32 kCreateNewPortfolioMessage			= 'CNPm';
+const uint32 kNewPortfolioCreated				= 'kNPC';
+const uint32 kPortfolioQuitMessage				= 'kPQM';
 
 
 #endif // _H
