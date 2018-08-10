@@ -176,6 +176,7 @@ MainWindow::MessageReceived(BMessage *message)
 		
 		case kShowSearchWindowMessage: {
 			BMessage message(kShowSearchWindowMessage);
+			message.AddString("PortfolioName", Title());
 			fMessenger->SendMessage(&message);
 			break;
 		}

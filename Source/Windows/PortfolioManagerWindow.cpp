@@ -258,7 +258,13 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		}
 		
 		case kShowSearchWindowMessage: {
-			ShowStockWindow();
+			BString portfolio;
+			if (message->FindString("PortfolioName", &portfolio) == B_OK) {
+				if (BWindow *window = PortfolioWindowWithName(portfolio)) {
+					SymbolWindow()->SetTarget(window);
+					ShowStockWindow();
+				}
+			}
 			break;
 		}
 		
