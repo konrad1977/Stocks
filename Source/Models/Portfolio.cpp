@@ -74,6 +74,13 @@ void Portfolio::Remove(const char *symbol)
 }
 
 void
+Portfolio::NotifyUpdates() 
+{
+	BMessage message(kPortfolioUpdatedSettingsMessage);
+	fMessenger->SendMessage(&message);
+}
+
+void
 Portfolio::NotifyAdd(const char *symbol) 
 {	
 	BMessage message(kPortfolioAddedSymbolMessage);
@@ -96,12 +103,6 @@ Portfolio::SetTarget(BHandler *handler)
 	fMessenger = new BMessenger(handler);
 }
 
-void 
-Portfolio::SetRefreshRate(uint8 seconds) 
-{
-	fRereshInterval = seconds;
-}
-
 uint8 
 Portfolio::RefreshRate() const
 {
@@ -120,16 +121,31 @@ Portfolio::CurrentQuoteSize() const
 	return fQuoteSize;
 }
 
+void 
+Portfolio::SetRefreshRate(uint8 seconds) 
+{
+	if (fRereshInterval != seconds) {
+		fRereshInterval = seconds;
+		NotifyUpdates();
+	}
+}
+
 void
 Portfolio::SetTransparency(uint8 transparency) 
 {
-	fTransparency = transparency;
+	if (fTransparency != transparency) {
+		fTransparency = transparency;
+		NotifyUpdates();
+	}
 }
 
 void 
 Portfolio::SetQuoteSize(QuoteSize size) 
 {	
-	fQuoteSize = size;
+	if (fQuoteSize != size) {
+		fQuoteSize = size;
+		NotifyUpdates();
+	}
 }
 
 int32 

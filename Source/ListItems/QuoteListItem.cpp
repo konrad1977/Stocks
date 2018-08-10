@@ -20,16 +20,19 @@ QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize
 	,fQuote(quote) 
 	,fQuoteSize(quoteSize)
 	,fDrawer(NULL)	
-	,fIsReplicant(isReplicant) {	
+	,fIsReplicant(isReplicant) 
+{	
 }
 
-QuoteListItem::~QuoteListItem() {
+QuoteListItem::~QuoteListItem() 
+{
 	delete fQuote;
 	delete fDrawer;
 }	
 
 Quote*
-QuoteListItem::CurrentQuoteItem() {
+QuoteListItem::CurrentQuoteItem() 
+{
 	return fQuote;
 }
 
@@ -40,18 +43,20 @@ QuoteListItem::SetQuote(Quote *quote) {
 }
 
 void 
-QuoteListItem::SetQuoteItemSize(QuoteSize size) {
+QuoteListItem::SetQuoteItemSize(QuoteSize size) 
+{
 	fQuoteSize = size;
 }
 
 void
-QuoteListItem::DrawText(const char *text, DrawItemSettings settings) {
+QuoteListItem::DrawText(const char *text, DrawItemSettings settings) 
+{
 	fDrawer->DrawString(text , settings);
 }
 
 void 
-QuoteListItem::DrawChangePercent(BRect frame, alignment align) {
-		
+QuoteListItem::DrawChangePercent(BRect frame, alignment align) 
+{		
 	BFont font(be_bold_font);
 	font.SetSize(15);
 
@@ -71,8 +76,8 @@ QuoteListItem::DrawChangePercent(BRect frame, alignment align) {
 }
 
 void 
-QuoteListItem::DrawSymbol(BRect frame, alignment align) {
-
+QuoteListItem::DrawSymbol(BRect frame, alignment align) 
+{
 	BFont font(be_bold_font);
 	font.SetSize(15);	
 	
@@ -113,8 +118,8 @@ QuoteListItem::DrawMarket(BRect frame, alignment align) {
 }
 
 void 
-QuoteListItem::DrawLatestPrice(BRect frame, alignment align) {
-	
+QuoteListItem::DrawLatestPrice(BRect frame, alignment align) 
+{	
 	BFont font(be_bold_font);
 	font.SetSize(15);
 
@@ -124,14 +129,15 @@ QuoteListItem::DrawLatestPrice(BRect frame, alignment align) {
 }
 
 void 
-QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
-		
+QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) 
+{		
 	BListView *parent = dynamic_cast<BListView *>(view);
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
 	
 	if (fDrawer == NULL) {
 		fDrawer = new ListItemDrawer(parent, fIsReplicant);
+		fDrawer->SetTransparency(fTransparency);
 		fDrawer->SetInsets(BSize(10,0));
 	}
 	
@@ -172,15 +178,16 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) {
 }
 
 void
-QuoteListItem::DrawSmallItem(BRect frame) {
+QuoteListItem::DrawSmallItem(BRect frame) 
+{
 	BRect rect = frame.InsetBySelf(0,10);
 	DrawCompanyName(rect);
 	DrawChangePercent(rect);
 }
 
 void 
-QuoteListItem::DrawNormalItem(BRect frame) {
-
+QuoteListItem::DrawNormalItem(BRect frame)
+{
 	BRect rect = frame.InsetBySelf(0,5);
 	rect.bottom = frame.top + frame.Height() / 3.0;
 
@@ -197,8 +204,8 @@ QuoteListItem::DrawNormalItem(BRect frame) {
 }
 
 void 
-QuoteListItem::DrawLargeItem( BRect frame) {
-	
+QuoteListItem::DrawLargeItem( BRect frame) 
+{	
 	QuoteFormatter formatter(fQuote);
 	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
@@ -280,8 +287,14 @@ QuoteListItem::DrawLargeItem( BRect frame) {
 }
 
 void
-QuoteListItem::Update(BView *view, const BFont *font) {
-	
+QuoteListItem::SetTransparency(uint8 transparency) 
+{
+	fTransparency = transparency;
+}
+
+void
+QuoteListItem::Update(BView *view, const BFont *font) 
+{	
 	font_height fh;
 	font->GetHeight(&fh);
 	float height = fh.ascent + fh.descent + fh.leading;

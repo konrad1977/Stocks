@@ -50,6 +50,8 @@ private:
 	void NotifyAdd(const char *symbol);
 	void NotifyRemove(const char *symbol);
 	
+	void NotifyUpdates();
+	
 	BString 		fName;
 	BList 			*fCurrentSymbols;
 	BMessenger 		*fMessenger;

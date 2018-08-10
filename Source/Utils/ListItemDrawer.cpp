@@ -34,7 +34,7 @@ ListItemDrawer::BackgroundColor(bool isSelected)
 	if (fIsReplicant && isSelected == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		color.alpha = 127;
+		color.alpha = fTransparency;
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);
@@ -45,6 +45,12 @@ ListItemDrawer::IsDark()
 {
 	rgb_color backgroundColor = BackgroundColor(false);
 	return backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127;
+}
+
+void
+ListItemDrawer::SetTransparency(uint8 transparency) 
+{
+	fTransparency = transparency;
 }
 
 rgb_color

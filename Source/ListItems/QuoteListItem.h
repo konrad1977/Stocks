@@ -29,6 +29,7 @@ public:
 			
 			void SetQuoteItemSize(QuoteSize size);
 			void SetQuote(Quote *quote);
+			void SetTransparency(uint8 transparency);
 			
 	Quote  *CurrentQuoteItem();
 	
@@ -50,6 +51,7 @@ private:
 	QuoteSize fQuoteSize;
 	ListItemDrawer *fDrawer;
 	bool fIsReplicant;
+	uint8 fTransparency;
 };
 
 

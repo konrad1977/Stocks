@@ -31,6 +31,7 @@ public:
 			void SetInsets(BSize insets);
 			float Height(DrawItemSettings settings);
 			void DrawString(const char *text, DrawItemSettings settings);
+			void SetTransparency(uint8 transparency);
 	
 private:
 			bool IsDark();
@@ -39,6 +40,7 @@ private:
 	BView 			*fParent;
 	BSize 			fInsets;
 	bool 			fIsReplicant;
+	uint8 			fTransparency;
 };
 
 

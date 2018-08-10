@@ -338,6 +338,7 @@ ContainerView::HandleQuotes(BMessage message)
 	}
 
 	QuoteSize size = fPortfolio->CurrentQuoteSize();
+	const uint8 transparency = fPortfolio->Transparency();
 	fQuoteListView->MakeEmpty();	
 	
 	BMessage symbolMessage;			
@@ -359,7 +360,9 @@ ContainerView::HandleQuotes(BMessage message)
 			}			
 			
 			Quote *quote = new Quote(quoteMsg);
-			fQuoteListView->AddItem(new QuoteListItem(quote, fIsReplicant, size));
+			QuoteListItem *listItem = new QuoteListItem(quote, fIsReplicant, size);
+			listItem->SetTransparency(transparency);
+			fQuoteListView->AddItem(listItem);
 		}
 	}
 }
