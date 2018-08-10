@@ -91,6 +91,7 @@ Portfolio::NotifyAdd(const char *symbol)
 	BMessage message(kPortfolioAddedSymbolMessage);
 	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
+	NotifyUpdates();
 }
 
 void
@@ -99,6 +100,7 @@ Portfolio::NotifyRemove(const char *symbol)
 	BMessage message(kPortfolioRemovedSymbolMessage);
 	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
+	NotifyUpdates();
 }
 
 void 

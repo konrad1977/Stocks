@@ -33,15 +33,19 @@ PortfolioManager::~PortfolioManager()
 	delete fPortfolioList;
 }
 
+void 
+PortfolioManager::NotifyPortfolioChanges()
+{
+	BMessage message(kPortfolioManagerChangeMessage);
+	fMessenger->SendMessage(&message);
+}
+
 bool 
 PortfolioManager::AddPortfolio(Portfolio *portfolio) 
 {
 	if (HasPortfolio(portfolio) == false ) {
 		fPortfolioList->AddItem(reinterpret_cast<void*>(portfolio));
 		Save();
-		
-		BMessage message(kNewPortfolioCreated);
-		fMessenger->SendMessage(&message);
 		return true;
 	}
 	return false;
@@ -61,6 +65,7 @@ PortfolioManager::RemovePortfolio(Portfolio *portfolio)
 		
 		if (portfolio->IsEqual(*item) == true) {
 			fPortfolioList->RemoveItem(i);
+			Save();
 			delete item;
 			break;
 		}
@@ -125,6 +130,7 @@ PortfolioManager::Save() {
 	}
 	
 	fSettingsManager->SaveSettings(message);
+	NotifyPortfolioChanges();
 	return B_OK; //TODO
 }
 

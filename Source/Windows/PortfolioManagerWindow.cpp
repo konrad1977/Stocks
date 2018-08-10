@@ -35,16 +35,18 @@ const uint32 kNewPortfolio	= 'kNPM';
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
 PortfolioManagerWindow::PortfolioManagerWindow() 
-	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(BRect(30,30, 320, 200), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
 	,fStockRequester(NULL)
 	,fStockSymbolWindow(NULL)
 	,fPortfolioWindow(NULL)
 	,fPortfolioManager(NULL)
 	,fMenuBar(NULL)
+	,fRemoveSelectedItem(NULL)
 	,fListView(NULL)
 	,fSymbolList(NULL)
 	,fShowStockSymbolListWhenDone(false)
 	,fStockSymbolsLoaded(false)
+	,fCurrentSelectedItemIndex(-1)
 {
 	fPortfolioManager = new PortfolioManager(this);
 	
@@ -76,15 +78,21 @@ PortfolioManagerWindow::InitLayout()
 			.AddSeparator()
 			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
 			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
+		.End()
+		.AddMenu(B_TRANSLATE("Edit"))
+			.AddItem(fRemoveSelectedItem = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
 		.End();
 	
-
+	
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
-	fListView->SetInvocationMessage(new BMessage(kPortfolioManagerSelectMessage));
+	fListView->SetInvocationMessage(new BMessage(kPortfolioManagerClickMessage));
+	fListView->SetSelectionMessage( new BMessage(kPortfolioManagerInvokeMessage));
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(fListView);
+		
+	fRemoveSelectedItem->SetEnabled(false);
 }
 
 StockSymbolWindow *
@@ -180,9 +188,8 @@ PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
 		return;
 	}
 	
-	MainWindow *window = NULL;
-	
-	if (window = dynamic_cast<MainWindow*>(PortfolioWindowWithName(portfolio->Name()))) {
+	MainWindow *window = dynamic_cast<MainWindow*>(PortfolioWindowWithName(portfolio->Name()));
+	if (window != NULL) {
 		window->Activate();
 	} else {	
 		window = new MainWindow(portfolio);
@@ -226,7 +233,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 	
 	switch (message->what) {
 		case kPortfolioUpdatedSettingsMessage:{
-			printf("Portfolio updated\n");
+			printf("PortfolioManagerWindow :: kPortfolioUpdatedSettingsMessage\n");
 			break;
 		}
 		case kPortfolioManagerSaveMessage: {
@@ -255,9 +262,8 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		
-		case kNewPortfolioCreated: {
+		case kPortfolioManagerChangeMessage: {
 			ReloadPortfolios();
-			printf("New portfolio added\n");
 			break;
 		}
 		
@@ -271,13 +277,35 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
+	
+		case kRemoveSelectedListItem: {
+			BList *portfolios = fPortfolioManager->Portfolios();
+
+			if (portfolios == NULL) {
+				return;
+			}
+			
+			Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(fCurrentSelectedItemIndex));
+			if (portfolio) {
+				fPortfolioManager->RemovePortfolio(portfolio);
+			}
+			break;
+		}
 		
 		case kHideSearchWindowMessaage: {
 			fStockSymbolWindow = NULL;
 			break;
 		}
+
+		case kPortfolioManagerInvokeMessage: {
+			if (message->FindInt32("index", &fCurrentSelectedItemIndex) == B_OK) {
+				printf("Selected index: %d\n", fCurrentSelectedItemIndex);
+				fRemoveSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
+			}
+			break;
+		}		
 		
-		case kPortfolioManagerSelectMessage: {
+		case kPortfolioManagerClickMessage: {
 			int32 index = 0;
 			if (message->FindInt32("index", &index) == B_OK) {
 				BList *portfolios = fPortfolioManager->Portfolios();

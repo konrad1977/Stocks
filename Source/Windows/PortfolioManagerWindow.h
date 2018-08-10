@@ -44,11 +44,13 @@ private:
 	PortfolioWindow 	*fPortfolioWindow;
 	PortfolioManager 	*fPortfolioManager;
 	BMenuBar 			*fMenuBar;
+	BMenuItem			*fRemoveSelectedItem;
 	BListView 			*fListView;
 	
 	BList 				*fSymbolList;
 	bool 				fShowStockSymbolListWhenDone;
-	bool				fStockSymbolsLoaded;	
+	bool				fStockSymbolsLoaded;
+	int32 				fCurrentSelectedItemIndex;
 };
 
 #endif // _H

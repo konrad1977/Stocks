@@ -21,14 +21,17 @@ public:
 			bool AddPortfolio(Portfolio *portfolio);
 			void RemovePortfolio(Portfolio *portfolio);
 			BList *Portfolios() const;
-	status_t 	 Save();
+			
+	status_t Save();
 	
 			void PrintToStream();
 	
 private:
-			bool HasPortfolio(Portfolio *portfolio);	
-	status_t 	 Load();
-	
+			bool HasPortfolio(Portfolio *portfolio);
+			void NotifyPortfolioChanges();
+			
+	status_t 	 Load();	
+
 	SettingsManager *fSettingsManager;
 	BList 			*fPortfolioList;
 	BMessenger 		*fMessenger;

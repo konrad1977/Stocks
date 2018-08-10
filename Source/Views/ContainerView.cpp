@@ -179,7 +179,6 @@ ContainerView::MessageReceived(BMessage *message)
 		}
 		
 		case B_NODE_MONITOR: {
-			printf("B_NODE_MONITOR\n");
 			fPortfolio->ReloadSavedData();
 			InitAutoUpdate();
 			RequestData();
@@ -238,7 +237,6 @@ ContainerView::MessageReceived(BMessage *message)
 		}
 		
 		case kPortfolioButtonPressedMessage: {	
-			printf("kPortfolioButtonPressedMessage\n");
 			fPortfolio->HandlePortfolioUpdate(message);
 			break;
 		}

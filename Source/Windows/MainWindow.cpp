@@ -82,6 +82,13 @@ MainWindow::SendToContainerView(BMessage *message)
 	messenger.SendMessage(message);
 }
 
+void 
+MainWindow::SendSaveMessage()
+{
+	BMessage message(kPortfolioManagerSaveMessage);
+	fMessenger->SendMessage(&message);
+}
+
 void
 MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size)
 {	
@@ -107,13 +114,6 @@ MainWindow::InitQuoteSize()
 	SetSelectedMenuFromQuoteSize(fPortfolio->CurrentQuoteSize());
 }
 
-void 
-MainWindow::SendSaveMessage() 
-{
-	BMessage saveMessage(kPortfolioManagerSaveMessage);
-	fMessenger->SendMessage(&saveMessage);
-}
-
 void
 MainWindow::MessageReceived(BMessage *message) 
 {	
@@ -123,28 +123,24 @@ MainWindow::MessageReceived(BMessage *message)
 		case kPortfolioButtonPressedMessage:
 		case B_ABOUT_REQUESTED: {
 			SendToContainerView(message);
-			SendSaveMessage();
 			break;
 		}
 		
 		case kUseSmallQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(SMALL);
-			SendSaveMessage();
 			break;
 		}
 
 		case kUseNormalQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(NORMAL);
-			SendSaveMessage();
 			break;
 		}
 
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteSize(LARGE);
-			SendSaveMessage();
 			break;
 		}
 		
