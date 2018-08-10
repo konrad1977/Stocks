@@ -23,12 +23,9 @@ Portfolio::Portfolio(BString name)
 	,fRereshInterval(60)
 	,fQuoteSize(NORMAL)
 {
-	
 	fSettingsManager = new SettingsManager();
 	fCurrentSymbols = new BList();
-	if (BMessage *msg = fSettingsManager->MessageForPortfolio(name)) {
-		Load(*msg);
-	}
+	ReloadSavedData();
 }
 
 Portfolio::~Portfolio() 
@@ -37,6 +34,14 @@ Portfolio::~Portfolio()
 	delete fMessenger;
 	delete fSettingsManager;
 	delete fCurrentSymbols;
+}
+
+void 
+Portfolio::ReloadSavedData()
+{
+	if (BMessage *msg = fSettingsManager->MessageForPortfolio(Name())) {
+		Load(*msg);
+	}
 }
 
 BString
@@ -232,8 +237,11 @@ Portfolio::Load(BMessage& message)
 	if (fCurrentSymbols == NULL) {
 		return B_ERROR;
 	}
+
+	fCurrentSymbols->MakeEmpty();
 	
 	int32 index = 0;
+	
 	BMessage symbolMsg;
 	while ( (message.FindMessage("Symbols", index, &symbolMsg) == B_OK )) {
 		BString symbolString;

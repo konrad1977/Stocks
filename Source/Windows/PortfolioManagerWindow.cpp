@@ -133,9 +133,7 @@ PortfolioManagerWindow::HandleNewPortfolioMessage(BMessage &message)
 {
 	BString portFolioName;
 	if (message.FindString("PortfolioName", &portFolioName) == B_OK ) {
-		Portfolio *portfolio = new Portfolio(portFolioName);
-		portfolio->SetTarget(this);
-		
+		Portfolio *portfolio = new Portfolio(portFolioName);		
 		if (fPortfolioManager->AddPortfolio(portfolio) == false ) {
 			fPortfolioWindow = NULL;
 			HandleAlreadyExist(portFolioName);
@@ -156,7 +154,6 @@ PortfolioManagerWindow::ReloadPortfolios()
 	const int32 items = portfolios->CountItems();
 	for (int32 i = 0; i<items; i++) {
 		Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(i));
-		portfolio->SetTarget(this);
 		fListView->AddItem( new BStringItem(portfolio->Name().String()));
 	}
 }

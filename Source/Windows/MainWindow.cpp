@@ -157,6 +157,11 @@ MainWindow::MessageReceived(BMessage *message)
 			CurrentSettingWindow()->Show();			
 			break;
 		}
+
+		case kPortfolioUpdatedSettingsMessage: {
+			SendSaveMessage();
+			break;
+		}
 		
 		case kHideSearchWindowMessaage: {
 			BMessage message(kHideSearchWindowMessaage);

@@ -26,9 +26,12 @@ public:
 	void Add(const char *symbol);
 	void Remove(const char *symbol);
 	void HandlePortfolioUpdate(BMessage *message);
+
+	void ReloadSavedData();
 	
 	uint8 Transparency() const;
 	uint8 RefreshRate() const;
+	
 	QuoteSize CurrentQuoteSize() const;
 	
 	BString Name();	

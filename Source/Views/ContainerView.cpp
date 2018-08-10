@@ -171,8 +171,16 @@ void
 ContainerView::MessageReceived(BMessage *message) 
 {	
 	switch (message->what) {
-
+		
+		case kPortfolioUpdatedSettingsMessage: {
+			BMessage message(kPortfolioUpdatedSettingsMessage);
+			fMessenger->SendMessage(&message);
+			break;
+		}
+		
 		case B_NODE_MONITOR: {
+			printf("B_NODE_MONITOR\n");
+			fPortfolio->ReloadSavedData();
 			InitAutoUpdate();
 			RequestData();
 			break;
@@ -339,6 +347,7 @@ ContainerView::HandleQuotes(BMessage message)
 
 	QuoteSize size = fPortfolio->CurrentQuoteSize();
 	const uint8 transparency = fPortfolio->Transparency();
+	printf("Transparency %d\n", transparency);
 	fQuoteListView->MakeEmpty();	
 	
 	BMessage symbolMessage;			
