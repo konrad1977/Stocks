@@ -25,7 +25,6 @@ Portfolio::Portfolio(BString name)
 {
 	
 	fSettingsManager = new SettingsManager();
-
 	fCurrentSymbols = new BList();
 	if (BMessage *msg = fSettingsManager->MessageForPortfolio(name)) {
 		Load(*msg);
@@ -34,6 +33,7 @@ Portfolio::Portfolio(BString name)
 
 Portfolio::~Portfolio() 
 {
+	printf("Portfolio::~Portfolio()\n");
 	delete fMessenger;
 	delete fSettingsManager;
 	delete fCurrentSymbols;
@@ -56,8 +56,10 @@ void Portfolio::Add(const char *symbol)
 	if (HasSymbol(symbol) == true) {
 		return;
 	}
+
+	char *symbolToAdd = strdup(symbol);
 	
-	fCurrentSymbols->AddItem((void*)symbol);
+	fCurrentSymbols->AddItem((void*)symbolToAdd);
 	NotifyAdd(symbol);
 }
 	
@@ -237,10 +239,8 @@ Portfolio::Load(BMessage& message)
 		fTransparency = 127;
 	}
 	
-	
 	if (message.FindUInt8("Refresh", &fRereshInterval) != B_OK) {
 		fRereshInterval = 60;
-	}
-		
+	}	
 	return B_OK; //TODO
 }

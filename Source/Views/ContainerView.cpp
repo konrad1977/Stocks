@@ -72,9 +72,8 @@ ContainerView::ContainerView(BMessage *archive)
 }
 
 ContainerView::~ContainerView() 
-{
+{	
 	delete fStockRequester;
-	delete fPortfolio;
 	delete fAutoUpdateRunner;
 	delete fMessenger;
 	delete fSettingsManager;

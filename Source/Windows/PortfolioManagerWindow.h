@@ -9,6 +9,7 @@
 #include <SupportDefs.h>
 #include <interface/Window.h>
 
+class BWindow;
 class BListView;
 class BMenuBar;
 class StockSymbolWindow;
@@ -31,6 +32,7 @@ private:
 			void InitLayout();
 			void ReloadPortfolios();
 			
+			BWindow* PortfolioWindowWithName(BString str);
 			void ShowWindowWithPortfolio(Portfolio *portfolio);
 			void HandleAlreadyExist(BString previousName);
 			

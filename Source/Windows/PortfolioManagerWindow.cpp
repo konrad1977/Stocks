@@ -23,6 +23,7 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#include <app/Application.h>
 #include <interface/ListView.h>
 #include <interface/MenuBar.h>
 
@@ -56,8 +57,10 @@ PortfolioManagerWindow::PortfolioManagerWindow()
 PortfolioManagerWindow::~PortfolioManagerWindow() 
 {
 	delete fPortfolioWindow;
-	delete fPortfolioManager;
+	delete fStockSymbolWindow;
 	delete fStockRequester;
+	delete fPortfolioManager;
+	delete fSymbolList;
 }
 
 void
@@ -155,16 +158,38 @@ PortfolioManagerWindow::ReloadPortfolios()
 	}
 }
 
+BWindow* 
+PortfolioManagerWindow::PortfolioWindowWithName(BString str)
+{
+	const int32 items = be_app->CountWindows();
+	printf("Window count %d\n", items);
+	
+	for (int32 i = 0; i<items; i++) {
+		BWindow *activeWindow = be_app->WindowAt(i);
+		if (activeWindow && activeWindow->Title() == str) {
+			return activeWindow;
+		}		
+	}
+	return NULL;
+}
+
 void 
 PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
+
 	if (portfolio == NULL) {
 		return;
 	}
 	
-	MainWindow *window = new MainWindow(portfolio);
-	window->SetTarget(this);
+	MainWindow *window = NULL;
+	
+	if (window = dynamic_cast<MainWindow*>(PortfolioWindowWithName(portfolio->Name()))) {
+		window->Activate();
+	} else {	
+		window = new MainWindow(portfolio);
+		window->SetTarget(this);
+		window->Show();
+	}
 	SymbolWindow()->SetTarget(window);
-	window->Show();
 }
 
 void 
@@ -234,6 +259,11 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		
 		case kShowSearchWindowMessage: {
 			ShowStockWindow();
+			break;
+		}
+		
+		case kHideSearchWindowMessaage: {
+			fStockSymbolWindow = NULL;
 			break;
 		}
 		

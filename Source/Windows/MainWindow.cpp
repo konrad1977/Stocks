@@ -39,7 +39,6 @@ MainWindow::MainWindow(Portfolio *portfolio)
 	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL) 
 	,fContainerView(NULL)
-	,fStockRequester(NULL)
 	,fSettingsWindow(NULL)
 	,fRemoveSelected(NULL)
 	,fMinimalItem(NULL)
@@ -55,8 +54,9 @@ MainWindow::MainWindow(Portfolio *portfolio)
 
 MainWindow::~MainWindow() 
 {
-	delete fStockRequester;
+	printf("MainWindow::~MainWindow()\n");
 	delete fMessenger;
+	delete fSettingsWindow;
 }
 
 void
@@ -159,8 +159,8 @@ MainWindow::MessageReceived(BMessage *message)
 		}
 		
 		case kHideSearchWindowMessaage: {
-			printf("Remove\n");
-			//fStockSymbolWindow = NULL;
+			BMessage message(kHideSearchWindowMessaage);
+			fMessenger->SendMessage(&message);
 			break;
 		}
 		

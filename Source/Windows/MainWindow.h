@@ -38,7 +38,6 @@ private:
 	BMenuBar 			*fMenuBar;		
 	ContainerView 		*fContainerView;
 	
-	StockRequester 		*fStockRequester;
 	SettingsWindow		*fSettingsWindow;
 	
 	BMenuItem 			*fRemoveSelected;
