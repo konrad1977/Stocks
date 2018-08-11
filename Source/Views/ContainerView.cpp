@@ -58,16 +58,17 @@ ContainerView::ContainerView(BMessage *archive)
 	,fDownloadThread(-1)
 	,fIsReplicant(true)
 {		
+
+	SetViewColor(B_TRANSPARENT_COLOR);
+	SetupViews();	
+	fSettingsManager = new SettingsManager();
+
 	BString portfolioName;
 	if (archive->FindString("PortfolioName", &portfolioName) != B_OK) {
 		return;
 	}
 	
-	fSettingsManager = new SettingsManager();
 	fPortfolio = new Portfolio(portfolioName);
-	
-	SetViewColor(B_TRANSPARENT_COLOR);
-	SetupViews();
 	LoadSavedData();
 }
 
@@ -83,7 +84,11 @@ status_t
 ContainerView::Archive(BMessage* into, bool deep) const 
 {
 	into->AddString("add_on", kAppSignature);
-	into->AddString("PortfolioName", fPortfolio->Name());
+
+	if (fPortfolio != NULL) {
+		into->AddString("PortfolioName", fPortfolio->Name());
+	}
+	
 	return BView::Archive(into, false);
 }
 
@@ -109,6 +114,10 @@ ContainerView::SetTarget(BHandler *handler)
 void
 ContainerView::SendEmptyListMessage() 
 {
+	if (fPortfolio == NULL) {
+		return;
+	}
+	
 	BList *list = fPortfolio->CurrentSymbols();	
 	if (list == NULL || list->CountItems() == 0) {
 		BMessage emptyListMessage(kEmptyListMessage);
@@ -119,6 +128,10 @@ ContainerView::SendEmptyListMessage()
 void
 ContainerView::LoadSavedData() 
 {
+	if (fPortfolio == NULL) {
+		return;
+	}
+	
 	BList *list = fPortfolio->CurrentSymbols();	
 	for (int32 index = 0; index<list->CountItems(); index++) {
 		char *symbol = static_cast<char *>(list->ItemAt(index));
@@ -137,6 +150,10 @@ ContainerView::Requester() {
 void
 ContainerView::InitAutoUpdate() {
 	
+	if (fPortfolio == NULL) {
+		return;
+	}
+	
 	delete fAutoUpdateRunner;
 	
 	BMessenger view(this);
@@ -149,7 +166,10 @@ ContainerView::InitAutoUpdate() {
 void
 ContainerView::AttachedToWindow() 
 {	
-	fPortfolio->SetTarget(this);
+	if(fPortfolio) {
+		fPortfolio->SetTarget(this);
+	}
+	
 	RequestData();
 	SendEmptyListMessage();
 	InitAutoUpdate();
@@ -194,14 +214,11 @@ ContainerView::MessageReceived(BMessage *message)
 			break;
 		}
 
-		case kPortfolioAddedSymbolMessage: {
-			printf("Portfolio add\n");
-			
+		case kPortfolioAddedSymbolMessage: {			
 			BString symbol;
 			if (message->FindString("symbol", &symbol) == B_OK) {
 				Requester()->Add(symbol.String());
 				RequestData();
-				printf("%s\n", symbol.String());
 			}
 			break;
 		}
@@ -258,7 +275,7 @@ ContainerView::MessageReceived(BMessage *message)
 void
 ContainerView::UpdateQuoteItemSizes(QuoteSize size) 
 {
-	if (fQuoteListView == NULL) {
+	if (fQuoteListView == NULL || fPortfolio == NULL ) {
 		return;
 	}
 
@@ -276,6 +293,10 @@ ContainerView::UpdateQuoteItemSizes(QuoteSize size)
 void
 ContainerView::DownloadData() 
 {	
+	if (fPortfolio == NULL) {
+		return;
+	}
+	
 	BList *list = fPortfolio->CurrentSymbols();
 	Requester()->ResetUrlList();	
 	
@@ -339,13 +360,12 @@ ContainerView::RemoveSelectedListItem()
 void
 ContainerView::HandleQuotes(BMessage message) 
 {		
-	if (fQuoteListView == NULL) {
+	if (fQuoteListView == NULL || fPortfolio == NULL) {
 		return;
 	}
-
+	
 	QuoteSize size = fPortfolio->CurrentQuoteSize();
 	const uint8 transparency = fPortfolio->Transparency();
-	printf("Transparency %d\n", transparency);
 	fQuoteListView->MakeEmpty();	
 	
 	BMessage symbolMessage;			

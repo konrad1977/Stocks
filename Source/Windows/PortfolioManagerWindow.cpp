@@ -14,6 +14,7 @@
 #include "StockSymbolWindow.h"
 #include "StockSymbol.h"
 #include "SymbolListItem.h"
+#include "PortfolioListItem.h"
 
 #include <Catalog.h>
 #include <Autolock.h>
@@ -162,7 +163,8 @@ PortfolioManagerWindow::ReloadPortfolios()
 	const int32 items = portfolios->CountItems();
 	for (int32 i = 0; i<items; i++) {
 		Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(i));
-		fListView->AddItem( new BStringItem(portfolio->Name().String()));
+		PortfolioListItem *listItem = new PortfolioListItem(portfolio);
+		fListView->AddItem(listItem);
 	}
 }
 
