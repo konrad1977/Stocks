@@ -33,6 +33,16 @@
 ----------------
 - When the app starts it downloads a list with estimated 8600 stock symbols. Then you can filter them and add them to your different portfolios. 
 
+## How to build
+----------------
+Open a terminal and navigation to the root
+$ Stocks>
+
+Then type 'make' without quotes and press enter. Wait for a few seconds. 
+
+$ Stocks> make
+
+
 ## Acknowledgements
 ----------------
 Icon design by Humdinger
