@@ -86,8 +86,8 @@ PortfolioManagerWindow::InitLayout()
 	
 	
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
-	fListView->SetInvocationMessage(new BMessage(kPortfolioManagerClickMessage));
-	fListView->SetSelectionMessage( new BMessage(kPortfolioManagerInvokeMessage));
+	fListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
+	fListView->SetSelectionMessage( new BMessage(kListSelectMessage));
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
@@ -299,7 +299,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 
-		case kPortfolioManagerInvokeMessage: {
+		case kListSelectMessage: {
 			if (message->FindInt32("index", &fCurrentSelectedItemIndex) == B_OK) {
 				printf("Selected index: %d\n", fCurrentSelectedItemIndex);
 				fRemoveSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
@@ -307,7 +307,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}		
 		
-		case kPortfolioManagerClickMessage: {
+		case kListInvocationMessage: {
 			int32 index = 0;
 			if (message->FindInt32("index", &index) == B_OK) {
 				BList *portfolios = fPortfolioManager->Portfolios();

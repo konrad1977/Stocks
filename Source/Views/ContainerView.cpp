@@ -169,13 +169,15 @@ ContainerView::AttachedToWindow()
 	if(fPortfolio) {
 		fPortfolio->SetTarget(this);
 	}
-	
+
 	RequestData();
-	SendEmptyListMessage();
 	InitAutoUpdate();
 
-	fSettingsManager->StartMonitoring(this);	
+	if (fIsReplicant == false) {
+		SendEmptyListMessage();
+	}
 	
+	fSettingsManager->StartMonitoring(this);	
 	BView::AttachedToWindow();
 }
 
@@ -192,9 +194,10 @@ ContainerView::MessageReceived(BMessage *message)
 {	
 	switch (message->what) {
 		
+		case kListSelectMessage:
+		case kListInvocationMessage:
 		case kPortfolioUpdatedSettingsMessage: {
-			BMessage message(kPortfolioUpdatedSettingsMessage);
-			fMessenger->SendMessage(&message);
+			fMessenger->SendMessage(message);
 			break;
 		}
 		
@@ -398,6 +401,8 @@ void
 ContainerView::SetupViews() 
 {	
 	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
+	fQuoteListView->SetSelectionMessage( new BMessage(kListSelectMessage));	
 	
 	if (fIsReplicant)
 		fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );

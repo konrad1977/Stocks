@@ -118,7 +118,19 @@ void
 MainWindow::MessageReceived(BMessage *message) 
 {	
 	switch (message->what) {
-	
+
+		case kListSelectMessage: {
+			int32 index;
+			if (message->FindInt32("index", &index) == B_OK) {
+				fRemoveSelected->SetEnabled(index != -1);
+			}
+			break;
+		}
+		case kListInvocationMessage: {
+			printf("kListInvocationMessage\n");
+			break;
+		}		
+		
 		case kRemoveSelectedListItem:
 		case kPortfolioButtonPressedMessage:
 		case B_ABOUT_REQUESTED: {
@@ -160,19 +172,8 @@ MainWindow::MessageReceived(BMessage *message)
 		}
 		
 		case kHideSearchWindowMessaage: {
-			BMessage message(kHideSearchWindowMessaage);
-			fMessenger->SendMessage(&message);
+			fMessenger->SendMessage(message);
 			break;
-		}
-		
-		case kEmptyListMessage: {
-			printf("Portfolio stock is empty show find stocks\n");
-			/*if (fStockSymbolsLoaded) {
-				ShowStockWindow();
-				return;
-			}
-			fShowStockSymbolListWhenDone = true;
-			break;*/
 		}
 		
 		case kShowSearchWindowMessage: {
@@ -215,4 +216,6 @@ MainWindow::SetupViews()
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(fContainerView);
+	
+	fRemoveSelected->SetEnabled(false);
 }

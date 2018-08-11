@@ -40,6 +40,10 @@ const uint32 kUseNormalQuoteSize				= 'UNQs';
 const uint32 kUseLargeQuoteSize					= 'ULQs';
 const uint32 kEmptyListMessage					= 'ELMs';
 
+const uint32 kListInvocationMessage				= 'PMSc';
+const uint32 kListSelectMessage					= 'PMLM';
+
+
 const uint32 kTransparencyChangedMessage		= 'TCHm';
 const uint32 kTransparenyModificationMessage 	= 'TcHm';
 const uint32 kRefreshChangedMessage				= 'RCMm';
@@ -52,8 +56,6 @@ const uint32 kPortfolioUpdatedSettingsMessage 	= 'kPUM';
 
 // PortfolioManagerWindow
 const uint32 kCreateNewPortfolioMessage			= 'CNPm';
-const uint32 kPortfolioManagerClickMessage		= 'PMSc';
-const uint32 kPortfolioManagerInvokeMessage		= 'PMLM';
 const uint32 kPortfolioManagerSaveMessage		= 'SAVe';
 const uint32 kPortfolioButtonPressedMessage 	= 'PSBm';
 const uint32 kPortfolioRemovedSymbolMessage		= 'PRMe';
