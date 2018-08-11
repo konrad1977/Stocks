@@ -15,11 +15,9 @@
 </p>
 
 ### Portfolio Manager
-----------------
 - Create multiple portfolios. 
 
 ### Portfolio
-----------------
 - Add one or more of the 8600 stocks stock your portfolio.
 - Every portfolio can be added to your desktop as a replicant
 - Portfolios has their own settings (Refresh interval, how often all the stocks should be updated, and replicant transparency).
@@ -30,11 +28,9 @@
 - Extended Mode (Normal Mode + Open, High, Low, 52 Week high and Low and Average Volume)
 
 ### Stock Symbol / Search window
-----------------
 - When the app starts it downloads a list with estimated 8600 stock symbols. Then you can filter them and add them to your different portfolios. 
 
-## How to build
-----------------
+### How to build
 Open a terminal and navigation to the root
 $ Stocks>
 
@@ -51,5 +47,4 @@ Follow me on:
 [Twitter](https:://twitter.com/konrad1977)
 
 ## MIT License
-----------------
 Stocks is available under the MIT license. See the LICENSE file for more info.
