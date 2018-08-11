@@ -26,22 +26,25 @@ SearchView::SearchView(BRect rect)
 	:BView(rect, "SearchView", B_FOLLOW_TOP | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
 	,fSearchTextControl(NULL)
 	,fHitsView(NULL)
-	,fMessenger(NULL) {
-		
+	,fMessenger(NULL) 
+{		
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
-SearchView::~SearchView() {
+SearchView::~SearchView() 
+{
 	delete fMessenger;
 }
 
 void
-SearchView::AttachedToWindow() {
+SearchView::AttachedToWindow() 
+{
 	InitLayout();
 }
 
 void
-SearchView::MessageReceived(BMessage *message) {
+SearchView::MessageReceived(BMessage *message) 
+{
 	
 	switch (message->what) {
 		case kSearchTextChangedMessage: {
@@ -57,7 +60,8 @@ SearchView::MessageReceived(BMessage *message) {
 	}
 }
 
-void SearchView::SetNumberOfHits(int32 hits) {
+void SearchView::SetNumberOfHits(int32 hits) 
+{
 	if (fHitsView == NULL) 
 		return;
 	
@@ -67,13 +71,15 @@ void SearchView::SetNumberOfHits(int32 hits) {
 }
 
 void
-SearchView::SetTarget(BHandler *handler) {
+SearchView::SetTarget(BHandler *handler) 
+{
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 BTextControl *
-SearchView::TextControl() {
+SearchView::TextControl() 
+{
 	if (fSearchTextControl == NULL) {
 		fSearchTextControl = new BTextControl("Filter", B_TRANSLATE("Filter"), B_TRANSLATE("Name or symbol"), NULL);
 		fSearchTextControl->SetModificationMessage(new BMessage(kSearchTextChangedMessage));
@@ -83,8 +89,8 @@ SearchView::TextControl() {
 }
 
 void
-SearchView::InitLayout() {
-	
+SearchView::InitLayout() 
+{	
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
 	SetLayout(group);
 	

@@ -6,46 +6,56 @@
 
 #include "ListItemDrawer.h"
 #include "Constants.h"
-#include "SettingsManager.h"
+#include "Portfolio.h"
 #include <Screen.h>
 
 ListItemDrawer::ListItemDrawer(BView *parent, bool isReplicant)
 	:fParent(parent)
-	,fSettingsManager(NULL)
 	,fInsets(BSize(5,5))
-	,fIsReplicant(isReplicant)	{
+	,fIsReplicant(isReplicant)	
+{
 	
-	fSettingsManager = new SettingsManager();
 }
 	
-ListItemDrawer::~ListItemDrawer() {
-	delete fSettingsManager;
+ListItemDrawer::~ListItemDrawer() 
+{
+
 }
 
 void 
-ListItemDrawer::SetInsets(BSize insets) {
+ListItemDrawer::SetInsets(BSize insets) 
+{
 	fInsets = insets;
 }
 
 rgb_color
-ListItemDrawer::BackgroundColor(bool isSelected) {
+ListItemDrawer::BackgroundColor(bool isSelected) 
+{
 	if (fIsReplicant && isSelected == false) {
 		BScreen screen;		
 		rgb_color color = screen.DesktopColor();
-		color.alpha = fSettingsManager->Transparency();
+		color.alpha = fTransparency;
 		return color;
 	}
 	return ui_color(B_LIST_BACKGROUND_COLOR);
 }
 
 bool 
-ListItemDrawer::IsDark() {
+ListItemDrawer::IsDark() 
+{
 	rgb_color backgroundColor = BackgroundColor(false);
 	return backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127;
 }
 
+void
+ListItemDrawer::SetTransparency(uint8 transparency) 
+{
+	fTransparency = transparency;
+}
+
 rgb_color
-ListItemDrawer::TitleColor() {
+ListItemDrawer::TitleColor()
+{
 	if (IsDark()) {
 		return tint_color(TextColor(false), B_DARKEN_2_TINT);
 	} else {
@@ -54,8 +64,8 @@ ListItemDrawer::TitleColor() {
 }
 
 rgb_color
-ListItemDrawer::TextColor(bool isSelected) {
-
+ListItemDrawer::TextColor(bool isSelected) 
+{
 	if (fIsReplicant) {
 		if (IsDark()) {
 			return lightTextColor;
@@ -67,12 +77,14 @@ ListItemDrawer::TextColor(bool isSelected) {
 }
 
 void 
-ListItemDrawer::DrawString(const char *text, DrawItemSettings settings) {
+ListItemDrawer::DrawString(const char *text, DrawItemSettings settings) 
+{
 	const BFont *font = settings.font == NULL ? be_plain_font : settings.font;
 	DrawString(text, settings.frame, font, settings.align, settings.color);
 }
 
-float ListItemDrawer::Height(DrawItemSettings settings) {
+float ListItemDrawer::Height(DrawItemSettings settings) 
+{
 	if (settings.font == NULL) {
 		return settings.frame.Height();
 	}
@@ -83,8 +95,8 @@ float ListItemDrawer::Height(DrawItemSettings settings) {
 }
 
 void 
-ListItemDrawer::DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color) {
-		
+ListItemDrawer::DrawString(const char *text, BRect frame, const BFont *font, alignment align, rgb_color *color) 
+{		
 	fParent->SetFont(font);
 	
 	font_height fh;

@@ -8,14 +8,14 @@
 #include <SupportDefs.h>
 #include <Application.h>
 
-class MainWindow;
 class App: public BApplication {
 public:
 	App(void);		
 	~App();
 	
+	virtual void MessageReceived(BMessage *message);
+	
 private:	
-	MainWindow 			*fWindow;
 };
 
 

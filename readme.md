@@ -11,9 +11,7 @@
 - Fully open source and under MIT license.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/normal.png" alt="Icon"/>
-  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/small.png" alt="Icon"/>
-  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/large.png" alt="Icon"/>
+  <img src="https://raw.githubusercontent.com/Konrad77/HaikuStocks/master/Screenshots/screenshot.png" alt="Icon"/>
 </p>
 
 ## Acknowledgements

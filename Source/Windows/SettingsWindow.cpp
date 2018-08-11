@@ -5,6 +5,8 @@
 
 
 #include "SettingsWindow.h"
+#include "Portfolio.h"
+
 #include <Catalog.h>
 #include <Messenger.h>
 #include <Box.h>
@@ -13,15 +15,15 @@
 #include <LayoutBuilder.h>
 #include <GroupLayout.h>
 
-#include "SettingsManager.h"
 #include "Constants.h"
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "SettingsWindow"
 
-SettingsWindow::SettingsWindow() 
+SettingsWindow::SettingsWindow(Portfolio *portfolio) 
 	:BWindow(BRect(0,0, 480, 320), B_TRANSLATE("Settings"), B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS | B_CLOSE_ON_ESCAPE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS )
 	,fMessenger(NULL)
+	,fPortfolio(portfolio)
 	,fTransparencySlider(NULL)
 	,fRefreshRateSlider(NULL)
 {
@@ -49,10 +51,9 @@ SettingsWindow::QuitRequested() {
 
 void 
 SettingsWindow::InitSavedValues() {
-	SettingsManager manager;
 
-	const uint8 transparency = manager.Transparency();
-	const uint8 refreshRate = manager.RefreshRate();
+	const uint8 transparency = fPortfolio->Transparency();
+	const uint8 refreshRate = fPortfolio->RefreshRate();
 
 	fTransparencySlider->SetValue(static_cast<int32>(transparency));
 	fRefreshRateSlider->SetValue(static_cast<int32>(refreshRate));
@@ -109,8 +110,7 @@ SettingsWindow::MessageReceived(BMessage *message) {
 
 		case kTransparencyChangedMessage: {
 			uint8 newValue = static_cast<uint8>(fTransparencySlider->Value());
-			SettingsManager manager;
-			manager.SetTransparency(newValue);
+			fPortfolio->SetTransparency(newValue);
 			break;
 		}
 		
@@ -122,8 +122,7 @@ SettingsWindow::MessageReceived(BMessage *message) {
 
 		case kRefreshChangedMessage: {
 			uint8 newValue = static_cast<uint8>(fRefreshRateSlider->Value());
-			SettingsManager manager;
-			manager.SetRefreshRate(newValue);
+			fPortfolio->SetRefreshRate(newValue);
 			break;
 		}
 		

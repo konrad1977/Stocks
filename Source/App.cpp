@@ -6,19 +6,28 @@
 
 #include "App.h"
 #include "MainWindow.h"
+#include "PortfolioManager.h"
+#include "PortfolioManagerWindow.h"
+#include "Portfolio.h"
 #include <stdio.h>
+
 
 const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 
 App::App(void)
-	:BApplication(kAppSignature) {
-	
-	fWindow = new MainWindow(BRect(150,150,420,540));
-	fWindow->Show();		
+	:BApplication(kAppSignature)
+{		
+	PortfolioManagerWindow *window = new PortfolioManagerWindow();	
+	window->Show();
 }
 
 App::~App() {
 
+}
+
+void
+App::MessageReceived(BMessage *message) {
+	message->PrintToStream();
 }
 
 int main() {

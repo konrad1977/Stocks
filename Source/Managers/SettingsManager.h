@@ -20,38 +20,21 @@ public:
 	~SettingsManager();
 	
 	void SetTarget(BHandler *handler);
-	void SetTransparency(uint8 transparency);
-	uint8 Transparency();
-
-	void SetRefreshRate(uint8 seconds);
-	uint8 RefreshRate();
 	
-	void SetQuoteSize(QuoteSize size);
-	QuoteSize CurrentQuoteSize();
-	
-	bool HasSymbol(const char *symbol);
-	void RemoveSymbol(const char *symbol);
-	void AddSymbol(const char *symbol);
+	BMessage* MessageForPortfolio(BString name);
 	
 	void StartMonitoring(BHandler *handler);
 	
-	void SaveSymbols(BList *list);
-	BList *LoadSymbols();
+	status_t LoadSettings(BMessage &message);
+	status_t SaveSettings(BMessage message);	
 	
 private:
 
 	const char* SavePath() const;
-	
-	int32 	IndexOf(const char *symbol);
 	void 	SaveWithLock(BMessage *message);
 	
-	status_t LoadSettings(BMessage &message);
-	status_t SaveSettings(BMessage message);
-	
-	char *fFileName;
-	BList *fCurrentLoadedSymbols;
+	char 	*fFileName;
 	BLocker *fLocker;
-	
 };
 
 #endif // _H

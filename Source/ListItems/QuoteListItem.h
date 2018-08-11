@@ -26,9 +26,10 @@ public:
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
 	virtual void Update(BView *view, const BFont *font);
-	
+			
 			void SetQuoteItemSize(QuoteSize size);
 			void SetQuote(Quote *quote);
+			void SetTransparency(uint8 transparency);
 			
 	Quote  *CurrentQuoteItem();
 	
@@ -50,6 +51,7 @@ private:
 	QuoteSize fQuoteSize;
 	ListItemDrawer *fDrawer;
 	bool fIsReplicant;
+	uint8 fTransparency;
 };
 
 
