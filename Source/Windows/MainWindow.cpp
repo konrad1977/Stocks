@@ -54,13 +54,12 @@ MainWindow::MainWindow(Portfolio *portfolio)
 
 MainWindow::~MainWindow() 
 {
-	printf("MainWindow::~MainWindow()\n");
 	delete fMessenger;
-	delete fSettingsWindow;
 }
 
 void
-MainWindow::SetTarget(BHandler *handler) {
+MainWindow::SetTarget(BHandler *handler) 
+{
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
@@ -127,7 +126,7 @@ MainWindow::MessageReceived(BMessage *message)
 			break;
 		}
 		case kListInvocationMessage: {
-			printf("kListInvocationMessage\n");
+			printf("Show stock information?\n");
 			break;
 		}		
 		
@@ -162,7 +161,7 @@ MainWindow::MessageReceived(BMessage *message)
 		}
 
 		case kShowSettingsWindowMessage: {
-			CurrentSettingWindow()->Show();			
+			CurrentSettingWindow()->ShowWithPortfolioName(fPortfolio->Name().String());			
 			break;
 		}
 

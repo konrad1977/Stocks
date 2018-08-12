@@ -96,10 +96,6 @@ PortfolioManager::Portfolios() const
 void 
 PortfolioManager::PrintToStream() 
 {
-	if (fPortfolioList == NULL || fPortfolioList->CountItems() == 0) {
-		printf("No portfolios found\n");
-	}
-	
 	const int32 items = fPortfolioList->CountItems();
 	
 	for (int32 i = 0; i<items; i++) {
@@ -131,6 +127,7 @@ PortfolioManager::Save() {
 	
 	fSettingsManager->SaveSettings(message);
 	NotifyPortfolioChanges();
+	
 	return B_OK; //TODO
 }
 
@@ -139,7 +136,7 @@ PortfolioManager::Load()
 {
 	BMessage message;
 	fSettingsManager->LoadSettings(message);
-
+	
 	int32 index = 0;
 	BMessage portfolioMsg;
 	while ( (message.FindMessage("Portfolios", index, &portfolioMsg) == B_OK )) {
@@ -151,6 +148,5 @@ PortfolioManager::Load()
 		}
 		index++;
 	}	
-	PrintToStream();
 	return B_OK; //TODO
 }

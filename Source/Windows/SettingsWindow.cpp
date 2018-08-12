@@ -23,35 +23,49 @@
 SettingsWindow::SettingsWindow(Portfolio *portfolio) 
 	:BWindow(BRect(0,0, 480, 320), B_TRANSLATE("Settings"), B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS | B_CLOSE_ON_ESCAPE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS )
 	,fMessenger(NULL)
-	,fPortfolio(portfolio)
 	,fTransparencySlider(NULL)
 	,fRefreshRateSlider(NULL)
+	,fPortfolio(portfolio)
 {
 	InitLayout();
 	InitSavedValues();
 	CenterOnScreen();
 }
 
-SettingsWindow::~SettingsWindow() {
+SettingsWindow::~SettingsWindow() 
+{
 	delete fMessenger;
 }
 
 void 
-SettingsWindow::SetTarget(BHandler *handler) {
+SettingsWindow::ShowWithPortfolioName(const char *name)
+{
+	BString str;
+	str << name << " " << B_TRANSLATE("Settings");
+	SetTitle(str.String());
+	Show();
+}
+
+void 
+SettingsWindow::SetTarget(BHandler *handler) 
+{
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 bool
-SettingsWindow::QuitRequested() {
-	BMessage* message = new BMessage(kQuitSettingsWindowMessage);
-	fMessenger->SendMessage(message);
+SettingsWindow::QuitRequested() 
+{
+	BMessage message(kQuitSettingsWindowMessage);
+	if (fMessenger && fMessenger->IsValid()) {
+		fMessenger->SendMessage(&message);
+	}
 	return true;
 }
 
 void 
-SettingsWindow::InitSavedValues() {
-
+SettingsWindow::InitSavedValues() 
+{
 	const uint8 transparency = fPortfolio->Transparency();
 	const uint8 refreshRate = fPortfolio->RefreshRate();
 
@@ -62,22 +76,24 @@ SettingsWindow::InitSavedValues() {
 }
 
 void 
-SettingsWindow::UpdateTransparencyLabel(uint8 value) {
+SettingsWindow::UpdateTransparencyLabel(uint8 value) 
+{
 	BString str = fTransparencyLabel;
 	str << " " << value;
 	fTransparencySlider->SetLabel(str.String());
 }
 
 void 
-SettingsWindow::UpdateRefrehLabel(uint8 value) {
+SettingsWindow::UpdateRefrehLabel(uint8 value) 
+{
 	BString str = fRefreshLabel;
 	str << " " << value;
 	fRefreshRateSlider->SetLabel(str.String());
 }
 
 void 
-SettingsWindow::InitLayout() {
-
+SettingsWindow::InitLayout() 
+{
 	BGroupLayout *groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
 
@@ -105,7 +121,8 @@ SettingsWindow::InitLayout() {
 }
 
 void
-SettingsWindow::MessageReceived(BMessage *message) {
+SettingsWindow::MessageReceived(BMessage *message) 
+{
 	switch (message->what) {
 
 		case kTransparencyChangedMessage: {

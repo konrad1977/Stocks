@@ -18,7 +18,8 @@ class SettingsWindow : public BWindow {
 public:
 	SettingsWindow(Portfolio *portfolio);
 	~SettingsWindow();
-	
+			
+			void ShowWithPortfolioName(const char *name);
 	virtual void MessageReceived(BMessage *message);
 	virtual bool QuitRequested();
 			void SetTarget(BHandler *handler);

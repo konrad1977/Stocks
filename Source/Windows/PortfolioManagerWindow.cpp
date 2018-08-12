@@ -125,9 +125,7 @@ PortfolioManagerWindow::ShowStockWindow()
 
 void
 PortfolioManagerWindow::HandleAlreadyExist(BString previousName) 
-{
-	printf("HandleAlreadyExist(%s)\n", previousName.String());
-	
+{	
 	if (fPortfolioWindow == NULL) {
 		fPortfolioWindow = new PortfolioWindow(this);
 		fPortfolioWindow->SetAlreadyExistingName(previousName);
@@ -172,7 +170,6 @@ BWindow*
 PortfolioManagerWindow::PortfolioWindowWithName(BString str)
 {
 	const int32 items = be_app->CountWindows();
-	printf("Window count %d\n", items);
 	
 	for (int32 i = 0; i<items; i++) {
 		BWindow *activeWindow = be_app->WindowAt(i);
@@ -301,7 +298,6 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 
 		case kListSelectMessage: {
 			if (message->FindInt32("index", &fCurrentSelectedItemIndex) == B_OK) {
-				printf("Selected index: %d\n", fCurrentSelectedItemIndex);
 				fRemoveSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
 			}
 			break;
