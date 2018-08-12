@@ -18,6 +18,7 @@ enum QuoteSize {
 	LARGE
 };
 
+class BListView;
 class ListItemDrawer;
 class QuoteListItem : public BListItem {
 public:
@@ -34,6 +35,7 @@ public:
 	Quote  *CurrentQuoteItem();
 	
 private:
+			void DrawBackground(BListView *view, BRect rect, ListItemDrawer *drawer);
 			void DrawSmallItem(BRect frame);
 			void DrawNormalItem(BRect frame);
 			void DrawLargeItem( BRect frame);

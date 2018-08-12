@@ -128,6 +128,37 @@ QuoteListItem::DrawLatestPrice(BRect frame, alignment align)
 	DrawText(formatter.LatestPrice(), settings);
 }
 
+void
+QuoteListItem::DrawBackground(BListView *parent, BRect frame, ListItemDrawer *drawer)
+{
+	if (drawer->Transparency() == 0) {
+		return;
+	}
+	
+	const int32 index = parent->IndexOf(this);
+
+	rgb_color backgroundColor = drawer->BackgroundColor(IsSelected());
+
+	if (fIsReplicant) {
+		parent->SetHighColor(backgroundColor);
+	} else if (IsSelected()) {
+		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
+	} else if (index % 2 == 0) {
+		parent->SetHighColor(backgroundColor);
+	} else {
+		parent->SetHighColor(tint_color(backgroundColor, 1.02));
+	}
+	
+	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
+	
+	if (fIsReplicant) {
+		parent->FillRoundRect(frame.InsetBySelf(0,2), 3, 3);
+	} else {
+		parent->FillRect(frame);
+	}
+	parent->SetLowColor(backgroundColor);	
+}
+
 void 
 QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) 
 {		
@@ -141,24 +172,8 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 		fDrawer->SetInsets(BSize(10,0));
 	}
 	
-	rgb_color backgroundColor = fDrawer->BackgroundColor(IsSelected());
-	
-	if (IsSelected() && fIsReplicant == false) {
-		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
-	} else if (index % 2 == 0) {
-		parent->SetHighColor(backgroundColor);
-	} else {
-		parent->SetHighColor(tint_color(backgroundColor, 1.02));
-	}
-	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
-	if (fIsReplicant) {
-		parent->FillRoundRect(frame.InsetBySelf(0,2), 3, 3);
-	} else {
-		parent->FillRect(frame);
-	}
-	
+	DrawBackground(parent, rect, fDrawer);
 	parent->SetDrawingMode(B_OP_OVER);
-	parent->SetLowColor(backgroundColor);
 
 	switch (fQuoteSize) {
 		case SMALL: {

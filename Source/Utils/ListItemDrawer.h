@@ -32,6 +32,7 @@ public:
 			float Height(DrawItemSettings settings);
 			void DrawString(const char *text, DrawItemSettings settings);
 			void SetTransparency(uint8 transparency);
+			const uint8 Transparency() const;
 	
 private:
 			bool IsDark();

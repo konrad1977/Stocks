@@ -47,6 +47,12 @@ ListItemDrawer::IsDark()
 	return backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127;
 }
 
+const uint8 
+ListItemDrawer::Transparency() const
+{
+	return fTransparency;
+}	
+
 void
 ListItemDrawer::SetTransparency(uint8 transparency) 
 {
