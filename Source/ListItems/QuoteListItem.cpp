@@ -221,7 +221,7 @@ QuoteListItem::DrawNormalItem(BRect frame)
 void 
 QuoteListItem::DrawLargeItem( BRect frame) 
 {	
-	QuoteFormatter formatter(fQuote);
+	/*QuoteFormatter formatter(fQuote);
 	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
 	
@@ -229,47 +229,48 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	font.SetSize(13);
 		
 	//Row 1
-	DrawItemSettings settings = { rect, &font, NULL, B_ALIGN_LEFT };
-	DrawText(fQuote->symbol.String(), settings);
-	settings.align = B_ALIGN_RIGHT;
-	DrawText(formatter.LatestPrice(), settings);
-	rect.OffsetBySelf(0, fDrawer->Height(settings));
+	DrawItemSettings priceSettings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawText(fQuote->symbol.String(), priceSettings);
+	priceSettings.align = B_ALIGN_RIGHT;
+	DrawText(formatter.LatestPrice(), priceSettings);
+	rect.OffsetBySelf(0, fDrawer->Height(priceSettings));
 	
 	//Row 2
 	font = be_plain_font;
 	font.SetSize(11);
-	settings = { rect, &font, NULL, B_ALIGN_LEFT };
-	DrawText(fQuote->companyName.String(), settings);
+	DrawItemSettings companySettings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawText(fQuote->companyName.String(), companySettings);
 
 	rgb_color changeColor = formatter.ChangeColor();
-	settings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
-	DrawText(formatter.ChangeString(), settings);
-	rect.OffsetBySelf(0, fDrawer->Height(settings) * 1.5);
+	DrawItemSettings changeSettings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
+	DrawText(formatter.ChangeString(), changeSettings);
+	rect.OffsetBySelf(0, fDrawer->Height(changeSettings) * 1.5);
 	
 	rgb_color titleColor = fDrawer->TitleColor();
 	//Row 3
-	settings = { rect, &font, &titleColor, B_ALIGN_LEFT };
+	DrawItemSettings textSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
 	
-	DrawText("Open", settings);
+	DrawText("Open", textSettings);
 	
 	settings.align = B_ALIGN_CENTER;	
-	DrawText("High", settings);
+	DrawText("High", textSettings);
 	
 	settings.align = B_ALIGN_RIGHT;
-	DrawText("Low", settings);
+	DrawText("Low", textSettings);
 	
-	rect.OffsetBy(0, fDrawer->Height(settings));	
+	rect.OffsetBy(0, fDrawer->Height(textSettings));	
 	font = be_bold_font;
 	font.SetSize(12);
 
-	settings = { rect, &font, NULL };	
-	DrawText(formatter.ToString(fQuote->open), settings);
+	textSettings.font = &font;
+	textSettings.frame = rect;
+	DrawText(formatter.ToString(fQuote->open), textSettings);
 
-	settings.align = B_ALIGN_CENTER;
-	DrawText(formatter.ToString(fQuote->high), settings);
+	textSettings.align = B_ALIGN_CENTER;
+	DrawText(formatter.ToString(fQuote->high), textSettings);
 	
-	settings.align = B_ALIGN_RIGHT;
-	DrawText(formatter.ToString(fQuote->low), settings);
+	textSettings.align = B_ALIGN_RIGHT;
+	DrawText(formatter.ToString(fQuote->low), textSettings);
 	
 	rect.OffsetBySelf(0, fDrawer->Height(settings) * 1.5);
 	
@@ -299,6 +300,7 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	
 	settings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.ToString(fQuote->week52Low), settings);
+	*/
 }
 
 void

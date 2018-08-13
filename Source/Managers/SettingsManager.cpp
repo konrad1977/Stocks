@@ -22,6 +22,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 SettingsManager::SettingsManager()
 	:fFileName(NULL)
