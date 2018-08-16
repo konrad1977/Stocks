@@ -56,6 +56,7 @@ PortfolioListItem::DrawItem(BView *view, BRect rect, bool complete)
 	parent->SetDrawingMode(B_OP_OVER);
 	
 	DrawPortfolioInfo(frame);
+	parent->FrameResized(rect.Width(), rect.Height());	
 }
 
 void 

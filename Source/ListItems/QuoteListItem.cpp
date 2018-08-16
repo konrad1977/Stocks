@@ -190,6 +190,7 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 			break;
 		}
 	}
+	parent->FrameResized(rect.Width(), rect.Height());	
 }
 
 void
@@ -221,7 +222,7 @@ QuoteListItem::DrawNormalItem(BRect frame)
 void 
 QuoteListItem::DrawLargeItem( BRect frame) 
 {	
-	/*QuoteFormatter formatter(fQuote);
+	QuoteFormatter formatter(fQuote);
 	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
 	
@@ -252,10 +253,10 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	
 	DrawText("Open", textSettings);
 	
-	settings.align = B_ALIGN_CENTER;	
+	textSettings.align = B_ALIGN_CENTER;	
 	DrawText("High", textSettings);
 	
-	settings.align = B_ALIGN_RIGHT;
+	textSettings.align = B_ALIGN_RIGHT;
 	DrawText("Low", textSettings);
 	
 	rect.OffsetBy(0, fDrawer->Height(textSettings));	
@@ -272,8 +273,8 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	textSettings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.ToString(fQuote->low), textSettings);
 	
-	rect.OffsetBySelf(0, fDrawer->Height(settings) * 1.5);
-	
+	rect.OffsetBySelf(0, fDrawer->Height(textSettings) * 1.5);
+	/*
 	//row4
 	font = be_plain_font;
 	font.SetSize(11);
