@@ -25,8 +25,9 @@ public:
 	
 	virtual void		AttachedToWindow();
 	virtual void 		MessageReceived(BMessage *message);
-	virtual status_t	Archive(BMessage* into, bool deep = true) const;
 	static BArchivable*	Instantiate(BMessage* archive);
+	
+	virtual status_t	Archive(BMessage* into, bool deep = true) const;
 			status_t	SaveState(BMessage* into, bool deep = true) const;
 		
 			void SetTarget(BHandler *handler);

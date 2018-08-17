@@ -23,11 +23,10 @@
 #include <stdio.h>
 
 const float kDraggerSize = 7;
-
 extern const char *kAppSignature;
 
 ContainerView::ContainerView(Portfolio *portfolio)
-	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
+	:BView("HaikuStocks", B_SUPPORTS_LAYOUT)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fCurrentSymbols(NULL)
@@ -433,9 +432,6 @@ ContainerView::SetupViews()
 	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
 	fQuoteListView->SetSelectionMessage( new BMessage(kListSelectMessage));	
 	
-	if (fIsReplicant)
-		fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
-
 	BSize draggerSize = BSize(kDraggerSize,kDraggerSize);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
