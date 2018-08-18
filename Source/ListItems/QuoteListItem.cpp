@@ -213,14 +213,15 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 			break;
 		}
 	}
-	parent->FrameResized(rect.Width(), rect.Height());	
+	
+	parent->FrameResized(frame.Width(), frame.Height());	
 }
 
 void
 QuoteListItem::DrawTitleItem(BRect frame) 
 {
 	BFont font(be_bold_font);
-	font.SetSize(17);
+	font.SetSize(14);
 
 	DrawItemSettings settings = { frame, &font, NULL, B_ALIGN_CENTER };
 	DrawText(fTitle, settings);
@@ -349,6 +350,7 @@ QuoteListItem::Update(BView *view, const BFont *font)
 	font_height fh;
 	font->GetHeight(&fh);
 	float height = fh.ascent + fh.descent + fh.leading;
+	
 	switch (fQuoteType) {
 		case SMALL_TYPE:
 			height += 14;
@@ -364,5 +366,4 @@ QuoteListItem::Update(BView *view, const BFont *font)
 			break;
 	}
 	SetHeight(height);
-	SetWidth(800);
 }

@@ -370,6 +370,10 @@ ContainerView::HandleQuotes(BMessage message)
 	QuoteType quoteType = fPortfolio->CurrentQuoteType();
 	const uint8 transparency = fPortfolio->Transparency();
 	fQuoteListView->MakeEmpty();	
+
+	QuoteListItem *titleItem = new QuoteListItem(fPortfolio->Name());
+	titleItem->SetTransparency(transparency);
+	fQuoteListView->AddItem(titleItem);	
 	
 	BMessage symbolMessage;			
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {			
