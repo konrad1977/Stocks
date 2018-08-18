@@ -218,7 +218,11 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 void
 QuoteListItem::DrawTitleItem(BRect frame) 
 {
+	BFont font(be_bold_font);
+	font.SetSize(17);
 
+	DrawItemSettings settings = { frame, &font, NULL, B_ALIGN_CENTER };
+	DrawText(fTitle, settings);
 }
 
 void
