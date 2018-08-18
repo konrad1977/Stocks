@@ -16,8 +16,9 @@
 #include "SymbolListItem.h"
 #include "PortfolioListItem.h"
 
-#include <Catalog.h>
+#include <locale/Catalog.h>
 #include <Autolock.h>
+
 #include <GroupLayout.h>
 #include <GridLayout.h>
 #include <LayoutBuilder.h>
@@ -27,6 +28,7 @@
 #include <app/Application.h>
 #include <interface/ListView.h>
 #include <interface/MenuBar.h>
+#include <interface/ScrollView.h>
 
 #include <posix/stdio.h>
 
@@ -36,7 +38,7 @@ const uint32 kNewPortfolio	= 'kNPM';
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
 PortfolioManagerWindow::PortfolioManagerWindow() 
-	:BWindow(BRect(30,30, 320, 200), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE)
+	:BWindow(BRect(30,30, 320, 200), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fStockRequester(NULL)
 	,fStockSymbolWindow(NULL)
 	,fPortfolioWindow(NULL)
@@ -86,12 +88,14 @@ PortfolioManagerWindow::InitLayout()
 	
 	
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	BScrollView *scrollView = new BScrollView("Scrollview", fListView, B_SUPPORTS_LAYOUT, false, true);
+
 	fListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
 	fListView->SetSelectionMessage( new BMessage(kListSelectMessage));
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
-		.Add(fListView);
+		.Add(scrollView);
 		
 	fRemoveSelectedItem->SetEnabled(false);
 }

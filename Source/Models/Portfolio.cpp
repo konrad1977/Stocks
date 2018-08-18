@@ -196,7 +196,7 @@ Portfolio::PrintToStream()
 {
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
-		const char *symbol = static_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
+		const char *symbol = reinterpret_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
 		if (symbol == NULL) {
 			continue;
 		}
@@ -209,7 +209,7 @@ Portfolio::Save(BMessage& message)
 {
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
-		const char *symbol = static_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
+		const char *symbol = reinterpret_cast<const char *>(fCurrentSymbols->ItemAtFast(i));
 		if (symbol == NULL) {
 			continue;
 		}

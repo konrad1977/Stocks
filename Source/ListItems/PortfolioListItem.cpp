@@ -56,6 +56,7 @@ PortfolioListItem::DrawItem(BView *view, BRect rect, bool complete)
 	parent->SetDrawingMode(B_OP_OVER);
 	
 	DrawPortfolioInfo(frame);
+	parent->FrameResized(rect.Width(), rect.Height());	
 }
 
 void 
@@ -68,17 +69,18 @@ PortfolioListItem::DrawPortfolioInfo(BRect rect)
 	font.SetSize(11);
 	rgb_color titleColor = fDrawer->TextColor(IsSelected());
 	rgb_color textColor = tint_color(titleColor, 0.7);
-	DrawItemSettings settings = { frame, &font, &textColor, B_ALIGN_LEFT };
+	DrawItemSettings symbolSettings = { frame, &font, &textColor, B_ALIGN_LEFT };
 
 	BString stocks;
 	stocks << "Stocks: " << fPortfolio->CurrentSymbols()->CountItems();
-	DrawText(stocks.String(), settings);	
+	DrawText(stocks.String(), symbolSettings);	
 	
 	font = be_bold_font;
 	font.SetSize(14);	
 	frame = frame.OffsetBySelf(0, frame.Height());
-	settings = { frame, &font, &titleColor, B_ALIGN_LEFT };
-	DrawText(fPortfolio->Name().String(), settings);
+	DrawItemSettings nameSettings = { frame, &font, &titleColor, B_ALIGN_LEFT };
+	DrawText(fPortfolio->Name().String(), nameSettings);
+	
 }
 
 void 

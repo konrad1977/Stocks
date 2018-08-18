@@ -10,6 +10,7 @@
 #include <LayoutBuilder.h>
 #include <ListView.h>
 #include <List.h>
+#include <ScrollView.h>
 #include <MessageRunner.h>
 #include <Alert.h>
 
@@ -22,11 +23,10 @@
 #include <stdio.h>
 
 const float kDraggerSize = 7;
-
 extern const char *kAppSignature;
 
 ContainerView::ContainerView(Portfolio *portfolio)
-	:BView("HaikuStocks", B_WILL_DRAW | B_DRAW_ON_CHILDREN)
+	:BView("HaikuStocks", B_SUPPORTS_LAYOUT)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fCurrentSymbols(NULL)
@@ -60,7 +60,7 @@ ContainerView::ContainerView(BMessage *archive)
 {		
 
 	SetViewColor(B_TRANSPARENT_COLOR);
-	SetupViews();	
+	SetupViewAsReplicant();	
 	fSettingsManager = new SettingsManager();
 
 	BString portfolioName;
@@ -395,12 +395,14 @@ ContainerView::HandleQuotes(BMessage message)
 			fQuoteListView->AddItem(listItem);
 		}
 	}
+	
+	fQuoteListView->Invalidate();	
 }
 
-void
-ContainerView::SetupViews() 
-{	
-	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+void 
+ContainerView::SetupViewAsReplicant()
+{
+	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_SUPPORTS_LAYOUT | B_FULL_UPDATE_ON_RESIZE);
 	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
 	fQuoteListView->SetSelectionMessage( new BMessage(kListSelectMessage));	
 	
@@ -411,6 +413,29 @@ ContainerView::SetupViews()
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fQuoteListView)
+		.AddGroup(B_HORIZONTAL)
+			.AddGlue()
+			.SetExplicitMinSize(draggerSize)
+			.SetExplicitMaxSize(draggerSize)
+			.Add(fDragger = new BDragger(this))
+		.End()
+	.End();
+}
+
+void
+ContainerView::SetupViews() 
+{	
+	
+	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_SUPPORTS_LAYOUT | B_FULL_UPDATE_ON_RESIZE);
+	BScrollView *scrollView = new BScrollView("Scrollview", fQuoteListView, B_SUPPORTS_LAYOUT, false, true);
+
+	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
+	fQuoteListView->SetSelectionMessage( new BMessage(kListSelectMessage));	
+	
+	BSize draggerSize = BSize(kDraggerSize,kDraggerSize);
+	
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
+		.Add(scrollView)
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
 			.SetExplicitMinSize(draggerSize)
