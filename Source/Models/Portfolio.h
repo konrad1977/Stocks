@@ -21,7 +21,7 @@ public:
 
 	void SetTransparency(uint8 transparency);
 	void SetRefreshRate(uint8 seconds);
-	void SetQuoteSize(QuoteSize size);
+	void SetQuoteType(QuoteType type);
 	void SetTarget(BHandler *handler);
 	void Add(const char *symbol);
 	void Remove(const char *symbol);
@@ -32,7 +32,7 @@ public:
 	uint8 Transparency() const;
 	uint8 RefreshRate() const;
 	
-	QuoteSize CurrentQuoteSize() const;
+	QuoteType CurrentQuoteType() const;
 	
 	BString Name();	
 	BList *CurrentSymbols();
@@ -61,7 +61,7 @@ private:
 	SettingsManager *fSettingsManager;
 	uint8 			fTransparency;
 	uint8 			fRereshInterval;
-	QuoteSize 		fQuoteSize;
+	QuoteType 		fQuoteType;
 };
 
 

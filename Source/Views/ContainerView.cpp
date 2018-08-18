@@ -227,17 +227,17 @@ ContainerView::MessageReceived(BMessage *message)
 		}
 		
 		case kUseSmallQuoteSize: {
-			UpdateQuoteItemSizes(SMALL);
+			UpdateQuoteItemType(SMALL_TYPE);
 			break;
 		}
 
 		case kUseNormalQuoteSize: {
-			UpdateQuoteItemSizes(NORMAL);
+			UpdateQuoteItemType(NORMAL_TYPE);
 			break;
 		}
 
 		case kUseLargeQuoteSize: {
-			UpdateQuoteItemSizes(LARGE);
+			UpdateQuoteItemType(LARGE_TYPE);
 			break;
 		}
 			
@@ -276,18 +276,18 @@ ContainerView::MessageReceived(BMessage *message)
 }
 
 void
-ContainerView::UpdateQuoteItemSizes(QuoteSize size) 
+ContainerView::UpdateQuoteItemType(QuoteType type) 
 {
 	if (fQuoteListView == NULL || fPortfolio == NULL ) {
 		return;
 	}
 
-	fPortfolio->SetQuoteSize(size);
+	fPortfolio->SetQuoteType(type);
 	
 	const int32 items = fQuoteListView->CountItems();
 	for(int32 i = 0; i<items; i++) {
 		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
-		item->SetQuoteItemSize(size);
+		item->SetQuoteItemType(type);
 		item->DrawItem(fQuoteListView, fQuoteListView->Bounds(), true);
 	}
 	fQuoteListView->Invalidate();
@@ -367,7 +367,7 @@ ContainerView::HandleQuotes(BMessage message)
 		return;
 	}
 	
-	QuoteSize size = fPortfolio->CurrentQuoteSize();
+	QuoteType quoteType = fPortfolio->CurrentQuoteType();
 	const uint8 transparency = fPortfolio->Transparency();
 	fQuoteListView->MakeEmpty();	
 	
@@ -390,7 +390,7 @@ ContainerView::HandleQuotes(BMessage message)
 			}			
 			
 			Quote *quote = new Quote(quoteMsg);
-			QuoteListItem *listItem = new QuoteListItem(quote, fIsReplicant, size);
+			QuoteListItem *listItem = new QuoteListItem(quote, fIsReplicant, quoteType);
 			listItem->SetTransparency(transparency);
 			fQuoteListView->AddItem(listItem);
 		}

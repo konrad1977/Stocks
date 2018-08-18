@@ -12,23 +12,26 @@
 #include "ListItemDrawer.h"
 #include "Quote.h"
 
-enum QuoteSize {
-	SMALL = 0,
-	NORMAL,
-	LARGE
+enum QuoteType {
+	SMALL_TYPE = 0,
+	NORMAL_TYPE,
+	LARGE_TYPE,
+	TITLE_TYPE
 };
 
 class BListView;
 class ListItemDrawer;
 class QuoteListItem : public BListItem {
 public:
-	QuoteListItem(Quote *quote, bool replicant, QuoteSize quoteSize = NORMAL);
+	QuoteListItem(Quote *quote, bool replicant, QuoteType type = NORMAL_TYPE);
+	QuoteListItem(const char *title);
+
 	~QuoteListItem();
 	
 	virtual void DrawItem(BView *view, BRect rect, bool complete = false);
 	virtual void Update(BView *view, const BFont *font);
 			
-			void SetQuoteItemSize(QuoteSize size);
+			void SetQuoteItemType(QuoteType type);
 			void SetQuote(Quote *quote);
 			void SetTransparency(uint8 transparency);
 			
@@ -38,7 +41,8 @@ private:
 			void DrawBackground(BListView *view, BRect rect, ListItemDrawer *drawer);
 			void DrawSmallItem(BRect frame);
 			void DrawNormalItem(BRect frame);
-			void DrawLargeItem( BRect frame);
+			void DrawLargeItem(BRect frame);
+			void DrawTitleItem(BRect frame);
 			
 			void DrawText(const char *text, DrawItemSettings settings);
 			
@@ -49,11 +53,12 @@ private:
 			void DrawChangeDollar(BRect frame, alignment align = B_ALIGN_RIGHT);
 			void DrawLatestPrice(BRect frame, alignment align = B_ALIGN_LEFT);
 			
-	Quote *fQuote;
-	QuoteSize fQuoteSize;
-	ListItemDrawer *fDrawer;
-	bool fIsReplicant;
-	uint8 fTransparency;
+	char 			*fTitle;
+	Quote 			*fQuote;
+	ListItemDrawer 	*fDrawer;
+	QuoteType 		fQuoteType;
+	bool 			fIsReplicant;
+	uint8 			fTransparency;
 };
 
 

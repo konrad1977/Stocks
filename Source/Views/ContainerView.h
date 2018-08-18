@@ -39,7 +39,7 @@ private:
 			void InitAutoUpdate();
 			void ShowAlert(const char *title, const char *message);
 			void SendEmptyListMessage();
-			void UpdateQuoteItemSizes(QuoteSize size);
+			void UpdateQuoteItemType(QuoteType type);
 			void UpdateItemWithQuote(Quote *quote);
 			void HandleQuotes(BMessage message);
 			void LoadSavedData();

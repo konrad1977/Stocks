@@ -49,7 +49,7 @@ MainWindow::MainWindow(Portfolio *portfolio)
 { 	
 	SetupViews();
 	SetTitle( fPortfolio->Name() );
-	InitQuoteSize();
+	InitQuoteType();
 }
 
 MainWindow::~MainWindow() 
@@ -89,28 +89,30 @@ MainWindow::SendSaveMessage()
 }
 
 void
-MainWindow::SetSelectedMenuFromQuoteSize(QuoteSize size)
+MainWindow::SetSelectedMenuFromQuoteType(QuoteType type)
 {	
 	fMinimalItem->SetMarked(false);
 	fNormalItem->SetMarked(false);
 	fExtenededItem->SetMarked(false);
 	
-	switch (size) {
-		case SMALL:
+	switch (type) {
+		case SMALL_TYPE:
 			fMinimalItem->SetMarked(true);
 			break;
-		case NORMAL:
+		case NORMAL_TYPE:
 			fNormalItem->SetMarked(true);
 			break;
-		case LARGE:
+		case LARGE_TYPE:
 			fExtenededItem->SetMarked(true);
+		default:
+			break;
 	}
 }
 
 void 
-MainWindow::InitQuoteSize() 
+MainWindow::InitQuoteType() 
 {
-	SetSelectedMenuFromQuoteSize(fPortfolio->CurrentQuoteSize());
+	SetSelectedMenuFromQuoteType(fPortfolio->CurrentQuoteType());
 }
 
 void
@@ -139,19 +141,19 @@ MainWindow::MessageReceived(BMessage *message)
 		
 		case kUseSmallQuoteSize: {
 			SendToContainerView(message);
-			SetSelectedMenuFromQuoteSize(SMALL);
+			SetSelectedMenuFromQuoteType(SMALL_TYPE);
 			break;
 		}
 
 		case kUseNormalQuoteSize: {
 			SendToContainerView(message);
-			SetSelectedMenuFromQuoteSize(NORMAL);
+			SetSelectedMenuFromQuoteType(NORMAL_TYPE);
 			break;
 		}
 
 		case kUseLargeQuoteSize: {
 			SendToContainerView(message);
-			SetSelectedMenuFromQuoteSize(LARGE);
+			SetSelectedMenuFromQuoteType(LARGE_TYPE);
 			break;
 		}
 		

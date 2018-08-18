@@ -21,7 +21,7 @@ Portfolio::Portfolio(BString name)
 	,fSettingsManager(NULL)
 	,fTransparency(127)	
 	,fRereshInterval(60)
-	,fQuoteSize(NORMAL)
+	,fQuoteType(NORMAL_TYPE)
 {
 	fSettingsManager = new SettingsManager();
 	fCurrentSymbols = new BList();
@@ -122,10 +122,10 @@ Portfolio::Transparency() const
 	return fTransparency;
 }
 
-QuoteSize 
-Portfolio::CurrentQuoteSize() const
+QuoteType
+Portfolio::CurrentQuoteType() const
 {
-	return fQuoteSize;
+	return fQuoteType;
 }
 
 void 
@@ -147,10 +147,10 @@ Portfolio::SetTransparency(uint8 transparency)
 }
 
 void 
-Portfolio::SetQuoteSize(QuoteSize size) 
+Portfolio::SetQuoteType(QuoteType type) 
 {	
-	if (fQuoteSize != size) {
-		fQuoteSize = size;
+	if (fQuoteType != type) {
+		fQuoteType = type;
 		NotifyUpdates();
 	}
 }
@@ -226,9 +226,9 @@ Portfolio::Save(BMessage& message)
 		message.AddUInt8("Transparency", fTransparency);
 	}
 
-	uint8 value = uint8(fQuoteSize);
-	if (message.ReplaceUInt8("size", value) != B_OK) {
-		message.AddUInt8("size", uint8(value));
+	uint8 value = uint8(fQuoteType);
+	if (message.ReplaceUInt8("type", value) != B_OK) {
+		message.AddUInt8("type", uint8(value));
 	}		
 	return B_OK; //TODO
 }
@@ -254,11 +254,11 @@ Portfolio::Load(BMessage& message)
 		index++;
 	}
 
-	uint8 size = 1;
-	if (message.FindUInt8("size", &size) == B_OK) {
-		fQuoteSize = QuoteSize(size);
+	uint8 type = 1;
+	if (message.FindUInt8("type", &type) == B_OK) {
+		fQuoteType = QuoteType(type);
 	} else {
-		fQuoteSize = NORMAL;
+		fQuoteType = NORMAL_TYPE;
 	}
 	
 	if (message.FindUInt8("Transparency", &fTransparency) != B_OK) {

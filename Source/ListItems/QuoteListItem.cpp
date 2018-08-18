@@ -12,20 +12,39 @@
 #include <iostream>
 #include <Screen.h>
 #include <Window.h>
+
 #include "Constants.h"
 #include "QuoteFormatter.h"
 
-QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteSize quoteSize)
+#include <posix/stdlib.h>
+
+QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteType type)
 	:BListItem()
+	,fTitle(NULL)
 	,fQuote(quote) 
-	,fQuoteSize(quoteSize)
 	,fDrawer(NULL)	
+	,fQuoteType(type)
 	,fIsReplicant(isReplicant) 
+	,fTransparency(127)
 {	
+
+}
+
+QuoteListItem::QuoteListItem(const char *title)
+	:BListItem()
+	,fTitle(NULL)
+	,fQuote(NULL) 
+	,fDrawer(NULL)	
+	,fQuoteType(TITLE_TYPE)
+	,fIsReplicant(true) 
+	,fTransparency(127)
+{	
+	fTitle = strdup(title);
 }
 
 QuoteListItem::~QuoteListItem() 
 {
+	free(fTitle);
 	delete fQuote;
 	delete fDrawer;
 }	
@@ -43,9 +62,9 @@ QuoteListItem::SetQuote(Quote *quote) {
 }
 
 void 
-QuoteListItem::SetQuoteItemSize(QuoteSize size) 
+QuoteListItem::SetQuoteItemType(QuoteType type) 
 {
-	fQuoteSize = size;
+	fQuoteType = type;
 }
 
 void
@@ -175,21 +194,31 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 	DrawBackground(parent, rect, fDrawer);
 	parent->SetDrawingMode(B_OP_OVER);
 
-	switch (fQuoteSize) {
-		case SMALL: {
+	switch (fQuoteType) {
+		case SMALL_TYPE: {
 			fDrawer->SetInsets(BSize(5,0));
 			DrawSmallItem(frame);
 			break;
 		}
-		case NORMAL: {
+		case NORMAL_TYPE: {
 			DrawNormalItem(frame);
 			break;
 		}
-		case LARGE: {
+		case LARGE_TYPE: {
 			DrawLargeItem(frame);
 			break;
 		}
+		case TITLE_TYPE: {
+			DrawTitleItem(frame);
+			break;
+		}
 	}
+}
+
+void
+QuoteListItem::DrawTitleItem(BRect frame) 
+{
+
 }
 
 void
@@ -313,15 +342,18 @@ QuoteListItem::Update(BView *view, const BFont *font)
 	font_height fh;
 	font->GetHeight(&fh);
 	float height = fh.ascent + fh.descent + fh.leading;
-	switch (fQuoteSize) {
-		case SMALL:
+	switch (fQuoteType) {
+		case SMALL_TYPE:
 			height += 14;
 			break;
-		case NORMAL:
+		case NORMAL_TYPE:
 			height += 50;
 			break;
-		case LARGE:
+		case LARGE_TYPE:
 			height += 120;
+			break;
+		case TITLE_TYPE: 
+			height += 30;
 			break;
 	}
 	SetHeight(height);

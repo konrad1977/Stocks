@@ -27,8 +27,8 @@ public:
 
 private:
 			void SendSaveMessage();
-			void SetSelectedMenuFromQuoteSize(QuoteSize size);
-			void InitQuoteSize();
+			void SetSelectedMenuFromQuoteType(QuoteType type);
+			void InitQuoteType();
 			void SetupViews();	
 			void ShowStockWindow();
 			void SendToContainerView(BMessage *message);
