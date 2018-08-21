@@ -35,9 +35,9 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
-MainWindow::MainWindow(Portfolio *portfolio) 
-	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
-	,fMenuBar(NULL) 
+MainWindow::MainWindow(Portfolio *portfolio)
+	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_FRAME_EVENTS | B_AUTO_UPDATE_SIZE_LIMITS)
+	,fMenuBar(NULL)
 	,fContainerView(NULL)
 	,fSettingsWindow(NULL)
 	,fRemoveSelected(NULL)
@@ -45,27 +45,27 @@ MainWindow::MainWindow(Portfolio *portfolio)
 	,fNormalItem(NULL)
 	,fExtenededItem(NULL)
 	,fMessenger(NULL)
-	,fPortfolio(portfolio) 
-{ 	
+	,fPortfolio(portfolio)
+{
 	SetupViews();
 	SetTitle( fPortfolio->Name() );
 	InitQuoteType();
 }
 
-MainWindow::~MainWindow() 
+MainWindow::~MainWindow()
 {
 	delete fMessenger;
 }
 
 void
-MainWindow::SetTarget(BHandler *handler) 
+MainWindow::SetTarget(BHandler *handler)
 {
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 SettingsWindow*
-MainWindow::CurrentSettingWindow() 
+MainWindow::CurrentSettingWindow()
 {
 	if (fSettingsWindow == NULL) {
 		fSettingsWindow = new SettingsWindow(fPortfolio);
@@ -75,13 +75,13 @@ MainWindow::CurrentSettingWindow()
 }
 
 void
-MainWindow::SendToContainerView(BMessage *message) 
+MainWindow::SendToContainerView(BMessage *message)
 {
 	BMessenger messenger(fContainerView);
 	messenger.SendMessage(message);
 }
 
-void 
+void
 MainWindow::SendSaveMessage()
 {
 	BMessage message(kPortfolioManagerSaveMessage);
@@ -90,11 +90,11 @@ MainWindow::SendSaveMessage()
 
 void
 MainWindow::SetSelectedMenuFromQuoteType(QuoteType type)
-{	
+{
 	fMinimalItem->SetMarked(false);
 	fNormalItem->SetMarked(false);
 	fExtenededItem->SetMarked(false);
-	
+
 	switch (type) {
 		case SMALL_TYPE:
 			fMinimalItem->SetMarked(true);
@@ -109,15 +109,15 @@ MainWindow::SetSelectedMenuFromQuoteType(QuoteType type)
 	}
 }
 
-void 
-MainWindow::InitQuoteType() 
+void
+MainWindow::InitQuoteType()
 {
 	SetSelectedMenuFromQuoteType(fPortfolio->CurrentQuoteType());
 }
 
 void
-MainWindow::MessageReceived(BMessage *message) 
-{	
+MainWindow::MessageReceived(BMessage *message)
+{
 	switch (message->what) {
 
 		case kListSelectMessage: {
@@ -130,15 +130,15 @@ MainWindow::MessageReceived(BMessage *message)
 		case kListInvocationMessage: {
 			printf("Show stock information?\n");
 			break;
-		}		
-		
+		}
+
 		case kRemoveSelectedListItem:
 		case kPortfolioButtonPressedMessage:
 		case B_ABOUT_REQUESTED: {
 			SendToContainerView(message);
 			break;
 		}
-		
+
 		case kUseSmallQuoteSize: {
 			SendToContainerView(message);
 			SetSelectedMenuFromQuoteType(SMALL_TYPE);
@@ -156,14 +156,14 @@ MainWindow::MessageReceived(BMessage *message)
 			SetSelectedMenuFromQuoteType(LARGE_TYPE);
 			break;
 		}
-		
+
 		case kQuitSettingsWindowMessage: {
 			fSettingsWindow = NULL;
 			break;
 		}
 
 		case kShowSettingsWindowMessage: {
-			CurrentSettingWindow()->ShowWithPortfolioName(fPortfolio->Name().String());			
+			CurrentSettingWindow()->ShowWithPortfolioName(fPortfolio->Name().String());
 			break;
 		}
 
@@ -171,19 +171,19 @@ MainWindow::MessageReceived(BMessage *message)
 			SendSaveMessage();
 			break;
 		}
-		
+
 		case kHideSearchWindowMessaage: {
 			fMessenger->SendMessage(message);
 			break;
 		}
-		
+
 		case kShowSearchWindowMessage: {
 			BMessage message(kShowSearchWindowMessage);
 			message.AddString("PortfolioName", Title());
 			fMessenger->SendMessage(&message);
 			break;
 		}
-			
+
 		default:
 			BWindow::MessageReceived(message);
 			break;
@@ -191,12 +191,12 @@ MainWindow::MessageReceived(BMessage *message)
 }
 
 void
-MainWindow::SetupViews() 
+MainWindow::SetupViews()
 {
 	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
 	layout->SetSpacing(0);
 	SetLayout(layout);
-	
+
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
 		.AddMenu(B_TRANSLATE("Edit"))
 			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
@@ -210,13 +210,13 @@ MainWindow::SetupViews()
 			.AddSeparator()
 			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
 		.End();
-	
+
 	fContainerView = new ContainerView(fPortfolio);
 	fContainerView->SetTarget(this);
-	
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(fContainerView);
-	
+
 	fRemoveSelected->SetEnabled(false);
 }

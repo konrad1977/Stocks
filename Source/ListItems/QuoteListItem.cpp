@@ -21,36 +21,36 @@
 QuoteListItem::QuoteListItem(Quote *quote, bool isReplicant, QuoteType type)
 	:BListItem()
 	,fTitle(NULL)
-	,fQuote(quote) 
-	,fDrawer(NULL)	
+	,fQuote(quote)
+	,fDrawer(NULL)
 	,fQuoteType(type)
-	,fIsReplicant(isReplicant) 
+	,fIsReplicant(isReplicant)
 	,fTransparency(127)
-{	
+{
 
 }
 
 QuoteListItem::QuoteListItem(const char *title)
 	:BListItem()
 	,fTitle(NULL)
-	,fQuote(NULL) 
-	,fDrawer(NULL)	
+	,fQuote(NULL)
+	,fDrawer(NULL)
 	,fQuoteType(TITLE_TYPE)
-	,fIsReplicant(true) 
+	,fIsReplicant(true)
 	,fTransparency(127)
-{	
+{
 	fTitle = strdup(title);
 }
 
-QuoteListItem::~QuoteListItem() 
+QuoteListItem::~QuoteListItem()
 {
 	free(fTitle);
 	delete fQuote;
 	delete fDrawer;
-}	
+}
 
 Quote*
-QuoteListItem::CurrentQuoteItem() 
+QuoteListItem::CurrentQuoteItem()
 {
 	return fQuote;
 }
@@ -61,21 +61,21 @@ QuoteListItem::SetQuote(Quote *quote) {
 	fQuote = quote;
 }
 
-void 
-QuoteListItem::SetQuoteItemType(QuoteType type) 
+void
+QuoteListItem::SetQuoteItemType(QuoteType type)
 {
 	fQuoteType = type;
 }
 
 void
-QuoteListItem::DrawText(const char *text, DrawItemSettings settings) 
+QuoteListItem::DrawText(const char *text, DrawItemSettings settings)
 {
 	fDrawer->DrawString(text , settings);
 }
 
-void 
-QuoteListItem::DrawChangePercent(BRect frame, alignment align) 
-{		
+void
+QuoteListItem::DrawChangePercent(BRect frame, alignment align)
+{
 	BFont font(be_bold_font);
 	font.SetSize(15);
 
@@ -89,25 +89,25 @@ QuoteListItem::DrawChangePercent(BRect frame, alignment align)
 	} else {
 		color = stockPlusColor;
 	}
-	
+
 	DrawItemSettings settings = { frame, &font, &color, align };
-	DrawText(percent , settings);	
+	DrawText(percent , settings);
 }
 
-void 
-QuoteListItem::DrawSymbol(BRect frame, alignment align) 
+void
+QuoteListItem::DrawSymbol(BRect frame, alignment align)
 {
 	BFont font(be_bold_font);
-	font.SetSize(15);	
-	
-	DrawItemSettings settings = { frame, &font }; 
+	font.SetSize(15);
+
+	DrawItemSettings settings = { frame, &font };
 	settings.align = align;
-	fDrawer->DrawString(fQuote->symbol.String() , settings);	
+	fDrawer->DrawString(fQuote->symbol.String() , settings);
 }
 
-void 
+void
 QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
-		
+
 	BFont font(be_plain_font);
 	font.SetSize(13);
 
@@ -120,25 +120,25 @@ void
 QuoteListItem::DrawCompanyName(BRect frame, alignment align) {
 
 	BFont font(be_plain_font);
-	font.SetSize(13);	
-	
-	DrawItemSettings settings = { frame, &font, NULL, align }; 
-	DrawText(fQuote->companyName.String() , settings);	
+	font.SetSize(13);
+
+	DrawItemSettings settings = { frame, &font, NULL, align };
+	DrawText(fQuote->companyName.String() , settings);
 }
 
-void 
+void
 QuoteListItem::DrawMarket(BRect frame, alignment align) {
 
 	BFont font(be_plain_font);
-	font.SetSize(13);		
+	font.SetSize(13);
 
 	DrawItemSettings settings = { frame, &font, NULL, align };
 	fDrawer->DrawString(fQuote->primaryExchange.String(), settings);
 }
 
-void 
-QuoteListItem::DrawLatestPrice(BRect frame, alignment align) 
-{	
+void
+QuoteListItem::DrawLatestPrice(BRect frame, alignment align)
+{
 	BFont font(be_bold_font);
 	font.SetSize(15);
 
@@ -153,44 +153,42 @@ QuoteListItem::DrawBackground(BListView *parent, BRect frame, ListItemDrawer *dr
 	if (drawer->Transparency() == 0) {
 		return;
 	}
-	
+
 	const int32 index = parent->IndexOf(this);
 
 	rgb_color backgroundColor = drawer->BackgroundColor(IsSelected());
 
-	if (fIsReplicant) {
-		parent->SetHighColor(backgroundColor);
-	} else if (IsSelected()) {
-		parent->SetHighColor(ui_color(B_LIST_SELECTED_BACKGROUND_COLOR));
+	if (IsSelected()) {
+		backgroundColor = ui_color(B_LIST_SELECTED_BACKGROUND_COLOR);
 	} else if (index % 2 == 0) {
-		parent->SetHighColor(backgroundColor);
-	} else {
-		parent->SetHighColor(tint_color(backgroundColor, 1.02));
+		backgroundColor = tint_color(backgroundColor, 1.02);
 	}
-	
-	parent->SetDrawingMode(fIsReplicant ? B_OP_ALPHA : B_OP_COPY);
-	
+
+	parent->SetHighColor(backgroundColor);
+
 	if (fIsReplicant) {
+		parent->SetDrawingMode(B_OP_ALPHA);
 		parent->FillRoundRect(frame.InsetBySelf(0,2), 3, 3);
 	} else {
+		parent->SetDrawingMode(B_OP_COPY);
 		parent->FillRect(frame);
 	}
-	parent->SetLowColor(backgroundColor);	
+	parent->SetLowColor(backgroundColor);
 }
 
-void 
-QuoteListItem::DrawItem(BView *view, BRect rect, bool complete) 
-{		
+void
+QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
+{
 	BListView *parent = dynamic_cast<BListView *>(view);
 	const int32 index = parent->IndexOf(this);
 	BRect frame = parent->ItemFrame(index);
-	
+
 	if (fDrawer == NULL) {
 		fDrawer = new ListItemDrawer(parent, fIsReplicant);
 		fDrawer->SetTransparency(fTransparency);
 		fDrawer->SetInsets(BSize(10,0));
 	}
-	
+
 	DrawBackground(parent, rect, fDrawer);
 	parent->SetDrawingMode(B_OP_OVER);
 
@@ -213,12 +211,12 @@ QuoteListItem::DrawItem(BView *view, BRect rect, bool complete)
 			break;
 		}
 	}
-	
-	parent->FrameResized(frame.Width(), frame.Height());	
+
+	parent->FrameResized(frame.Width(), frame.Height());
 }
 
 void
-QuoteListItem::DrawTitleItem(BRect frame) 
+QuoteListItem::DrawTitleItem(BRect frame)
 {
 	BFont font(be_bold_font);
 	font.SetSize(14);
@@ -228,14 +226,14 @@ QuoteListItem::DrawTitleItem(BRect frame)
 }
 
 void
-QuoteListItem::DrawSmallItem(BRect frame) 
+QuoteListItem::DrawSmallItem(BRect frame)
 {
 	BRect rect = frame.InsetBySelf(0,10);
 	DrawCompanyName(rect);
 	DrawChangePercent(rect);
 }
 
-void 
+void
 QuoteListItem::DrawNormalItem(BRect frame)
 {
 	BRect rect = frame.InsetBySelf(0,5);
@@ -250,26 +248,26 @@ QuoteListItem::DrawNormalItem(BRect frame)
 	DrawChangeDollar(rect);
 
 	rect.OffsetBy(0, rect.Height());
-	DrawLatestPrice(rect);	
+	DrawLatestPrice(rect);
 }
 
-void 
-QuoteListItem::DrawLargeItem( BRect frame) 
-{	
+void
+QuoteListItem::DrawLargeItem( BRect frame)
+{
 	QuoteFormatter formatter(fQuote);
 	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
-	
+
 	BFont font(be_bold_font);
 	font.SetSize(13);
-		
+
 	//Row 1
 	DrawItemSettings priceSettings = { rect, &font, NULL, B_ALIGN_LEFT };
 	DrawText(fQuote->symbol.String(), priceSettings);
 	priceSettings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.LatestPrice(), priceSettings);
 	rect.OffsetBySelf(0, fDrawer->Height(priceSettings));
-	
+
 	//Row 2
 	font = be_plain_font;
 	font.SetSize(11);
@@ -280,20 +278,20 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	DrawItemSettings changeSettings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
 	DrawText(formatter.ChangeString(), changeSettings);
 	rect.OffsetBySelf(0, fDrawer->Height(changeSettings) * 1.5);
-	
+
 	rgb_color titleColor = fDrawer->TitleColor();
 	//Row 3
 	DrawItemSettings textSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
-	
+
 	DrawText("Open", textSettings);
-	
-	textSettings.align = B_ALIGN_CENTER;	
+
+	textSettings.align = B_ALIGN_CENTER;
 	DrawText("High", textSettings);
-	
+
 	textSettings.align = B_ALIGN_RIGHT;
 	DrawText("Low", textSettings);
-	
-	rect.OffsetBy(0, fDrawer->Height(textSettings));	
+
+	rect.OffsetBy(0, fDrawer->Height(textSettings));
 	font = be_bold_font;
 	font.SetSize(12);
 
@@ -303,57 +301,57 @@ QuoteListItem::DrawLargeItem( BRect frame)
 
 	textSettings.align = B_ALIGN_CENTER;
 	DrawText(formatter.ToString(fQuote->high), textSettings);
-	
+
 	textSettings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.ToString(fQuote->low), textSettings);
-	
+
 	rect.OffsetBySelf(0, fDrawer->Height(textSettings) * 1.5);
 	/*
 	//row4
 	font = be_plain_font;
 	font.SetSize(11);
 	settings = { rect, &font, &titleColor, B_ALIGN_LEFT };
-	
+
 	DrawText("Avg. volume", settings);
-	
-	settings.align = B_ALIGN_CENTER;	
+
+	settings.align = B_ALIGN_CENTER;
 	DrawText("52w. high", settings);
-	
+
 	settings.align = B_ALIGN_RIGHT;
 	DrawText("52w. low", settings);
-	
-	rect.OffsetBy(0, fDrawer->Height(settings));	
+
+	rect.OffsetBy(0, fDrawer->Height(settings));
 
 	font = be_bold_font;
 	font.SetSize(12);
 
-	settings = { rect, &font, NULL };	
+	settings = { rect, &font, NULL };
 	DrawText(formatter.ToString(int32(fQuote->avgVolume)), settings);
 
 	settings.align = B_ALIGN_CENTER;
 	DrawText(formatter.ToString(fQuote->week52High), settings);
-	
+
 	settings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.ToString(fQuote->week52Low), settings);
 	*/
 }
 
 void
-QuoteListItem::SetTransparency(uint8 transparency) 
+QuoteListItem::SetTransparency(uint8 transparency)
 {
 	fTransparency = transparency;
 }
 
 void
-QuoteListItem::Update(BView *view, const BFont *font) 
-{	
+QuoteListItem::Update(BView *view, const BFont *font)
+{
 	font_height fh;
 	font->GetHeight(&fh);
-	float height = fh.ascent + fh.descent + fh.leading;
-	
+	float height = ceilf(fh.ascent + fh.descent + fh.leading);
+
 	switch (fQuoteType) {
 		case SMALL_TYPE:
-			height += 14;
+			height += 12;
 			break;
 		case NORMAL_TYPE:
 			height += 50;
@@ -361,7 +359,7 @@ QuoteListItem::Update(BView *view, const BFont *font)
 		case LARGE_TYPE:
 			height += 120;
 			break;
-		case TITLE_TYPE: 
+		case TITLE_TYPE:
 			height += 30;
 			break;
 	}
