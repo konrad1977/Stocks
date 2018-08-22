@@ -26,7 +26,7 @@ public:
 	
 private:
 	StockSymbolWindow* SymbolWindow();
-	
+			void ResizeWindow(int32 maxItemsToFit);
 			void DownloadStockSymbols();
 			void ShowStockWindow();
 			void InitLayout();

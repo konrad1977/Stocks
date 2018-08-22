@@ -30,7 +30,11 @@ Portfolio::Portfolio(BString name)
 
 Portfolio::~Portfolio() 
 {
-	printf("Portfolio::~Portfolio()\n");
+	while(fCurrentSymbols->CountItems()) {
+		char *str = static_cast<char *>(fCurrentSymbols->RemoveItem(int32(0)));
+		free(str);
+	}
+	
 	delete fMessenger;
 	delete fSettingsManager;
 	delete fCurrentSymbols;
@@ -240,7 +244,9 @@ Portfolio::Load(BMessage& message)
 		return B_ERROR;
 	}
 
-	fCurrentSymbols->MakeEmpty();
+	while(fCurrentSymbols->CountItems()) {
+		free(fCurrentSymbols->RemoveItem(int32(0)));
+	}
 	
 	int32 index = 0;
 	

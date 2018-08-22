@@ -38,7 +38,7 @@ const uint32 kNewPortfolio	= 'kNPM';
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
 PortfolioManagerWindow::PortfolioManagerWindow() 
-	:BWindow(BRect(30,30, 320, 200), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
+	:BWindow(BRect(30,30, 1, 1), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fStockRequester(NULL)
 	,fStockSymbolWindow(NULL)
 	,fPortfolioWindow(NULL)
@@ -61,6 +61,10 @@ PortfolioManagerWindow::PortfolioManagerWindow()
 	
 PortfolioManagerWindow::~PortfolioManagerWindow() 
 {
+	while( fSymbolList->CountItems() ) {
+		delete fSymbolList->RemoveItem(int32(0));
+	}
+	
 	delete fPortfolioWindow;
 	delete fStockSymbolWindow;
 	delete fStockRequester;
@@ -88,6 +92,8 @@ PortfolioManagerWindow::InitLayout()
 	
 	
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fListView->SetExplicitMinSize(BSize(400, B_SIZE_UNSET));
+	fListView->SetExplicitMaxSize(BSize(800, B_SIZE_UNLIMITED));
 	BScrollView *scrollView = new BScrollView("Scrollview", fListView, B_SUPPORTS_LAYOUT, false, true);
 
 	fListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
@@ -168,6 +174,24 @@ PortfolioManagerWindow::ReloadPortfolios()
 		PortfolioListItem *listItem = new PortfolioListItem(portfolio);
 		fListView->AddItem(listItem);
 	}
+	ResizeWindow(10);	
+}
+
+void 
+PortfolioManagerWindow::ResizeWindow(int32 maxItemsToFit)
+{
+	int32 count = fListView->CountItems();
+	count = (count < maxItemsToFit) ? count : maxItemsToFit;
+	BRect itemRect = fListView->ItemFrame(0);
+	float itemHeight = itemRect.Height() + 4.0f;
+	float height = count * itemHeight;
+	
+	if (height == 0) {
+		height = 40;
+	}
+	
+	fListView->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, height));
+	fListView->SetExplicitMinSize(BSize(300, height));
 }
 
 BWindow* 

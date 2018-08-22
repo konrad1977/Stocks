@@ -13,10 +13,11 @@ SymbolListItem::SymbolListItem(StockSymbol *symbol)
 	,fStockSymbol(symbol)
 	,fTextOffset(14)
 	,fFontSize(14) {
-	}
+
+}
 
 SymbolListItem::~SymbolListItem() {
-	delete fStockSymbol;
+
 }	
 
 StockSymbol*

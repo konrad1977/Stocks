@@ -81,7 +81,6 @@ PortfolioListItem::DrawPortfolioInfo(BRect rect)
 	frame = frame.OffsetBySelf(0, frame.Height());
 	DrawItemSettings nameSettings = { frame, &font, &titleColor, B_ALIGN_LEFT };
 	DrawText(fPortfolio->Name().String(), nameSettings);
-
 }
 
 void
@@ -89,7 +88,7 @@ PortfolioListItem::Update(BView *view, const BFont *font)
 {
 	font_height fh;
 	font->GetHeight(&fh);
-	float height = fh.ascent + fh.descent + fh.leading;
+	float height = ceilf(fh.ascent + fh.descent + fh.leading);
 	height += 30;
 	SetHeight(height);
 }
