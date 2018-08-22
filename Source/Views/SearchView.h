@@ -17,7 +17,8 @@ class SearchView: public BView {
 public:
 	SearchView(BRect rect);
 	~SearchView();
-	
+		
+	virtual void AllAttached();
 	virtual void MessageReceived(BMessage *message);
 	virtual void AttachedToWindow();
 			void SetTarget(BHandler *handler);

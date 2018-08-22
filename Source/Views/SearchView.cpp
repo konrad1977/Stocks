@@ -89,6 +89,13 @@ SearchView::TextControl()
 }
 
 void
+SearchView::AllAttached() 
+{
+	TextControl()->MakeFocus();
+	BView::AllAttached();
+}
+
+void
 SearchView::InitLayout() 
 {	
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
