@@ -281,16 +281,7 @@ ContainerView::UpdateQuoteItemType(QuoteType type)
 	if (fQuoteListView == NULL || fPortfolio == NULL ) {
 		return;
 	}
-
 	fPortfolio->SetQuoteType(type);
-
-	const int32 items = fQuoteListView->CountItems();
-	for(int32 i = 0; i<items; i++) {
-		QuoteListItem *item = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(i));
-		item->SetQuoteItemType(type);
-		item->DrawItem(fQuoteListView, fQuoteListView->Bounds(), true);
-	}
-	fQuoteListView->Invalidate();
 }
 
 void
@@ -395,13 +386,25 @@ ContainerView::HandleQuotes(BMessage message)
 			fQuoteListView->AddItem(listItem);
 		}
 	}
+	fQuoteListView->Invalidate();
+	ResizeToFit();
+}
 
-	float width;
-	float height;
-	fQuoteListView->GetPreferredSize(&width, &height);
-	height += kDraggerSize;
-	fQuoteListView->SetExplicitMinSize(BSize(200, height));
-	ResizeTo(Bounds().Width(), height + kDraggerSize * 2);
+void 
+ContainerView::ResizeToFit()
+{	
+	int32 count = fQuoteListView->CountItems();
+	BRect itemRect = fQuoteListView->ItemFrame(0);
+	float itemHeight = itemRect.Height() + 2;
+	float height = count * itemHeight;
+	
+	fQuoteListView->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, height));
+	fQuoteListView->SetExplicitMinSize(BSize(300, height));
+	
+	if (fIsReplicant) {
+		ResizeTo(Bounds().Width(), height + kDraggerSize);
+	}
+	fQuoteListView->Invalidate();
 }
 
 void

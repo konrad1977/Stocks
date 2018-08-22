@@ -345,9 +345,7 @@ QuoteListItem::SetTransparency(uint8 transparency)
 void
 QuoteListItem::Update(BView *view, const BFont *font)
 {
-	font_height fh;
-	font->GetHeight(&fh);
-	float height = ceilf(fh.ascent + fh.descent + fh.leading);
+	float height = 15;
 
 	switch (fQuoteType) {
 		case SMALL_TYPE:
@@ -363,5 +361,6 @@ QuoteListItem::Update(BView *view, const BFont *font)
 			height += 30;
 			break;
 	}
+	printf("Height %f\n", height); 
 	SetHeight(height);
 }

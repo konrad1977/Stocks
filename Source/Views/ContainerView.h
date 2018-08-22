@@ -36,7 +36,8 @@ private:
 
 	StockRequester	*Requester();	
 	SettingsManager *CurrentSettingsManager();
-	
+		
+			void ResizeToFit();
 			void InitAutoUpdate();
 			void ShowAlert(const char *title, const char *message);
 			void SendEmptyListMessage();

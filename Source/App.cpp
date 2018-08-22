@@ -11,14 +11,13 @@
 #include "Portfolio.h"
 #include <stdio.h>
 
-
 const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 
 App::App(void)
 	:BApplication(kAppSignature)
 {		
 	PortfolioManagerWindow *window = new PortfolioManagerWindow();	
-	window->Show();
+	window->Show();	
 }
 
 App::~App() {
