@@ -82,6 +82,8 @@ PortfolioWindow::InitLayout()
 		.SetInsets(10,10,10,10)
 		.Add(TextControl())
 		.Add(createButton);
+		
+	TextControl()->MakeFocus();
 }
 
 bool

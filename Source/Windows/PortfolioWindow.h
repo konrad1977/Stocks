@@ -17,6 +17,7 @@ public:
 	~PortfolioWindow();
 	
 			void SetAlreadyExistingName(BString name);
+			
 	virtual void MessageReceived(BMessage *message);
 	virtual bool QuitRequested();
 	
