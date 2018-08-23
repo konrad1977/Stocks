@@ -36,7 +36,7 @@
 #define B_TRANSLATION_CONTEXT "MainWindow"
 
 MainWindow::MainWindow(Portfolio *portfolio)
-	:BWindow(BRect(30,30, 300, 400), B_TRANSLATE("Portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_FRAME_EVENTS | B_AUTO_UPDATE_SIZE_LIMITS)
+	:BWindow(BRect(30,30, 1, 1), B_TRANSLATE("Portfolio"), B_TITLED_WINDOW, B_FRAME_EVENTS | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMenuBar(NULL)
 	,fContainerView(NULL)
 	,fSettingsWindow(NULL)
@@ -212,6 +212,8 @@ MainWindow::SetupViews()
 		.End();
 
 	fContainerView = new ContainerView(fPortfolio);
+	fContainerView->SetExplicitMinSize(BSize(320, B_SIZE_UNSET));
+	fContainerView->SetExplicitMaxSize(BSize(680, B_SIZE_UNSET));
 	fContainerView->SetTarget(this);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)

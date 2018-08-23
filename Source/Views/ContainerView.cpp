@@ -398,8 +398,8 @@ ContainerView::ResizeToFit()
 	float itemHeight = itemRect.Height() + 2;
 	float height = count * itemHeight;
 	
-	fQuoteListView->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, height));
-	fQuoteListView->SetExplicitMinSize(BSize(300, height));
+	fQuoteListView->SetExplicitMaxSize(BSize(B_SIZE_UNSET, height));
+	fQuoteListView->SetExplicitMinSize(BSize(B_SIZE_UNSET, height));
 	
 	if (fIsReplicant) {
 		ResizeTo(Bounds().Width(), height + kDraggerSize);

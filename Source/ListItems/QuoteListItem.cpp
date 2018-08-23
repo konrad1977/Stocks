@@ -361,6 +361,5 @@ QuoteListItem::Update(BView *view, const BFont *font)
 			height += 30;
 			break;
 	}
-	printf("Height %f\n", height); 
 	SetHeight(height);
 }
