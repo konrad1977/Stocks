@@ -76,6 +76,7 @@ PortfolioWindow::InitLayout()
 	
 	BButton *createButton = new BButton("Create", "Create", new BMessage(kCreateNewPortfolioMessage));
 	createButton->SetTarget(this);
+	createButton->MakeDefault(true);
 	
 	BLayoutBuilder::Group<>(this, B_HORIZONTAL)
 		.SetExplicitMinSize(BSize(400, 40))
