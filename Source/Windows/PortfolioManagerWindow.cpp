@@ -37,7 +37,7 @@ const uint32 kNewPortfolio	= 'kNPM';
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "PortfolioManagerWindow"
 
-PortfolioManagerWindow::PortfolioManagerWindow() 
+PortfolioManagerWindow::PortfolioManagerWindow()
 	:BWindow(BRect(30,30, 1, 1), B_TRANSLATE("PortfolioManager"), B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE | B_AUTO_UPDATE_SIZE_LIMITS)
 	,fStockRequester(NULL)
 	,fStockSymbolWindow(NULL)
@@ -52,19 +52,19 @@ PortfolioManagerWindow::PortfolioManagerWindow()
 	,fCurrentSelectedItemIndex(-1)
 {
 	fPortfolioManager = new PortfolioManager(this);
-	
+
 	DownloadStockSymbols();
 	InitLayout();
 	ReloadPortfolios();
 	CenterOnScreen();
 }
-	
-PortfolioManagerWindow::~PortfolioManagerWindow() 
+
+PortfolioManagerWindow::~PortfolioManagerWindow()
 {
 	while( fSymbolList->CountItems() ) {
 		delete fSymbolList->RemoveItem(int32(0));
 	}
-	
+
 	delete fPortfolioWindow;
 	delete fStockSymbolWindow;
 	delete fStockRequester;
@@ -73,12 +73,12 @@ PortfolioManagerWindow::~PortfolioManagerWindow()
 }
 
 void
-PortfolioManagerWindow::InitLayout() 
+PortfolioManagerWindow::InitLayout()
 {
 	BGroupLayout *layout = new BGroupLayout(B_VERTICAL);
 	layout->SetSpacing(0);
 	SetLayout(layout);
-	
+
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
 		.AddMenu(B_TRANSLATE("File"))
 			.AddItem(B_TRANSLATE("New..."), kNewPortfolio, 'N')
@@ -89,8 +89,8 @@ PortfolioManagerWindow::InitLayout()
 		.AddMenu(B_TRANSLATE("Edit"))
 			.AddItem(fRemoveSelectedItem = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
 		.End();
-	
-	
+
+
 	fListView = new BListView("ListView", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
 	fListView->SetExplicitMinSize(BSize(400, B_SIZE_UNSET));
 	fListView->SetExplicitMaxSize(BSize(800, B_SIZE_UNLIMITED));
@@ -98,11 +98,11 @@ PortfolioManagerWindow::InitLayout()
 
 	fListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
 	fListView->SetSelectionMessage( new BMessage(kListSelectMessage));
-	
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.Add(scrollView);
-		
+
 	fRemoveSelectedItem->SetEnabled(false);
 }
 
@@ -115,8 +115,8 @@ PortfolioManagerWindow::SymbolWindow()
 	return fStockSymbolWindow;
 }
 
-void 
-PortfolioManagerWindow::DownloadStockSymbols() 
+void
+PortfolioManagerWindow::DownloadStockSymbols()
 {
 	if (fStockRequester == NULL) {
 		fStockRequester = new StockRequester(this);
@@ -125,17 +125,17 @@ PortfolioManagerWindow::DownloadStockSymbols()
 }
 
 void
-PortfolioManagerWindow::ShowStockWindow() 
+PortfolioManagerWindow::ShowStockWindow()
 {
 	if (SymbolWindow()->IsHidden() || SymbolWindow()->IsMinimized()) {
 		SymbolWindow()->SetStockSymbols(fSymbolList);
-		SymbolWindow()->Show();				
+		SymbolWindow()->Show();
 	}
 }
 
 void
-PortfolioManagerWindow::HandleAlreadyExist(BString previousName) 
-{	
+PortfolioManagerWindow::HandleAlreadyExist(BString previousName)
+{
 	if (fPortfolioWindow == NULL) {
 		fPortfolioWindow = new PortfolioWindow(this);
 		fPortfolioWindow->SetAlreadyExistingName(previousName);
@@ -146,11 +146,11 @@ PortfolioManagerWindow::HandleAlreadyExist(BString previousName)
 }
 
 void
-PortfolioManagerWindow::HandleNewPortfolioMessage(BMessage &message) 
+PortfolioManagerWindow::HandleNewPortfolioMessage(BMessage &message)
 {
 	BString portFolioName;
 	if (message.FindString("PortfolioName", &portFolioName) == B_OK ) {
-		Portfolio *portfolio = new Portfolio(portFolioName);		
+		Portfolio *portfolio = new Portfolio(portFolioName);
 		if (fPortfolioManager->AddPortfolio(portfolio) == false ) {
 			fPortfolioWindow = NULL;
 			HandleAlreadyExist(portFolioName);
@@ -158,7 +158,7 @@ PortfolioManagerWindow::HandleNewPortfolioMessage(BMessage &message)
 	}
 }
 
-void 
+void
 PortfolioManagerWindow::ReloadPortfolios()
 {
 	BList *portfolios = fPortfolioManager->Portfolios();
@@ -167,17 +167,17 @@ PortfolioManagerWindow::ReloadPortfolios()
 	}
 
 	fListView->MakeEmpty();
-	
+
 	const int32 items = portfolios->CountItems();
 	for (int32 i = 0; i<items; i++) {
 		Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(i));
 		PortfolioListItem *listItem = new PortfolioListItem(portfolio);
 		fListView->AddItem(listItem);
 	}
-	ResizeWindow(10);	
+	ResizeWindow(10);
 }
 
-void 
+void
 PortfolioManagerWindow::ResizeWindow(int32 maxItemsToFit)
 {
 	int32 count = fListView->CountItems();
@@ -185,40 +185,40 @@ PortfolioManagerWindow::ResizeWindow(int32 maxItemsToFit)
 	BRect itemRect = fListView->ItemFrame(0);
 	float itemHeight = itemRect.Height() + 4.0f;
 	float height = count * itemHeight;
-	
+
 	if (height == 0) {
 		height = 40;
 	}
-	
+
 	fListView->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, height));
 	fListView->SetExplicitMinSize(BSize(300, height));
 }
 
-BWindow* 
+BWindow*
 PortfolioManagerWindow::PortfolioWindowWithName(BString str)
 {
 	const int32 items = be_app->CountWindows();
-	
+
 	for (int32 i = 0; i<items; i++) {
 		BWindow *activeWindow = be_app->WindowAt(i);
 		if (activeWindow && activeWindow->Title() == str) {
 			return activeWindow;
-		}		
+		}
 	}
 	return NULL;
 }
 
-void 
+void
 PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
 
 	if (portfolio == NULL) {
 		return;
 	}
-	
+
 	MainWindow *window = dynamic_cast<MainWindow*>(PortfolioWindowWithName(portfolio->Name()));
 	if (window != NULL) {
 		window->Activate();
-	} else {	
+	} else {
 		window = new MainWindow(portfolio);
 		window->SetTarget(this);
 		window->Show();
@@ -226,29 +226,29 @@ PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
 	SymbolWindow()->SetTarget(window);
 }
 
-void 
+void
 PortfolioManagerWindow::HandleStockSearchSymbols(BMessage *message) {
-	
+
 	BMessage symbolMessage;
-	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {	
+	if (message->FindMessage("Symbols", &symbolMessage) == B_OK) {
 		char *name;
 		uint32 type;
 		int32 count;
-				
+
 		if (fSymbolList == NULL) {
 			fSymbolList = new BList();
 		}
-				
+
 		for (int32 i = 0; symbolMessage.GetInfo(B_MESSAGE_TYPE, i, &name, &type, &count) == B_OK; i++) {
 			BMessage currentMessage;
 			if (symbolMessage.FindMessage(name, &currentMessage) == B_OK) {
-				StockSymbol *symbol = new StockSymbol(currentMessage);
+				StockSymbol symbol(currentMessage);
 				SymbolListItem* symbolListItem = new SymbolListItem(symbol);
 				fSymbolList->AddItem(symbolListItem);
 			}
 		}
 	}
-	
+
 	fStockSymbolsLoaded = true;
 	if (fShowStockSymbolListWhenDone) {
 		ShowStockWindow();
@@ -257,7 +257,7 @@ PortfolioManagerWindow::HandleStockSearchSymbols(BMessage *message) {
 
 void
 PortfolioManagerWindow::MessageReceived(BMessage *message) {
-	
+
 	switch (message->what) {
 		case kPortfolioUpdatedSettingsMessage:{
 			printf("PortfolioManagerWindow :: kPortfolioUpdatedSettingsMessage\n");
@@ -279,21 +279,21 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 
-		case kUpdateSymbolMessage: { 
+		case kUpdateSymbolMessage: {
 			HandleStockSearchSymbols(message);
-			break;		
-		}		
-		
+			break;
+		}
+
 		case kPortfolioQuitMessage: {
 			fPortfolioWindow = NULL;
 			break;
 		}
-		
+
 		case kPortfolioManagerChangeMessage: {
 			ReloadPortfolios();
 			break;
 		}
-		
+
 		case kShowSearchWindowMessage: {
 			BString portfolio;
 			if (message->FindString("PortfolioName", &portfolio) == B_OK) {
@@ -304,21 +304,21 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-	
+
 		case kRemoveSelectedListItem: {
 			BList *portfolios = fPortfolioManager->Portfolios();
 
 			if (portfolios == NULL) {
 				return;
 			}
-			
+
 			Portfolio *portfolio = static_cast<Portfolio*>(portfolios->ItemAtFast(fCurrentSelectedItemIndex));
 			if (portfolio) {
 				fPortfolioManager->RemovePortfolio(portfolio);
 			}
 			break;
 		}
-		
+
 		case kHideSearchWindowMessaage: {
 			fStockSymbolWindow = NULL;
 			break;
@@ -329,8 +329,8 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 				fRemoveSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
 			}
 			break;
-		}		
-		
+		}
+
 		case kListInvocationMessage: {
 			int32 index = 0;
 			if (message->FindInt32("index", &index) == B_OK) {
@@ -340,7 +340,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-		
+
 		case kCreateNewPortfolioMessage: {
 			HandleNewPortfolioMessage(*message);
 			break;

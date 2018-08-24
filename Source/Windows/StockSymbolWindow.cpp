@@ -26,7 +26,7 @@
 #define B_TRANSLATION_CONTEXT "StockSymbolWindow"
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(200,200,900,720), B_TRANSLATE("Find stocks..."), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, 0)
+	:BWindow(BRect(200,200,900,720), B_TRANSLATE("Find stocks..."), B_TITLED_WINDOW, 0)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
 	,fSymbolListView(NULL)
@@ -35,11 +35,11 @@ StockSymbolWindow::StockSymbolWindow()
 	,fCurrentFilter(NULL)
 	,fMessenger(NULL)
 	,fHasFilter(false)  {
-	
-	InitLayout();	
+
+	InitLayout();
 }
 
-StockSymbolWindow::~StockSymbolWindow() {	
+StockSymbolWindow::~StockSymbolWindow() {
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
@@ -70,7 +70,7 @@ StockSymbolWindow::QuitRequested() {
 	if (fMessenger == NULL) {
 		return true;
 	}
-	
+
 	BMessage message(kHideSearchWindowMessaage);
 	fMessenger->SendMessage(&message);
 	return true;
@@ -78,28 +78,28 @@ StockSymbolWindow::QuitRequested() {
 
 void
 StockSymbolWindow::InitLayout() {
-	
+
 	BRect frame = Bounds();
 	float height = frame.Height();
 	frame.bottom = 46;
-	
+
 	fSearchView = new SearchView(frame);
 	fSearchView->SetTarget(this);
 	AddChild(fSearchView);
-	
+
 	const float extendedHeight = 160.0;
-	
+
 	frame.top = frame.bottom;
 	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
 	frame.right -=B_H_SCROLL_BAR_HEIGHT;
-	
+
 	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL, B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW);
 	fSymbolListView->SetSelectionMessage(new BMessage(kSymbolListSelectionChanged));
 	fSymbolListView->SetTarget(this);
-	
+
 	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, 0, true, true);
 	AddChild(fScrollView);
-	
+
 	frame.right = Bounds().right;
 	frame.top = Bounds().bottom - extendedHeight;
 	frame.bottom = Bounds().bottom;
@@ -110,50 +110,50 @@ StockSymbolWindow::InitLayout() {
 
 BList *
 StockSymbolWindow::Filtered(BString filter) {
-	
+
 	if (fStockSymbolListItems == NULL || filter.Length() == 0) {
 		return NULL;
 	}
-	
+
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
-	
+
 	delete fCurrentFilter;
 	fCurrentFilter = new BList();
-	
+
 	const int32 count = fStockSymbolListItems->CountItems();
-	
+
 	for (int32 i = 0; i<count; i++) {
 		SymbolListItem *symbol = (SymbolListItem*)fStockSymbolListItems->ItemAtFast(i);
 		if (symbol != NULL) {
-			if (symbol->CurrentStockSymbol()->name.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
+			if (symbol->CurrentStockSymbol().name.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
 				fCurrentFilter->AddItem(symbol);
-			} else if (symbol->CurrentStockSymbol()->symbol.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
+			} else if (symbol->CurrentStockSymbol().symbol.ToLower().FindFirst(filter.ToLower()) != B_ERROR ){
 				fCurrentFilter->AddItem(symbol);
-			} 
+			}
 		}
 	}
 	return fCurrentFilter;
 }
 
-void 
+void
 StockSymbolWindow::SetItems(BList *listItems) {
-	
-	if (listItems == NULL) 
+
+	if (listItems == NULL)
 		return;
-		
+
 	const int32 items = listItems->CountItems();
-	
+
 	if (fSearchView != NULL) {
 		fSearchView->SetNumberOfHits(items);
-	}	
+	}
 
 	fSymbolListView->MakeEmpty();
 	fSymbolListView->AddList(listItems);
 }
 
-void 
+void
 StockSymbolWindow::ApplyFilter(BString filter) {
 	if (filter.Length() > 2) {
 		BList *filtered = Filtered(filter);
@@ -167,31 +167,31 @@ StockSymbolWindow::ApplyFilter(BString filter) {
 
 const char*
 StockSymbolWindow::SymbolAtIndex(int32 index) {
-	
+
 	if (fSymbolListView == NULL) {
 		return NULL;
 	}
-	
+
 	SymbolListItem *listItem = static_cast<SymbolListItem *>(fSymbolListView->ItemAt(index));
 	if (listItem == NULL) {
 		return NULL;
-	}		
-	return listItem->CurrentStockSymbol()->symbol.String();
+	}
+	return listItem->CurrentStockSymbol().symbol.String();
 }
 
-void 
+void
 StockSymbolWindow::HandleSelection(BMessage *message) {
-	
+
 	int32 index;
 	if (message->FindInt32("index", &index) == B_OK) {
 		if (const char *symbol = SymbolAtIndex(index)) {
 			StockRequester requester(this);
-			requester.RequestStockInformation(symbol);			
+			requester.RequestStockInformation(symbol);
 		}
 	}
 }
 
-void 
+void
 StockSymbolWindow::HandleSearch(BMessage *message) {
 	BString searchString;
 	if (message->FindString("searchText", &searchString) == B_OK ) {
@@ -200,7 +200,7 @@ StockSymbolWindow::HandleSearch(BMessage *message) {
 	}
 }
 
-void 
+void
 StockSymbolWindow::HandleQuoteInformation(BMessage *message) {
 	BMessage quoteMessage;
 	if (message->FindMessage("Quote", &quoteMessage) == B_OK) {
@@ -222,11 +222,11 @@ StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
 
 void
 StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
-	if (fMessenger) 
+	if (fMessenger)
 		fMessenger->SendMessage(message);
 }
 
-void 
+void
 StockSymbolWindow::ShowAlert(const char *title, const char *message) {
 	BAlert *alert = new BAlert(title, message, "Ok");
 	alert->SetType(B_WARNING_ALERT);
@@ -235,7 +235,7 @@ StockSymbolWindow::ShowAlert(const char *title, const char *message) {
 
 void
 StockSymbolWindow::MessageReceived(BMessage *message) {
-	
+
 	switch (message->what) {
 
 		case kUpdateFailed: {
@@ -247,29 +247,29 @@ StockSymbolWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-		
+
 		case kPortfolioButtonPressedMessage:
 			HandleAddToPortfolio(message);
 			break;
-		
+
 		case kUpdateQuoteMessage:
 			HandleQuoteInformation(message);
 			break;
-		
+
 		case kUpdateCompanyMessage:
 			HandleCompanyInformation(message);
 			break;
 
-		case kSymbolListSelectionChanged: 
+		case kSymbolListSelectionChanged:
 			HandleSelection(message);
 			break;
-		
-		case kSearchTextChangedMessage: 
+
+		case kSearchTextChangedMessage:
 			HandleSearch(message);
 			break;
-			
+
 		default:
 			BWindow::MessageReceived(message);
-			break;	
+			break;
 	}
 }
