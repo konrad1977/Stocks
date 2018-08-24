@@ -31,7 +31,6 @@ QuoteListItem::QuoteListItem(Quote quote, bool isReplicant, QuoteType type)
 
 QuoteListItem::~QuoteListItem()
 {
-	printf("QuoteListItem::~QuoteListItem()\n");
 	delete fDrawer;
 }
 
@@ -229,11 +228,15 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	BRect rect = frame.InsetBySelf(0,8);
 	rect.bottom = frame.top + frame.Height() / 7.0;
 
+	rgb_color titleColor 	= fDrawer->TitleColor();
+	rgb_color textColor 	= fDrawer->TextColor(IsSelected());
+	rgb_color changeColor	= formatter.ChangeColor();
+
 	BFont font(be_bold_font);
 	font.SetSize(13);
 
 	//Row 1
-	DrawItemSettings priceSettings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawItemSettings priceSettings = { rect, &font, &textColor, B_ALIGN_LEFT };
 	DrawText(fQuote.symbol.String(), priceSettings);
 	priceSettings.align = B_ALIGN_RIGHT;
 	DrawText(formatter.LatestPrice(), priceSettings);
@@ -242,69 +245,68 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	//Row 2
 	font = be_plain_font;
 	font.SetSize(11);
-	DrawItemSettings companySettings = { rect, &font, NULL, B_ALIGN_LEFT };
+	DrawItemSettings companySettings = { rect, &font, &textColor, B_ALIGN_LEFT };
 	DrawText(fQuote.companyName.String(), companySettings);
 
-	rgb_color changeColor = formatter.ChangeColor();
 	DrawItemSettings changeSettings = { rect, &font, &changeColor, B_ALIGN_RIGHT };
 	DrawText(formatter.ChangeString(), changeSettings);
 	rect.OffsetBySelf(0, fDrawer->Height(changeSettings) * 1.5);
 
-	rgb_color titleColor = fDrawer->TitleColor();
 	//Row 3
-	DrawItemSettings textSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
+	DrawItemSettings dailyTitleSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
+	DrawText("Open", dailyTitleSettings);
 
-	DrawText("Open", textSettings);
+	dailyTitleSettings.align = B_ALIGN_CENTER;
+	DrawText("High", dailyTitleSettings);
 
-	textSettings.align = B_ALIGN_CENTER;
-	DrawText("High", textSettings);
+	dailyTitleSettings.align = B_ALIGN_RIGHT;
+	DrawText("Low", dailyTitleSettings);
 
-	textSettings.align = B_ALIGN_RIGHT;
-	DrawText("Low", textSettings);
-
-	rect.OffsetBy(0, fDrawer->Height(textSettings));
+	//Row 3 data
+	rect.OffsetBy(0, fDrawer->Height(dailyTitleSettings));
 	font = be_bold_font;
 	font.SetSize(12);
 
-	textSettings.font = &font;
-	textSettings.frame = rect;
-	DrawText(formatter.ToString(fQuote.open), textSettings);
 
-	textSettings.align = B_ALIGN_CENTER;
-	DrawText(formatter.ToString(fQuote.high), textSettings);
+	DrawItemSettings dailyDataSettings = { rect, &font, &textColor, B_ALIGN_LEFT };
+	DrawText(formatter.ToString(fQuote.open), dailyDataSettings);
 
-	textSettings.align = B_ALIGN_RIGHT;
-	DrawText(formatter.ToString(fQuote.low), textSettings);
+	dailyDataSettings.align = B_ALIGN_CENTER;
+	DrawText(formatter.ToString(fQuote.high), dailyDataSettings);
 
-	rect.OffsetBySelf(0, fDrawer->Height(textSettings) * 1.5);
-	/*
+	dailyDataSettings.align = B_ALIGN_RIGHT;
+	DrawText(formatter.ToString(fQuote.low), dailyDataSettings);
+
+	rect.OffsetBySelf(0, fDrawer->Height(dailyDataSettings) * 1.5);
+
 	//row4
 	font = be_plain_font;
 	font.SetSize(11);
-	settings = { rect, &font, &titleColor, B_ALIGN_LEFT };
+	DrawItemSettings volumeTitleSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
+	DrawText("Avg. volume", volumeTitleSettings);
 
-	DrawText("Avg. volume", settings);
+	volumeTitleSettings.align = B_ALIGN_CENTER;
+	DrawText("52w. high", volumeTitleSettings);
 
-	settings.align = B_ALIGN_CENTER;
-	DrawText("52w. high", settings);
+	volumeTitleSettings.align = B_ALIGN_RIGHT;
+	DrawText("52w. low", volumeTitleSettings);
 
-	settings.align = B_ALIGN_RIGHT;
-	DrawText("52w. low", settings);
-
-	rect.OffsetBy(0, fDrawer->Height(settings));
+	rect.OffsetBy(0, fDrawer->Height(volumeTitleSettings));
 
 	font = be_bold_font;
 	font.SetSize(12);
+	volumeTitleSettings.color = &textColor;
+	volumeTitleSettings.font = &font;
+	volumeTitleSettings.frame = rect;
+	volumeTitleSettings.align = B_ALIGN_LEFT;
 
-	settings = { rect, &font, NULL };
-	DrawText(formatter.ToString(int32(fQuote.avgVolume)), settings);
+	DrawText(formatter.ToString(int32(fQuote.avgVolume)), volumeTitleSettings);
 
-	settings.align = B_ALIGN_CENTER;
-	DrawText(formatter.ToString(fQuote.week52High), settings);
+	volumeTitleSettings.align = B_ALIGN_CENTER;
+	DrawText(formatter.ToString(fQuote.week52High), volumeTitleSettings);
 
-	settings.align = B_ALIGN_RIGHT;
-	DrawText(formatter.ToString(fQuote.week52Low), settings);
-	*/
+	volumeTitleSettings.align = B_ALIGN_RIGHT;
+	DrawText(formatter.ToString(fQuote.week52Low), volumeTitleSettings);
 }
 
 void

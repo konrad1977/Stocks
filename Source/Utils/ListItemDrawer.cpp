@@ -44,7 +44,7 @@ bool
 ListItemDrawer::IsDark()
 {
 	rgb_color backgroundColor = BackgroundColor(false);
-	return backgroundColor.red < 127 || backgroundColor.green < 127 ||  backgroundColor.blue < 127;
+	return (backgroundColor.red + backgroundColor.green + backgroundColor.blue) < 128 * 3;
 }
 
 const uint8
