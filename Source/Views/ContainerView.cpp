@@ -74,6 +74,8 @@ ContainerView::ContainerView(BMessage *archive)
 
 ContainerView::~ContainerView()
 {
+	EmptyQuoteItems();
+
 	delete fStockRequester;
 	delete fAutoUpdateRunner;
 	delete fMessenger;
@@ -339,15 +341,22 @@ ContainerView::RemoveSelectedListItem()
 	int32 selectedIndex = fQuoteListView->CurrentSelection();
 	if (selectedIndex != -1) {
 		QuoteListItem  *listItem = dynamic_cast<QuoteListItem*>(fQuoteListView->ItemAt(selectedIndex));
-		if (listItem && listItem->CurrentQuoteItem()) {
-			const char *symbol = listItem->CurrentQuoteItem()->symbol.String();
+		if (listItem) {
+			const char *symbol = listItem->CurrentQuoteItem().symbol.String();
 			fPortfolio->Remove(symbol);
-			fQuoteListView->RemoveItem(selectedIndex);
+			delete fQuoteListView->RemoveItem(selectedIndex);
 		}
 	} else {
 		BAlert *alert = new BAlert("No selection", "No item selected in the list", "Ok");
 		alert->SetType(B_WARNING_ALERT);
 		alert->Go();
+	}
+}
+
+void ContainerView::EmptyQuoteItems()
+{
+	while (fQuoteListView->CountItems()) {
+		delete fQuoteListView->RemoveItem(int32(0));
 	}
 }
 
@@ -360,7 +369,7 @@ ContainerView::HandleQuotes(BMessage message)
 
 	QuoteType quoteType = fPortfolio->CurrentQuoteType();
 	const uint8 transparency = fPortfolio->Transparency();
-	fQuoteListView->MakeEmpty();
+	EmptyQuoteItems();
 
 	BMessage symbolMessage;
 	if (message.FindMessage("Quotes", &symbolMessage) == B_OK) {
@@ -380,7 +389,7 @@ ContainerView::HandleQuotes(BMessage message)
 				continue;
 			}
 
-			Quote *quote = new Quote(quoteMsg);
+			Quote quote(quoteMsg);
 			QuoteListItem *listItem = new QuoteListItem(quote, fIsReplicant, quoteType);
 			listItem->SetTransparency(transparency);
 			fQuoteListView->AddItem(listItem);
@@ -390,17 +399,17 @@ ContainerView::HandleQuotes(BMessage message)
 	ResizeToFit();
 }
 
-void 
+void
 ContainerView::ResizeToFit()
-{	
+{
 	int32 count = fQuoteListView->CountItems();
 	BRect itemRect = fQuoteListView->ItemFrame(0);
 	float itemHeight = itemRect.Height() + 2;
 	float height = count * itemHeight;
-	
+
 	fQuoteListView->SetExplicitMaxSize(BSize(B_SIZE_UNSET, height));
 	fQuoteListView->SetExplicitMinSize(BSize(B_SIZE_UNSET, height));
-	
+
 	if (fIsReplicant) {
 		ResizeTo(Bounds().Width(), height + kDraggerSize);
 	}

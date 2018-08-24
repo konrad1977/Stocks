@@ -2,7 +2,7 @@
  * Copyright 2015 Your Name <your@email.address>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
- 
+
 #ifndef CONTAINERVIEW_H
 #define CONTAINERVIEW_H
 
@@ -22,21 +22,22 @@ public:
 	ContainerView(Portfolio *portfolio);
 	ContainerView(BMessage *archive);
 	~ContainerView();
-	
+
 	virtual void		AttachedToWindow();
 	virtual void 		MessageReceived(BMessage *message);
 	static BArchivable*	Instantiate(BMessage* archive);
-	
+
 	virtual status_t	Archive(BMessage* into, bool deep = true) const;
 			status_t	SaveState(BMessage* into, bool deep = true) const;
-		
+
 			void SetTarget(BHandler *handler);
-			void RequestData();	
+			void RequestData();
 private:
 
-	StockRequester	*Requester();	
+	StockRequester	*Requester();
 	SettingsManager *CurrentSettingsManager();
-		
+
+			void EmptyQuoteItems();
 			void ResizeToFit();
 			void InitAutoUpdate();
 			void ShowAlert(const char *title, const char *message);
@@ -50,9 +51,9 @@ private:
 			void StopActiveRequest();
 			void DownloadData();
 			void RemoveSelectedListItem();
-	static int32 DownloadDataFunc(void *cookie);	
-		
-	BDragger 		*fDragger;	
+	static int32 DownloadDataFunc(void *cookie);
+
+	BDragger 		*fDragger;
 	BListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;
 
@@ -61,7 +62,7 @@ private:
 	StockRequester  *fStockRequester;
 	Portfolio 		*fPortfolio;
 	SettingsManager *fSettingsManager;
-	
+
 	thread_id		fDownloadThread;
 	bool 			fIsReplicant;
 };
