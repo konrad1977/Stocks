@@ -12,14 +12,16 @@
 #include <support/List.h>
 #include <app/Messenger.h>
 #include <app/Handler.h>
+
 #include <posix/stdio.h>
+#include <posix/stdlib.h>
 
 Portfolio::Portfolio(BString name)
 	:fName(name)
 	,fCurrentSymbols(NULL)
 	,fMessenger(NULL)
 	,fSettingsManager(NULL)
-	,fTransparency(127)	
+	,fTransparency(127)
 	,fRereshInterval(60)
 	,fQuoteType(NORMAL_TYPE)
 {
@@ -28,19 +30,19 @@ Portfolio::Portfolio(BString name)
 	ReloadSavedData();
 }
 
-Portfolio::~Portfolio() 
+Portfolio::~Portfolio()
 {
 	while(fCurrentSymbols->CountItems()) {
 		char *str = static_cast<char *>(fCurrentSymbols->RemoveItem(int32(0)));
 		free(str);
 	}
-	
+
 	delete fMessenger;
 	delete fSettingsManager;
 	delete fCurrentSymbols;
 }
 
-void 
+void
 Portfolio::ReloadSavedData()
 {
 	if (BMessage *msg = fSettingsManager->MessageForPortfolio(Name())) {
@@ -49,30 +51,30 @@ Portfolio::ReloadSavedData()
 }
 
 BString
-Portfolio::Name() 
+Portfolio::Name()
 {
 	return fName;
 }
 
 BList*
-Portfolio::CurrentSymbols() 
+Portfolio::CurrentSymbols()
 {
 	return fCurrentSymbols;
 }
 
-void Portfolio::Add(const char *symbol) 
+void Portfolio::Add(const char *symbol)
 {
 	if (HasSymbol(symbol) == true) {
 		return;
 	}
 
 	char *symbolToAdd = strdup(symbol);
-	
+
 	fCurrentSymbols->AddItem((void*)symbolToAdd);
 	NotifyAdd(symbol);
 }
-	
-void Portfolio::Remove(const char *symbol) 
+
+void Portfolio::Remove(const char *symbol)
 {
 	int32 index = IndexOf(symbol);
 	if (index == -1) {
@@ -83,15 +85,15 @@ void Portfolio::Remove(const char *symbol)
 }
 
 void
-Portfolio::NotifyUpdates() 
+Portfolio::NotifyUpdates()
 {
 	BMessage message(kPortfolioUpdatedSettingsMessage);
 	fMessenger->SendMessage(&message);
 }
 
 void
-Portfolio::NotifyAdd(const char *symbol) 
-{	
+Portfolio::NotifyAdd(const char *symbol)
+{
 	BMessage message(kPortfolioAddedSymbolMessage);
 	message.AddString("symbol", symbol);
 	fMessenger->SendMessage(&message);
@@ -99,7 +101,7 @@ Portfolio::NotifyAdd(const char *symbol)
 }
 
 void
-Portfolio::NotifyRemove(const char *symbol) 
+Portfolio::NotifyRemove(const char *symbol)
 {
 	BMessage message(kPortfolioRemovedSymbolMessage);
 	message.AddString("symbol", symbol);
@@ -107,14 +109,14 @@ Portfolio::NotifyRemove(const char *symbol)
 	NotifyUpdates();
 }
 
-void 
-Portfolio::SetTarget(BHandler *handler) 
+void
+Portfolio::SetTarget(BHandler *handler)
 {
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
-uint8 
+uint8
 Portfolio::RefreshRate() const
 {
 	return fRereshInterval;
@@ -122,7 +124,7 @@ Portfolio::RefreshRate() const
 
 uint8
 Portfolio::Transparency() const
-{		
+{
 	return fTransparency;
 }
 
@@ -132,8 +134,8 @@ Portfolio::CurrentQuoteType() const
 	return fQuoteType;
 }
 
-void 
-Portfolio::SetRefreshRate(uint8 seconds) 
+void
+Portfolio::SetRefreshRate(uint8 seconds)
 {
 	if (fRereshInterval != seconds) {
 		fRereshInterval = seconds;
@@ -142,7 +144,7 @@ Portfolio::SetRefreshRate(uint8 seconds)
 }
 
 void
-Portfolio::SetTransparency(uint8 transparency) 
+Portfolio::SetTransparency(uint8 transparency)
 {
 	if (fTransparency != transparency) {
 		fTransparency = transparency;
@@ -150,53 +152,53 @@ Portfolio::SetTransparency(uint8 transparency)
 	}
 }
 
-void 
-Portfolio::SetQuoteType(QuoteType type) 
-{	
+void
+Portfolio::SetQuoteType(QuoteType type)
+{
 	if (fQuoteType != type) {
 		fQuoteType = type;
 		NotifyUpdates();
 	}
 }
 
-int32 
-Portfolio::IndexOf(const char *symbol) 
-{	
+int32
+Portfolio::IndexOf(const char *symbol)
+{
 	if (fCurrentSymbols == NULL) {
 		return -1;
 	}
-	
+
 	const int32 items = fCurrentSymbols->CountItems();
 	for(int32 i = 0; i<items; i++) {
 		char *sym = static_cast<char *>(fCurrentSymbols->ItemAtFast(i));
 		if (strcasecmp(sym, symbol) == 0) {
 			return i;
 		}
-	}	
+	}
 	return -1;
 }
-	
-bool 
-Portfolio::HasSymbol(const char *symbol) 
+
+bool
+Portfolio::HasSymbol(const char *symbol)
 {
 	return IndexOf(symbol) != -1;
 }
 
 void
-Portfolio::HandlePortfolioUpdate(BMessage *message) 
+Portfolio::HandlePortfolioUpdate(BMessage *message)
 {
 	BString symbol;
 	bool removeFromPortfolio = false;
 
 	if (message->FindString("symbol", &symbol) != B_OK)
 		return;
-		
+
 	removeFromPortfolio = message->FindBool("removeQuote");
 	removeFromPortfolio ? Remove(symbol.String()) : Add(symbol.String());
 }
 
-void 
-Portfolio::PrintToStream() 
+void
+Portfolio::PrintToStream()
 {
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
@@ -208,8 +210,8 @@ Portfolio::PrintToStream()
 	}
 }
 
-status_t 	
-Portfolio::Save(BMessage& message) 
+status_t
+Portfolio::Save(BMessage& message)
 {
 	const int32 items = fCurrentSymbols->CountItems();
 	for (int32 i = 0; i<items; i++) {
@@ -224,8 +226,8 @@ Portfolio::Save(BMessage& message)
 
 	if (message.ReplaceUInt8("Refresh", fRereshInterval) != B_OK) {
 		message.AddUInt8("Refresh", fRereshInterval);
-	}	
-	
+	}
+
 	if (message.ReplaceUInt8("Transparency", fTransparency) != B_OK) {
 		message.AddUInt8("Transparency", fTransparency);
 	}
@@ -233,13 +235,13 @@ Portfolio::Save(BMessage& message)
 	uint8 value = uint8(fQuoteType);
 	if (message.ReplaceUInt8("type", value) != B_OK) {
 		message.AddUInt8("type", uint8(value));
-	}		
+	}
 	return B_OK; //TODO
 }
 
 status_t
-Portfolio::Load(BMessage& message) 
-{	
+Portfolio::Load(BMessage& message)
+{
 	if (fCurrentSymbols == NULL) {
 		return B_ERROR;
 	}
@@ -247,9 +249,9 @@ Portfolio::Load(BMessage& message)
 	while(fCurrentSymbols->CountItems()) {
 		free(fCurrentSymbols->RemoveItem(int32(0)));
 	}
-	
+
 	int32 index = 0;
-	
+
 	BMessage symbolMsg;
 	while ( (message.FindMessage("Symbols", index, &symbolMsg) == B_OK )) {
 		BString symbolString;
@@ -266,13 +268,13 @@ Portfolio::Load(BMessage& message)
 	} else {
 		fQuoteType = NORMAL_TYPE;
 	}
-	
+
 	if (message.FindUInt8("Transparency", &fTransparency) != B_OK) {
 		fTransparency = 127;
 	}
-	
+
 	if (message.FindUInt8("Refresh", &fRereshInterval) != B_OK) {
 		fRereshInterval = 60;
-	}	
+	}
 	return B_OK; //TODO
 }
