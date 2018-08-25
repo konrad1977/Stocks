@@ -54,6 +54,10 @@ MainWindow::MainWindow(Portfolio *portfolio)
 
 MainWindow::~MainWindow()
 {
+	if (fSettingsWindow) {
+		fSettingsWindow->Lock();
+		fSettingsWindow->Quit();
+	}
 	delete fMessenger;
 }
 

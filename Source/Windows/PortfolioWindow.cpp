@@ -92,5 +92,5 @@ PortfolioWindow::QuitRequested()
 {
 	BMessage message(kPortfolioQuitMessage);
 	fMessenger->SendMessage(&message);
-	return true;
+	return BWindow::QuitRequested();
 }
