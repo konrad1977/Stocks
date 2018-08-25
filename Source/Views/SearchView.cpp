@@ -22,8 +22,8 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "SearchView"
 
-SearchView::SearchView(BRect rect)
-	:BView(rect, "SearchView", B_FOLLOW_TOP | B_FOLLOW_LEFT_RIGHT, B_WILL_DRAW)
+SearchView::SearchView()
+	:BView("SearchView", B_SUPPORTS_LAYOUT)
 	,fSearchTextControl(NULL)
 	,fHitsView(NULL)
 	,fMessenger(NULL) 
@@ -40,6 +40,7 @@ void
 SearchView::AttachedToWindow() 
 {
 	InitLayout();
+	BView::AttachedToWindow();
 }
 
 void
@@ -98,26 +99,16 @@ SearchView::AllAttached()
 void
 SearchView::InitLayout() 
 {	
-	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
-	SetLayout(group);
+	SetExplicitMinSize(BSize(300, 50));
 	
 	fHitsView = new BStringView("HitsView", "");
 	fHitsView->SetAlignment(B_ALIGN_RIGHT);
+	fHitsView->SetExplicitMaxSize(BSize(100, B_SIZE_UNSET));
 	
-	BGridLayout *grid = BGridLayoutBuilder(25.0)
-		.Add(TextControl(), 0, 0)
-		.Add(fHitsView, 1, 0);
-		
-	grid->SetMaxColumnWidth(0, 150);
-	
-	BGroupView *groupView = new BGroupView(B_VERTICAL, 0.0);
-	
-	BView *view = BGroupLayoutBuilder(B_VERTICAL, 5)
-		.Add(grid->View())
+	BLayoutBuilder::Group<>(this, B_HORIZONTAL, 10)
 		.SetInsets(10,10,10,10)
-		.TopView();
-	
-	groupView->AddChild(view);
-	AddChild(groupView);
+		.Add(TextControl())
+		.Add(fHitsView)
+	.End();
 }
 

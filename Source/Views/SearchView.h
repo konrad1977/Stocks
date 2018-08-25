@@ -15,7 +15,7 @@ class BMessenger;
 class BStringView;
 class SearchView: public BView {
 public:
-	SearchView(BRect rect);
+	SearchView();
 	~SearchView();
 		
 	virtual void AllAttached();
@@ -24,13 +24,12 @@ public:
 			void SetTarget(BHandler *handler);
 			void SetNumberOfHits(int32 hits);
 private:
+	BTextControl *TextControl();
 			void InitLayout();
 			
-	BTextControl *TextControl();
-
-	BTextControl *fSearchTextControl;
-	BStringView  *fHitsView;
-	BMessenger *fMessenger;	
+	BTextControl 	*fSearchTextControl;
+	BStringView  	*fHitsView;
+	BMessenger 		*fMessenger;	
 };
 
 

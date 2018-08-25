@@ -19,7 +19,7 @@ class BStringView;
 class BTextView;
 class StockListExtendedView : public BView {
 public:
-		StockListExtendedView(BRect rect);
+		StockListExtendedView();
 		~StockListExtendedView();
 		
 			void SetCompany(Company *company);

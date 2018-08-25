@@ -21,29 +21,15 @@
 
 #include <stdio.h>
 
-StockListExtendedView::StockListExtendedView(BRect rect)
-	:BView(rect, "StockListExtendedView", B_FOLLOW_LEFT_RIGHT | B_FOLLOW_BOTTOM, 0 ) 
+StockListExtendedView::StockListExtendedView()
+	:BView("StockListExtendedView", 0 ) 
 	,fDescriptionTextView(NULL)
 	,fTitleStringView(NULL)
 	,fMessenger(NULL)	
 	,fCompany(NULL)
 	,fQuoteView(NULL) {
 	
-	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-
-	fQuoteView = new QuoteView();
-	fQuoteView->Hide();
-
-	fDescriptionTextView = new BTextView("TextView");
-	fDescriptionTextView->MakeEditable(false);
-	fDescriptionTextView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	
-	rgb_color textColor = ui_color(B_PANEL_TEXT_COLOR);
-	fDescriptionTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColor);
-
-	fTitleStringView = new BStringView("Title", "");
-	fTitleStringView->SetFont(be_bold_font);
-	
+	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));	
 	InitLayout();	
 }
 	
@@ -79,25 +65,36 @@ StockListExtendedView::MessageReceieved(BMessage *message) {
 
 void
 StockListExtendedView::InitLayout() {
-	
+
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
 	SetLayout(group);
 	
-	BView *leftGroup = BGroupLayoutBuilder(B_VERTICAL, 0)
-		.Add(fTitleStringView)
-		.Add(fDescriptionTextView)
-		.AddGlue()
-		.TopView();
-		
-	BGridLayout *gridLayout = BGridLayoutBuilder(B_HORIZONTAL, 0)
+	fQuoteView = new QuoteView();
+	fQuoteView->Hide();
+
+	fDescriptionTextView = new BTextView("TextView");
+	fDescriptionTextView->SetExplicitMinSize(BSize(500, B_SIZE_UNSET));
+	
+	fDescriptionTextView->MakeEditable(false);
+	fDescriptionTextView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
+	
+	rgb_color textColor = ui_color(B_PANEL_TEXT_COLOR);
+	fDescriptionTextView->SetFontAndColor(be_plain_font, B_FONT_ALL, &textColor);
+
+	fTitleStringView = new BStringView("Title", "");
+	fTitleStringView->SetFont(be_bold_font);	
+
+	BLayoutBuilder::Group<>(this, B_HORIZONTAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(10,10,10,10)
-		.Add(leftGroup, 0,0 )
-		.Add(fQuoteView, 1, 0);
-	
-	gridLayout->SetMinColumnWidth(0, 500);
-	gridLayout->SetMaxColumnWidth(0, 550);
-	
-	AddChild(gridLayout->View());
+		.AddGroup(B_VERTICAL, 0)
+			.Add(fTitleStringView)
+			.Add(fDescriptionTextView)
+			.AddGlue()
+		.End()
+		.AddGroup(B_VERTICAL)
+			.Add(fQuoteView)
+		.End()
+	.End();	
 }
 
 void

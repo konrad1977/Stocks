@@ -127,7 +127,7 @@ QuoteView::SetupButton(bool hasQuote) {
 BBox *
 QuoteView::MakeSeparator() const {
 	BBox *separator = new BBox("Separator");
-	separator->SetExplicitMinSize(BSize(100, B_SIZE_UNSET));
+	separator->SetExplicitMinSize(BSize(100, 1));
 	separator->SetExplicitMaxSize(BSize(B_SIZE_UNLIMITED, 1));
 	return separator;
 }
@@ -152,6 +152,9 @@ QuoteView::MakeTitleGroup(const char *title, BStringView *right) {
 
 void
 QuoteView::InitLayout() {
+
+	SetExplicitMinSize(BSize(180, 150));
+	SetExplicitMaxSize(BSize(180, B_SIZE_UNSET));
 	
 	BGroupLayout *groupLayout = new BGroupLayout(B_HORIZONTAL);
 	SetLayout(groupLayout);
@@ -166,8 +169,7 @@ QuoteView::InitLayout() {
 		.Add(fPortfolioButton)
 		.TopView();
 	
-	BView *group = BGroupLayoutBuilder(B_VERTICAL, 0)
-		.SetInsets(5,5,5,5)
+	BView *group = BGroupLayoutBuilder(B_VERTICAL, 5)
 		.Add(fChangePercent)
 		.Add(MakeSeparator())
 		.Add(MakeTitleGroup(B_TRANSLATE("Latest price"), fTitle))

@@ -46,7 +46,6 @@ private:
 	SearchView 				*fSearchView;
 	StockListExtendedView 	*fStockListExtendedView;
 	BListView 				*fSymbolListView;
-	BScrollView 			*fScrollView;
 	BList 					*fStockSymbolListItems;
 	BList 					*fCurrentFilter;
 	

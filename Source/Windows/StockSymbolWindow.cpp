@@ -15,6 +15,13 @@
 #include "Quote.h"
 #include "SettingsManager.h"
 
+
+#include <GroupLayout.h>
+#include <GridLayout.h>
+#include <LayoutBuilder.h>
+#include <GridLayoutBuilder.h>
+#include <GroupLayoutBuilder.h>
+
 #include <Alert.h>
 #include <Catalog.h>
 #include <ListView.h>
@@ -26,17 +33,17 @@
 #define B_TRANSLATION_CONTEXT "StockSymbolWindow"
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(200,200,900,720), B_TRANSLATE("Find stocks..."), B_TITLED_WINDOW, 0)
+	:BWindow(BRect(1,1,1,1), B_TRANSLATE("Find stocks..."), B_TITLED_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
 	,fSymbolListView(NULL)
-	,fScrollView(NULL)
 	,fStockSymbolListItems(NULL)
 	,fCurrentFilter(NULL)
 	,fMessenger(NULL)
 	,fHasFilter(false)  {
 
 	InitLayout();
+	CenterOnScreen();
 }
 
 StockSymbolWindow::~StockSymbolWindow() {
@@ -55,18 +62,21 @@ StockSymbolWindow::HasSymbolInPortfolio(const char *symbol) {
 
 void
 StockSymbolWindow::SetTarget(BHandler *handler) {
+
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 void
 StockSymbolWindow::SetStockSymbols(BList *symbols) {
+
 	fStockSymbolListItems = symbols;
 	SetItems(fStockSymbolListItems);
 }
 
 bool
 StockSymbolWindow::QuitRequested() {
+
 	if (fMessenger == NULL) {
 		return true;
 	}
@@ -78,34 +88,25 @@ StockSymbolWindow::QuitRequested() {
 
 void
 StockSymbolWindow::InitLayout() {
-
-	BRect frame = Bounds();
-	float height = frame.Height();
-	frame.bottom = 46;
-
-	fSearchView = new SearchView(frame);
+	
+	fSearchView = new SearchView();
 	fSearchView->SetTarget(this);
-	AddChild(fSearchView);
 
-	const float extendedHeight = 160.0;
-
-	frame.top = frame.bottom;
-	frame.bottom = height - (B_H_SCROLL_BAR_HEIGHT + extendedHeight);
-	frame.right -=B_H_SCROLL_BAR_HEIGHT;
-
-	fSymbolListView = new BListView(frame, "Symbols", B_SINGLE_SELECTION_LIST, B_FOLLOW_ALL, B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW);
+	fSymbolListView = new BListView("Symbols", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
 	fSymbolListView->SetSelectionMessage(new BMessage(kSymbolListSelectionChanged));
 	fSymbolListView->SetTarget(this);
+	fSymbolListView->SetExplicitMinSize(BSize(400, 300));
+	
+	BScrollView *scrollView = new BScrollView("ScrollView", fSymbolListView, 0, false, true);
 
-	fScrollView = new BScrollView("ScrollView", fSymbolListView, B_FOLLOW_ALL, 0, true, true);
-	AddChild(fScrollView);
-
-	frame.right = Bounds().right;
-	frame.top = Bounds().bottom - extendedHeight;
-	frame.bottom = Bounds().bottom;
-	fStockListExtendedView = new StockListExtendedView(frame);
-	fStockListExtendedView->SetTarget(this);
-	AddChild(fStockListExtendedView);
+	fStockListExtendedView = new StockListExtendedView();
+	fStockListExtendedView->SetTarget(this);	
+	
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 10)
+		.Add(fSearchView)
+		.Add(scrollView)
+		.Add(fStockListExtendedView)
+	.End();	
 }
 
 BList *
