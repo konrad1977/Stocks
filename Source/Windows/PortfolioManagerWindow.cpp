@@ -25,6 +25,7 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#include <support/Autolock.h>
 #include <app/Application.h>
 #include <interface/ListView.h>
 #include <interface/MenuBar.h>
@@ -64,9 +65,16 @@ PortfolioManagerWindow::~PortfolioManagerWindow()
 	while( fSymbolList->CountItems() ) {
 		delete fSymbolList->RemoveItem(int32(0));
 	}
-
-	delete fPortfolioWindow;
-	delete fStockSymbolWindow;
+	
+	if (fStockSymbolWindow) {
+		fStockSymbolWindow->Lock();
+		fStockSymbolWindow->Quit();
+	}
+	
+	if (fPortfolioWindow) {
+		fPortfolioWindow->Lock();
+		fPortfolioWindow->Quit();
+	}
 	delete fStockRequester;
 	delete fPortfolioManager;
 	delete fSymbolList;
@@ -346,6 +354,6 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		default:
-		BWindow::MessageReceived(message);
+			BWindow::MessageReceived(message);
 	}
 }

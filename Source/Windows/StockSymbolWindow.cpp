@@ -22,6 +22,7 @@
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 
+#include <support/Autolock.h>
 #include <Alert.h>
 #include <Catalog.h>
 #include <ListView.h>
@@ -50,8 +51,8 @@ StockSymbolWindow::~StockSymbolWindow() {
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
-	delete fMessenger;
 	delete fCurrentFilter;
+	delete fMessenger;
 }
 
 bool
@@ -76,14 +77,13 @@ StockSymbolWindow::SetStockSymbols(BList *symbols) {
 
 bool
 StockSymbolWindow::QuitRequested() {
-
-	if (fMessenger == NULL) {
-		return true;
-	}
-
-	BMessage message(kHideSearchWindowMessaage);
-	fMessenger->SendMessage(&message);
-	return true;
+	
+	if (fMessenger && fMessenger->LockTarget()) {
+		BMessage message(kHideSearchWindowMessaage);
+		fMessenger->SendMessage(&message);
+		Quit();
+	}	
+	return BWindow::QuitRequested();
 }
 
 void
@@ -119,7 +119,7 @@ StockSymbolWindow::Filtered(BString filter) {
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
-
+	
 	delete fCurrentFilter;
 	fCurrentFilter = new BList();
 
@@ -141,15 +141,16 @@ StockSymbolWindow::Filtered(BString filter) {
 void
 StockSymbolWindow::SetItems(BList *listItems) {
 
-	if (listItems == NULL)
+	if (listItems == NULL) {
 		return;
-
+	}
+	
 	const int32 items = listItems->CountItems();
 
 	if (fSearchView != NULL) {
 		fSearchView->SetNumberOfHits(items);
 	}
-
+	
 	fSymbolListView->MakeEmpty();
 	fSymbolListView->AddList(listItems);
 }
