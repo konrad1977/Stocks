@@ -26,7 +26,7 @@ const float kDraggerSize = 7;
 extern const char *kAppSignature;
 
 ContainerView::ContainerView(Portfolio *portfolio)
-	:BView("HaikuStocks", B_FRAME_EVENTS)
+	:BView("HaikuStocks", B_FRAME_EVENTS | B_DRAW_ON_CHILDREN)
 	,fDragger(NULL)
 	,fQuoteListView(NULL)
 	,fCurrentSymbols(NULL)
