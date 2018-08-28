@@ -61,7 +61,7 @@ void
 QuoteListItem::DrawChangePercent(BRect frame, alignment align)
 {
 	BFont font(be_bold_font);
-	font.SetSize(15);
+	font.SetSize(14);
 
 	std::ostringstream percentText;
 	percentText << fQuote.changePercent * 100 << "%";
@@ -82,7 +82,7 @@ void
 QuoteListItem::DrawSymbol(BRect frame, alignment align)
 {
 	BFont font(be_bold_font);
-	font.SetSize(15);
+	font.SetSize(14);
 
 	DrawItemSettings settings = { frame, &font };
 	settings.align = align;
@@ -124,7 +124,7 @@ void
 QuoteListItem::DrawLatestPrice(BRect frame, alignment align)
 {
 	BFont font(be_bold_font);
-	font.SetSize(15);
+	font.SetSize(13);
 
 	QuoteFormatter formatter(&fQuote);
 	DrawItemSettings settings = { frame, &font, NULL, align };

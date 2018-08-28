@@ -11,8 +11,8 @@
 //Colors
 const rgb_color lightTextColor 	= { 224,220,224 };
 const rgb_color darkTextColor 	= { 40,44,40 	};
-const rgb_color stockPlusColor	= { 30,201,158	};
-const rgb_color stockMinusColor	= { 255,64,80 	};
+const rgb_color stockPlusColor	= { 1, 205,192	};
+const rgb_color stockMinusColor	= { 242,90,34 	};
 
 
 
