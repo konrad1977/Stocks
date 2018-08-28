@@ -14,6 +14,7 @@
 #include <MessageRunner.h>
 #include <Alert.h>
 
+#include "ListView.h"
 #include "SettingsManager.h"
 #include "Portfolio.h"
 #include "Quote.h"
@@ -181,6 +182,32 @@ ContainerView::AttachedToWindow()
 
 	fSettingsManager->StartMonitoring(this);
 	BView::AttachedToWindow();
+}
+
+void
+ContainerView::MouseDown(BPoint point) 
+{
+	BMessage *message = NULL;
+	message = Window()->CurrentMessage();
+	
+	if (message == NULL) {
+		return;
+	}
+	
+	int32 buttons;
+	if (message->FindInt32("buttons", &buttons) != B_OK) {
+		return;
+	}
+	
+	if( buttons & B_SECONDARY_MOUSE_BUTTON ) {
+		printf("Right click\n");
+	}
+}
+
+void
+ContainerView::MouseUp(BPoint point) 
+{
+
 }
 
 void
@@ -419,7 +446,7 @@ ContainerView::ResizeToFit()
 void
 ContainerView::SetupViewAsReplicant()
 {
-	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fQuoteListView = new ListView(this, "Stocks");
 	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));
 	fQuoteListView->SetSelectionMessage( new BMessage(kListSelectMessage));
 	fQuoteListView->SetViewColor( B_TRANSPARENT_COLOR );
@@ -441,7 +468,7 @@ void
 ContainerView::SetupViews()
 {
 
-	fQuoteListView = new BListView("Stocks", B_SINGLE_SELECTION_LIST, B_WILL_DRAW | B_FULL_UPDATE_ON_RESIZE);
+	fQuoteListView = new ListView(this, "Stocks");
 	BScrollView *scrollView = new BScrollView("Scrollview", fQuoteListView, 0 , false, true);
 
 	fQuoteListView->SetInvocationMessage(new BMessage(kListInvocationMessage));

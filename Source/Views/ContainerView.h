@@ -15,7 +15,7 @@ class StockRequester;
 class Portfolio;
 class BDragger;
 class BMessageRunner;
-class BListView;
+class ListView;
 class BList;
 class ContainerView : public BView {
 public:
@@ -25,6 +25,9 @@ public:
 
 	virtual void		AttachedToWindow();
 	virtual void 		MessageReceived(BMessage *message);
+	virtual void		MouseDown(BPoint point);
+	virtual void 		MouseUp(BPoint point);
+	
 	static BArchivable*	Instantiate(BMessage* archive);
 
 	virtual status_t	Archive(BMessage* into, bool deep = true) const;
@@ -54,7 +57,7 @@ private:
 	static int32 DownloadDataFunc(void *cookie);
 
 	BDragger 		*fDragger;
-	BListView 		*fQuoteListView;
+	ListView 		*fQuoteListView;
 	BList 			*fCurrentSymbols;
 
 	BMessenger		*fMessenger;
