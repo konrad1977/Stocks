@@ -83,9 +83,10 @@ QuoteListItem::DrawSymbol(BRect frame, alignment align)
 {
 	BFont font(be_bold_font);
 	font.SetSize(14);
+	
+	rgb_color titleColor = fDrawer->TextColor(IsSelected());
 
-	DrawItemSettings settings = { frame, &font };
-	settings.align = align;
+	DrawItemSettings settings = { frame, &font, &titleColor, align };
 	fDrawer->DrawString(fQuote.symbol.String() , settings);
 }
 
@@ -95,8 +96,10 @@ QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
 	BFont font(be_plain_font);
 	font.SetSize(13);
 
+	rgb_color titleColor = fDrawer->TextColor(IsSelected());
+
 	QuoteFormatter formatter(&fQuote);
-	DrawItemSettings settings = { frame, &font, NULL, align };
+	DrawItemSettings settings = { frame, &font, &titleColor, align };
 	DrawText(formatter.ChangeDollar(), settings);
 }
 
@@ -106,7 +109,9 @@ QuoteListItem::DrawCompanyName(BRect frame, alignment align) {
 	BFont font(be_plain_font);
 	font.SetSize(13);
 
-	DrawItemSettings settings = { frame, &font, NULL, align };
+	rgb_color titleColor = fDrawer->TextColor(IsSelected());
+
+	DrawItemSettings settings = { frame, &font, &titleColor, align };
 	DrawText(fQuote.companyName.String() , settings);
 }
 
@@ -134,12 +139,11 @@ QuoteListItem::DrawLatestPrice(BRect frame, alignment align)
 void
 QuoteListItem::DrawBackground(BListView *parent, BRect frame, ListItemDrawer *drawer)
 {
-	if (drawer->Transparency() == 0) {
+	if (fIsReplicant == true && drawer->Transparency() == 0) {
 		return;
 	}
 
 	const int32 index = parent->IndexOf(this);
-
 	rgb_color backgroundColor = drawer->BackgroundColor(IsSelected());
 
 	if (IsSelected()) {

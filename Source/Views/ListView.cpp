@@ -21,8 +21,7 @@ ListView::MouseDown(BPoint point)
 	if (fTargetView) {
 		fTargetView->MouseDown(ConvertToParent(point));
 	}
-	
-	BListView::MouseDown(point);
+	BListView::MouseDown(point);	
 }
 
 void 
@@ -31,7 +30,6 @@ ListView::MouseUp(BPoint point)
 	if (fTargetView) {
 		fTargetView->MouseUp(ConvertToParent(point));
 	}
-	printf("MouseUp\n");
 	BListView::MouseUp(point);
 }
 
