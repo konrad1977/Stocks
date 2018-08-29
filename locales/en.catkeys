@@ -25,3 +25,5 @@ Failed to parse data	StockSymbolWindow		Failed to parse data
 About...	MainWindow		About...
 Add to portfolio	QuoteView		Add to portfolio
 Settings	MainWindow		Settings
+Create new portfolio	PortfolioManagerWindow		Create new portfolio
+Rename portfolio	PortfolioManagerWindow		Rename portfolio

@@ -13,9 +13,10 @@ class BHandler;
 class BMessenger;
 class PortfolioWindow : public BWindow {
 public:
-	PortfolioWindow(BHandler *handler);
+	PortfolioWindow(BHandler *handler, bool rename);
 	~PortfolioWindow();
 	
+			void RenamePortfolio(BString currentName);
 			void SetAlreadyExistingName(BString name);
 			
 	virtual void MessageReceived(BMessage *message);
@@ -23,10 +24,12 @@ public:
 	
 private:
 			void InitLayout();
+			void SendMessage(BMessage message);
 	BTextControl *TextControl();
 			
 	BMessenger		*fMessenger;
 	BTextControl 	*fNameControl;
+	bool 			fIsRenaming;
 };
 
 #endif // _H

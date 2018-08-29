@@ -20,11 +20,13 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "PortfolioWindow"
 
-PortfolioWindow::PortfolioWindow(BHandler *handler) 
-	:BWindow(BRect(40,40, 200, 200), B_TRANSLATE("New portfolio"), B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
+PortfolioWindow::PortfolioWindow(BHandler *handler, bool rename)
+	:BWindow(BRect(40,40, 200, 200), "", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
 	,fMessenger(NULL)	
 	,fNameControl(NULL)
+	,fIsRenaming(rename)
 {
+	SetTitle(fIsRenaming ? B_TRANSLATE("Rename portfolio") : B_TRANSLATE("Create new portfolio"));
 	fMessenger = new BMessenger(handler);
 	InitLayout();
 	CenterOnScreen();
@@ -36,16 +38,28 @@ PortfolioWindow::~PortfolioWindow()
 }
 	
 void 
+PortfolioWindow::SendMessage(BMessage message)
+{
+	BString name(fNameControl->Text());
+	message.AddString("PortfolioName", name);
+	fMessenger->SendMessage(&message);
+	QuitRequested();
+	Quit();
+}
+
+void 
 PortfolioWindow::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 		case kCreateNewPortfolioMessage: {
 			BMessage message(kCreateNewPortfolioMessage);
-			BString name(fNameControl->Text());
-			message.AddString("PortfolioName", name);
-			fMessenger->SendMessage(&message);
-			QuitRequested();
-			Quit();
+			SendMessage(message);
+			break;
+		}
+		
+		case kRenamePortfolioMessage: {
+			BMessage message(kRenamePortfolioMessage);
+			SendMessage(message);
 			break;
 		}
 		default:
@@ -57,6 +71,12 @@ void
 PortfolioWindow::SetAlreadyExistingName(BString name)
 {
 	TextControl()->SetText(name);
+}
+
+void 
+PortfolioWindow::RenamePortfolio(BString currentName)
+{
+	TextControl()->SetText(currentName);
 }
 
 BTextControl *
@@ -74,15 +94,21 @@ PortfolioWindow::InitLayout()
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
 	SetLayout(group);
 	
-	BButton *createButton = new BButton("Create", "Create", new BMessage(kCreateNewPortfolioMessage));
-	createButton->SetTarget(this);
-	createButton->MakeDefault(true);
+	BButton *button;
+	if (fIsRenaming) {
+		button = new BButton("Rename", "Rename", new BMessage(kRenamePortfolioMessage));
+	} else {
+		button = new BButton("Create", "Create", new BMessage(kCreateNewPortfolioMessage));
+	}
+		
+	button->SetTarget(this);
+	button->MakeDefault(true);
 	
 	BLayoutBuilder::Group<>(this, B_HORIZONTAL)
 		.SetExplicitMinSize(BSize(400, 40))
 		.SetInsets(10,10,10,10)
 		.Add(TextControl())
-		.Add(createButton);
+		.Add(button);
 		
 	TextControl()->MakeFocus();
 }

@@ -50,6 +50,12 @@ Portfolio::ReloadSavedData()
 	}
 }
 
+void 
+Portfolio::SetName(BString name)
+{
+	fName = name;
+}
+
 BString
 Portfolio::Name()
 {

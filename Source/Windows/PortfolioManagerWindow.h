@@ -12,6 +12,7 @@
 class BWindow;
 class BListView;
 class BMenuBar;
+class ListView;
 class StockSymbolWindow;
 class StockRequester;
 class Portfolio;
@@ -31,6 +32,8 @@ private:
 			void ShowStockWindow();
 			void InitLayout();
 			void ReloadPortfolios();
+
+			Portfolio *CurrentSelectedPortfolio() const;
 			
 			BWindow* PortfolioWindowWithName(BString str);
 			void ShowWindowWithPortfolio(Portfolio *portfolio);
@@ -45,6 +48,8 @@ private:
 	PortfolioManager 	*fPortfolioManager;
 	BMenuBar 			*fMenuBar;
 	BMenuItem			*fRemoveSelectedItem;
+	BMenuItem			*fRenameSelectedItem;
+	
 	BListView 			*fListView;
 	
 	BList 				*fSymbolList;

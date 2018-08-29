@@ -33,6 +33,8 @@ public:
 	uint8 RefreshRate() const;
 	
 	QuoteType CurrentQuoteType() const;
+		
+	void SetName(BString name);
 	
 	BString Name();	
 	BList *CurrentSymbols();
