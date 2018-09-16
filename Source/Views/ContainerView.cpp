@@ -14,6 +14,9 @@
 #include <MessageRunner.h>
 #include <Alert.h>
 
+#include <NetworkRoster.h>
+#include <NetworkInterface.h>
+
 #include "ListView.h"
 #include "SettingsManager.h"
 #include "Portfolio.h"
@@ -175,6 +178,7 @@ ContainerView::AttachedToWindow()
 
 	RequestData();
 	InitAutoUpdate();
+	StartNetworkMonitoring();
 
 	if (fIsReplicant == false) {
 		SendEmptyListMessage();
@@ -227,6 +231,17 @@ ContainerView::MessageReceived(BMessage *message)
 		case kListInvocationMessage:
 		case kPortfolioUpdatedSettingsMessage: {
 			fMessenger->SendMessage(message);
+			break;
+		}
+		
+		case B_NETWORK_MONITOR: {
+			if (IsConnected() == false) {
+				return;
+			}
+			
+			InitAutoUpdate();
+			RequestData();
+			stop_watching_network(this);
 			break;
 		}
 
@@ -341,6 +356,10 @@ ContainerView::DownloadDataFunc(void *cookie)
 void
 ContainerView::RequestData()
 {
+	if (IsConnected() == false) {
+		return;
+	}
+	
 	StopActiveRequest();
 
 	fDownloadThread = spawn_thread(&DownloadDataFunc, "Download Data", B_NORMAL_PRIORITY, this);
@@ -485,4 +504,29 @@ ContainerView::SetupViews()
 			.Add(fDragger = new BDragger(this))
 		.End()
 	.End();
+}
+
+void 
+ContainerView::StartNetworkMonitoring()
+{
+	if (IsConnected() == false) {
+		start_watching_network(B_WATCH_NETWORK_INTERFACE_CHANGES | B_WATCH_NETWORK_LINK_CHANGES, this);
+	}
+}
+
+bool 
+ContainerView::IsConnected()
+{
+	BNetworkRoster& roster = BNetworkRoster::Default();
+	BNetworkInterface interface;
+	uint32 cookie = 0;
+	while (roster.GetNextInterface(&cookie, interface) == B_OK) {
+		uint32 flags = interface.Flags();
+		if ((flags & IFF_LOOPBACK) == 0) {
+			if ((flags & (IFF_UP | IFF_LINK)) == (IFF_UP | IFF_LINK)) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

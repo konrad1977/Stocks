@@ -54,6 +54,10 @@ private:
 			void StopActiveRequest();
 			void DownloadData();
 			void RemoveSelectedListItem();
+	
+			void StartNetworkMonitoring();
+			bool IsConnected();
+			
 	static int32 DownloadDataFunc(void *cookie);
 
 	BDragger 		*fDragger;
