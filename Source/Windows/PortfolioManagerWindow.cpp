@@ -64,8 +64,10 @@ PortfolioManagerWindow::PortfolioManagerWindow()
 
 PortfolioManagerWindow::~PortfolioManagerWindow()
 {
-	while( fSymbolList->CountItems() ) {
-		delete fSymbolList->RemoveItem(int32(0));
+
+	if (fPortfolioWindow) {
+		fPortfolioWindow->Lock();
+		fPortfolioWindow->Quit();
 	}
 	
 	if (fStockSymbolWindow) {
@@ -73,10 +75,10 @@ PortfolioManagerWindow::~PortfolioManagerWindow()
 		fStockSymbolWindow->Quit();
 	}
 	
-	if (fPortfolioWindow) {
-		fPortfolioWindow->Lock();
-		fPortfolioWindow->Quit();
-	}
+	while( fSymbolList->CountItems() ) {
+		delete fSymbolList->RemoveItem(int32(0));
+	}	
+	
 	delete fStockRequester;
 	delete fPortfolioManager;
 	delete fSymbolList;
@@ -123,6 +125,7 @@ PortfolioManagerWindow::SymbolWindow()
 {
 	if (fStockSymbolWindow == NULL) {
 		fStockSymbolWindow = new StockSymbolWindow();
+		fStockSymbolWindow->SetTarget(this);
 	}
 	return fStockSymbolWindow;
 }
@@ -235,7 +238,7 @@ PortfolioManagerWindow::ShowWindowWithPortfolio(Portfolio *portfolio) {
 		window->SetTarget(this);
 		window->Show();
 	}
-	SymbolWindow()->SetTarget(window);
+	SymbolWindow()->SetSymbolTarget(window);
 }
 
 void
@@ -307,7 +310,11 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		}
 
 		case kPortfolioQuitMessage: {
-			fPortfolioWindow = NULL;
+			if (fPortfolioWindow) {
+				fPortfolioWindow->Lock();
+				fPortfolioWindow->Quit();
+				fPortfolioWindow = NULL;
+			}
 			break;
 		}
 
@@ -318,11 +325,13 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 
 		case kShowSearchWindowMessage: {
 			BString portfolio;
-			if (message->FindString("PortfolioName", &portfolio) == B_OK) {
-				if (BWindow *window = PortfolioWindowWithName(portfolio)) {
-					SymbolWindow()->SetTarget(window);
-					ShowStockWindow();
-				}
+			if (message->FindString("PortfolioName", &portfolio) != B_OK) {
+				return;
+			}
+			
+			if (BWindow *window = PortfolioWindowWithName(portfolio)) {
+				SymbolWindow()->SetSymbolTarget(window);
+				ShowStockWindow();
 			}
 			break;
 		}
@@ -344,6 +353,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		}
 
 		case kHideSearchWindowMessaage: {
+			printf("kHideSearchWindowMessaage \n");
 			fStockSymbolWindow = NULL;
 			break;
 		}

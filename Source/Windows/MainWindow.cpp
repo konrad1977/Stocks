@@ -162,7 +162,11 @@ MainWindow::MessageReceived(BMessage *message)
 		}
 
 		case kQuitSettingsWindowMessage: {
-			fSettingsWindow = NULL;
+			if (fSettingsWindow) {
+				fSettingsWindow->Lock();
+				fSettingsWindow->Quit();
+				fSettingsWindow = NULL;
+			}
 			break;
 		}
 
@@ -173,11 +177,6 @@ MainWindow::MessageReceived(BMessage *message)
 
 		case kPortfolioUpdatedSettingsMessage: {
 			SendSaveMessage();
-			break;
-		}
-
-		case kHideSearchWindowMessaage: {
-			fMessenger->SendMessage(message);
 			break;
 		}
 

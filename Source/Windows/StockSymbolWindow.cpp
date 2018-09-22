@@ -41,6 +41,7 @@ StockSymbolWindow::StockSymbolWindow()
 	,fStockSymbolListItems(NULL)
 	,fCurrentFilter(NULL)
 	,fMessenger(NULL)
+	,fSymbolMessenger(NULL)
 	,fHasFilter(false)  {
 
 	InitLayout();
@@ -53,12 +54,20 @@ StockSymbolWindow::~StockSymbolWindow() {
 	}
 	delete fCurrentFilter;
 	delete fMessenger;
+	delete fSymbolMessenger;
 }
 
 bool
 StockSymbolWindow::HasSymbolInPortfolio(const char *symbol) {
 	printf("HasSymbolInPortfolio :: Todo:\n");
 	return false;
+}
+
+void
+StockSymbolWindow::SetSymbolTarget(BHandler *handler) {
+
+	delete fSymbolMessenger;
+	fSymbolMessenger = new BMessenger(handler);
 }
 
 void
@@ -77,11 +86,9 @@ StockSymbolWindow::SetStockSymbols(BList *symbols) {
 
 bool
 StockSymbolWindow::QuitRequested() {
-	
-	if (fMessenger && fMessenger->LockTarget()) {
-		BMessage message(kHideSearchWindowMessaage);
+	BMessage message(kHideSearchWindowMessaage);
+	if (fMessenger) {
 		fMessenger->SendMessage(&message);
-		Quit();
 	}	
 	return BWindow::QuitRequested();
 }
@@ -224,8 +231,8 @@ StockSymbolWindow::HandleCompanyInformation(BMessage *message) {
 
 void
 StockSymbolWindow::HandleAddToPortfolio(BMessage *message) {
-	if (fMessenger)
-		fMessenger->SendMessage(message);
+	if (fSymbolMessenger)
+		fSymbolMessenger->SendMessage(message);
 }
 
 void

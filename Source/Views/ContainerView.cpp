@@ -176,9 +176,12 @@ ContainerView::AttachedToWindow()
 		fPortfolio->SetTarget(this);
 	}
 
-	RequestData();
-	InitAutoUpdate();
-	StartNetworkMonitoring();
+	if (IsConnected() == false) {
+		StartNetworkMonitoring();
+	} else {
+		RequestData();
+		InitAutoUpdate();
+	}
 
 	if (fIsReplicant == false) {
 		SendEmptyListMessage();
@@ -509,9 +512,7 @@ ContainerView::SetupViews()
 void 
 ContainerView::StartNetworkMonitoring()
 {
-	if (IsConnected() == false) {
-		start_watching_network(B_WATCH_NETWORK_INTERFACE_CHANGES | B_WATCH_NETWORK_LINK_CHANGES, this);
-	}
+	start_watching_network(B_WATCH_NETWORK_INTERFACE_CHANGES | B_WATCH_NETWORK_LINK_CHANGES, this);
 }
 
 bool 

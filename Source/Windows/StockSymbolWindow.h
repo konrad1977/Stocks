@@ -25,6 +25,7 @@ public:
 	virtual	bool QuitRequested();
 	virtual void MessageReceived(BMessage *message);	
 			void SetTarget(BHandler *handler);		
+			void SetSymbolTarget(BHandler *handler);
 			void SetStockSymbols(BList *symbols);	
 private:
 	const char*  SymbolAtIndex(int32 index);
@@ -50,6 +51,7 @@ private:
 	BList 					*fCurrentFilter;
 	
 	BMessenger 				*fMessenger;
+	BMessenger				*fSymbolMessenger;
 	bool 					fHasFilter;	
 };
 
