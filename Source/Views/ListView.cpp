@@ -5,7 +5,6 @@
 
 
 #include "ListView.h"
-
 #include <posix/stdio.h>
 
 ListView::ListView(BView *targetView, const char *name)
