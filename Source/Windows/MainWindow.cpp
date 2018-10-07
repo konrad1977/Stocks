@@ -205,13 +205,13 @@ MainWindow::SetupViews()
 			.AddItem(fRemoveSelected = new BMenuItem(B_TRANSLATE("Remove selected item"), new BMessage(kRemoveSelectedListItem), 'R'))
 		.End()
 		.AddMenu(B_TRANSLATE("Settings"))
-			.AddItem(B_TRANSLATE("Find stocks..."), kShowSearchWindowMessage, 'F')
+			.AddItem(B_TRANSLATE("Find stocks" B_UTF8_ELLIPSIS), kShowSearchWindowMessage, 'F')
 			.AddSeparator()
 			.AddItem(fMinimalItem = new BMenuItem(B_TRANSLATE("Mini mode"), new BMessage(kUseSmallQuoteSize), '1'))
 			.AddItem(fNormalItem = new BMenuItem(B_TRANSLATE("Normal mode"), new BMessage(kUseNormalQuoteSize), '2'))
 			.AddItem(fExtenededItem = new BMenuItem(B_TRANSLATE("Extended mode"), new BMessage(kUseLargeQuoteSize), '3'))
 			.AddSeparator()
-			.AddItem(B_TRANSLATE("Settings..."), kShowSettingsWindowMessage, 'S')
+			.AddItem(B_TRANSLATE("Settings" B_UTF8_ELLIPSIS), kShowSettingsWindowMessage, 'S')
 		.End();
 
 	fContainerView = new ContainerView(fPortfolio);

@@ -22,7 +22,7 @@
 
 PortfolioWindow::PortfolioWindow(BHandler *handler, bool rename)
 	:BWindow(BRect(40,40, 200, 200), "", B_FLOATING_WINDOW_LOOK, B_NORMAL_WINDOW_FEEL, B_AUTO_UPDATE_SIZE_LIMITS)
-	,fMessenger(NULL)	
+	,fMessenger(NULL)
 	,fNameControl(NULL)
 	,fIsRenaming(rename)
 {
@@ -36,8 +36,8 @@ PortfolioWindow::~PortfolioWindow()
 {
 	delete fMessenger;
 }
-	
-void 
+
+void
 PortfolioWindow::SendMessage(BMessage message)
 {
 	BString name(fNameControl->Text());
@@ -47,7 +47,7 @@ PortfolioWindow::SendMessage(BMessage message)
 	Quit();
 }
 
-void 
+void
 PortfolioWindow::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
@@ -56,7 +56,7 @@ PortfolioWindow::MessageReceived(BMessage *message)
 			SendMessage(message);
 			break;
 		}
-		
+
 		case kRenamePortfolioMessage: {
 			BMessage message(kRenamePortfolioMessage);
 			SendMessage(message);
@@ -67,49 +67,49 @@ PortfolioWindow::MessageReceived(BMessage *message)
 	}
 }
 
-void 
+void
 PortfolioWindow::SetAlreadyExistingName(BString name)
 {
 	TextControl()->SetText(name);
 }
 
-void 
+void
 PortfolioWindow::RenamePortfolio(BString currentName)
 {
 	TextControl()->SetText(currentName);
 }
 
 BTextControl *
-PortfolioWindow::TextControl() 
+PortfolioWindow::TextControl()
 {
 	if (fNameControl == NULL) {
-		fNameControl = new BTextControl("Name", B_TRANSLATE("Portfolio name:"), B_TRANSLATE("Name"), NULL);
+		fNameControl = new BTextControl("Name", B_TRANSLATE("Portfolio name"), B_TRANSLATE("Name"), NULL);
 	}
 	return fNameControl;
 }
 
-void 
+void
 PortfolioWindow::InitLayout()
 {
 	BGroupLayout *group = new BGroupLayout(B_VERTICAL);
 	SetLayout(group);
-	
+
 	BButton *button;
 	if (fIsRenaming) {
 		button = new BButton("Rename", B_TRANSLATE("Rename"), new BMessage(kRenamePortfolioMessage));
 	} else {
 		button = new BButton("Create", B_TRANSLATE("Create"), new BMessage(kCreateNewPortfolioMessage));
 	}
-		
+
 	button->SetTarget(this);
 	button->MakeDefault(true);
-	
+
 	BLayoutBuilder::Group<>(this, B_HORIZONTAL)
 		.SetExplicitMinSize(BSize(400, 40))
 		.SetInsets(10,10,10,10)
 		.Add(TextControl())
 		.Add(button);
-		
+
 	TextControl()->MakeFocus();
 }
 

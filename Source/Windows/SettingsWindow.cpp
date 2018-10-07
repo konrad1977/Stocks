@@ -20,7 +20,7 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "SettingsWindow"
 
-SettingsWindow::SettingsWindow(Portfolio *portfolio) 
+SettingsWindow::SettingsWindow(Portfolio *portfolio)
 	:BWindow(BRect(0,0, 480, 320), B_TRANSLATE("Settings"), B_TITLED_WINDOW, B_ASYNCHRONOUS_CONTROLS | B_CLOSE_ON_ESCAPE | B_NOT_ZOOMABLE | B_AUTO_UPDATE_SIZE_LIMITS )
 	,fMessenger(NULL)
 	,fTransparencySlider(NULL)
@@ -32,12 +32,12 @@ SettingsWindow::SettingsWindow(Portfolio *portfolio)
 	CenterOnScreen();
 }
 
-SettingsWindow::~SettingsWindow() 
+SettingsWindow::~SettingsWindow()
 {
 	delete fMessenger;
 }
 
-void 
+void
 SettingsWindow::ShowWithPortfolioName(const char *name)
 {
 	BString str;
@@ -46,15 +46,15 @@ SettingsWindow::ShowWithPortfolioName(const char *name)
 	Show();
 }
 
-void 
-SettingsWindow::SetTarget(BHandler *handler) 
+void
+SettingsWindow::SetTarget(BHandler *handler)
 {
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 bool
-SettingsWindow::QuitRequested() 
+SettingsWindow::QuitRequested()
 {
 	BMessage message(kQuitSettingsWindowMessage);
 	if (fMessenger && fMessenger->IsValid()) {
@@ -63,8 +63,8 @@ SettingsWindow::QuitRequested()
 	return true;
 }
 
-void 
-SettingsWindow::InitSavedValues() 
+void
+SettingsWindow::InitSavedValues()
 {
 	const uint8 transparency = fPortfolio->Transparency();
 	const uint8 refreshRate = fPortfolio->RefreshRate();
@@ -75,53 +75,53 @@ SettingsWindow::InitSavedValues()
 	UpdateRefrehLabel(refreshRate);
 }
 
-void 
-SettingsWindow::UpdateTransparencyLabel(uint8 value) 
+void
+SettingsWindow::UpdateTransparencyLabel(uint8 value)
 {
 	BString str = fTransparencyLabel;
 	str << " " << value;
 	fTransparencySlider->SetLabel(str.String());
 }
 
-void 
-SettingsWindow::UpdateRefrehLabel(uint8 value) 
+void
+SettingsWindow::UpdateRefrehLabel(uint8 value)
 {
 	BString str = fRefreshLabel;
 	str << " " << value;
 	fRefreshRateSlider->SetLabel(str.String());
 }
 
-void 
-SettingsWindow::InitLayout() 
+void
+SettingsWindow::InitLayout()
 {
 	BGroupLayout *groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
 
 	fTransparencyLabel = B_TRANSLATE("Replicant transparency:");
-	
+
 	fTransparencySlider = new BSlider("Transparency", fTransparencyLabel.String(), new BMessage(kTransparencyChangedMessage), 0, 255, B_HORIZONTAL);
 	fTransparencySlider->SetModificationMessage(new BMessage(kTransparenyModificationMessage));
 
 	fRefreshLabel = B_TRANSLATE("Refresh interval (in seconds): ");
-	
+
 	fRefreshRateSlider = new BSlider("Refresh", fRefreshLabel.String(), new BMessage(kRefreshChangedMessage), 1, 300, B_HORIZONTAL);
 	fRefreshRateSlider->SetModificationMessage(new BMessage(kRefreshModificationMessage));
-	
+
 	BGroupLayout *transparencyGroup = BLayoutBuilder::Group<>(B_VERTICAL)
 		.SetInsets(15,10)
 		.Add(fTransparencySlider)
 		.Add(fRefreshRateSlider);
-	
+
 
 	BGroupLayout *settingsGroup = BLayoutBuilder::Group<>(B_VERTICAL)
 		.SetInsets(5,10)
 		.Add(transparencyGroup->View());
-		
+
 	AddChild(settingsGroup->View());
 }
 
 void
-SettingsWindow::MessageReceived(BMessage *message) 
+SettingsWindow::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 
@@ -130,7 +130,7 @@ SettingsWindow::MessageReceived(BMessage *message)
 			fPortfolio->SetTransparency(newValue);
 			break;
 		}
-		
+
 		case kTransparenyModificationMessage: {
 			uint8 newValue = static_cast<uint8>(fTransparencySlider->Value());
 			UpdateTransparencyLabel(newValue);
@@ -142,13 +142,13 @@ SettingsWindow::MessageReceived(BMessage *message)
 			fPortfolio->SetRefreshRate(newValue);
 			break;
 		}
-		
+
 		case kRefreshModificationMessage: {
 			uint8 newValue = static_cast<uint8>(fRefreshRateSlider->Value());
 			UpdateRefrehLabel(newValue);
 			break;
 		}
-		
+
 		default:
 			BWindow::MessageReceived(message);
 	}

@@ -10,14 +10,13 @@
 
 class App: public BApplication {
 public:
-	App(void);		
+	App(void);
 	~App();
-	
+
 	virtual void MessageReceived(BMessage *message);
 	virtual void AboutRequested();
-	
-private:	
-};
 
+private:
+};
 
 #endif // _H

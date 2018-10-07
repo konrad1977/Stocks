@@ -237,12 +237,11 @@ ContainerView::MessageReceived(BMessage *message)
 			fMessenger->SendMessage(message);
 			break;
 		}
-		
+
 		case B_NETWORK_MONITOR: {
 			if (IsConnected() == false) {
 				return;
 			}
-			
 			InitAutoUpdate();
 			RequestData();
 			stop_watching_network(this);
@@ -360,7 +359,7 @@ ContainerView::RequestData()
 	if (IsConnected() == false) {
 		return;
 	}
-	
+
 	StopActiveRequest();
 
 	fDownloadThread = spawn_thread(&DownloadDataFunc, "Download Data", B_NORMAL_PRIORITY, this);

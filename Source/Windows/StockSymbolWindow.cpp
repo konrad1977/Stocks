@@ -34,7 +34,7 @@
 #define B_TRANSLATION_CONTEXT "StockSymbolWindow"
 
 StockSymbolWindow::StockSymbolWindow()
-	:BWindow(BRect(1,1,1,1), B_TRANSLATE("Find stocks..."), B_TITLED_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS)
+	:BWindow(BRect(1,1,1,1), B_TRANSLATE("Find stocks" B_UTF8_ELLIPSIS), B_TITLED_WINDOW, B_AUTO_UPDATE_SIZE_LIMITS)
 	,fSearchView(NULL)
 	,fStockListExtendedView(NULL)
 	,fSymbolListView(NULL)
@@ -89,13 +89,13 @@ StockSymbolWindow::QuitRequested() {
 	BMessage message(kHideSearchWindowMessaage);
 	if (fMessenger) {
 		fMessenger->SendMessage(&message);
-	}	
+	}
 	return BWindow::QuitRequested();
 }
 
 void
 StockSymbolWindow::InitLayout() {
-	
+
 	fSearchView = new SearchView();
 	fSearchView->SetTarget(this);
 
@@ -103,17 +103,17 @@ StockSymbolWindow::InitLayout() {
 	fSymbolListView->SetSelectionMessage(new BMessage(kSymbolListSelectionChanged));
 	fSymbolListView->SetTarget(this);
 	fSymbolListView->SetExplicitMinSize(BSize(400, 300));
-	
+
 	BScrollView *scrollView = new BScrollView("ScrollView", fSymbolListView, 0, false, true);
 
 	fStockListExtendedView = new StockListExtendedView();
-	fStockListExtendedView->SetTarget(this);	
-	
+	fStockListExtendedView->SetTarget(this);
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 10)
 		.Add(fSearchView)
 		.Add(scrollView)
 		.Add(fStockListExtendedView)
-	.End();	
+	.End();
 }
 
 BList *
@@ -126,7 +126,7 @@ StockSymbolWindow::Filtered(BString filter) {
 	if (fCurrentFilter) {
 		fCurrentFilter->MakeEmpty();
 	}
-	
+
 	delete fCurrentFilter;
 	fCurrentFilter = new BList();
 
@@ -151,13 +151,13 @@ StockSymbolWindow::SetItems(BList *listItems) {
 	if (listItems == NULL) {
 		return;
 	}
-	
+
 	const int32 items = listItems->CountItems();
 
 	if (fSearchView != NULL) {
 		fSearchView->SetNumberOfHits(items);
 	}
-	
+
 	fSymbolListView->MakeEmpty();
 	fSymbolListView->AddList(listItems);
 }

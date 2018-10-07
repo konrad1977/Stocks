@@ -12,6 +12,7 @@
 #include "ImageView.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <AboutWindow.h>
 #include <Catalog.h>
 #include <Locale.h>
@@ -24,9 +25,9 @@ const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 
 App::App(void)
 	:BApplication(kAppSignature)
-{			
-	PortfolioManagerWindow *window = new PortfolioManagerWindow();	
-	window->Show();	
+{
+	PortfolioManagerWindow *window = new PortfolioManagerWindow();
+	window->Show();
 }
 
 App::~App() {
@@ -35,10 +36,17 @@ App::~App() {
 
 void
 App::AboutRequested()  {
+
+	const char* specialThanks[] = {
+		"Humdinger for the lovely Icon",
+		NULL
+	};
+
 	BAboutWindow* window = new BAboutWindow("Stocks", kAppSignature);
 	window->AddCopyright(2018, "Mikael Konradsson");
-	window->AddDescription("Loose or win?");
-	window->AddExtraInfo(B_TRANSLATE("Distributed on MIT license terms."));
+	window->AddDescription("Simple application for creating custom portfolios that can be added to your desktop as replicants.");
+	window->AddSpecialThanks(specialThanks);
+	window->AddExtraInfo("Distributed on MIT license terms.");
 	window->Show();
 }
 
@@ -50,5 +58,5 @@ App::MessageReceived(BMessage *message) {
 int main() {
 	App app;
 	app.Run();
-	return 0; 	
+	return 0;
 }

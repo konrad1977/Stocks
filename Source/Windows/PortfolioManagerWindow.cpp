@@ -69,16 +69,16 @@ PortfolioManagerWindow::~PortfolioManagerWindow()
 		fPortfolioWindow->Lock();
 		fPortfolioWindow->Quit();
 	}
-	
+
 	if (fStockSymbolWindow) {
 		fStockSymbolWindow->Lock();
 		fStockSymbolWindow->Quit();
 	}
-	
+
 	while( fSymbolList->CountItems() ) {
 		delete fSymbolList->RemoveItem(int32(0));
-	}	
-	
+	}
+
 	delete fStockRequester;
 	delete fPortfolioManager;
 	delete fSymbolList;
@@ -99,8 +99,8 @@ PortfolioManagerWindow::InitLayout()
 			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
 		.End()
 		.AddMenu(B_TRANSLATE("Edit"))
-			.AddItem(fRemoveSelectedItem = new BMenuItem(B_TRANSLATE("Delete portfolio"), new BMessage(kRemoveSelectedListItem), 'D'))
-			.AddItem(fRenameSelectedItem = new BMenuItem(B_TRANSLATE("Rename portfolio"), new BMessage(kRenameSelectedListItem), 'E'))			
+			.AddItem(fRemoveSelectedItem = new BMenuItem(B_TRANSLATE("Delete" B_UTF8_ELLIPSIS), new BMessage(kRemoveSelectedListItem), 'D'))
+			.AddItem(fRenameSelectedItem = new BMenuItem(B_TRANSLATE("Rename" B_UTF8_ELLIPSIS), new BMessage(kRenameSelectedListItem), 'E'))
 		.End();
 
 
@@ -271,7 +271,7 @@ PortfolioManagerWindow::HandleStockSearchSymbols(BMessage *message) {
 }
 
 Portfolio *
-PortfolioManagerWindow::CurrentSelectedPortfolio() const 
+PortfolioManagerWindow::CurrentSelectedPortfolio() const
 {
 	BList *portfolios = fPortfolioManager->Portfolios();
 	if (portfolios == NULL) {
@@ -328,7 +328,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			if (message->FindString("PortfolioName", &portfolio) != B_OK) {
 				return;
 			}
-			
+
 			if (BWindow *window = PortfolioWindowWithName(portfolio)) {
 				SymbolWindow()->SetSymbolTarget(window);
 				ShowStockWindow();
@@ -342,7 +342,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-		
+
 		case kRenameSelectedListItem : {
 			if (Portfolio *portfolio = CurrentSelectedPortfolio()) {
 				fPortfolioWindow = new PortfolioWindow(this, true);
@@ -357,10 +357,10 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			fStockSymbolWindow = NULL;
 			break;
 		}
-		
+
 		case kListSelectMessage: {
 			if (message->FindInt32("index", &fCurrentSelectedItemIndex) == B_OK) {
-				
+
 				fRemoveSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
 				fRenameSelectedItem->SetEnabled(fCurrentSelectedItemIndex != -1);
 
@@ -368,11 +368,11 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 					BString str;
 					str << "Delete '" << portfolio->Name().String() << "'";
 					fRemoveSelectedItem->SetLabel(str.String());
-					
+
 					str = "";
 					str << "Rename '" << portfolio->Name().String() << "'";
 					fRenameSelectedItem->SetLabel(str.String());
-				}	
+				}
 			}
 			break;
 		}
@@ -386,14 +386,14 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			}
 			break;
 		}
-		
+
 		case kRenamePortfolioMessage: {
-			
+
 			BString portfolioName;
 			if (message->FindString("PortfolioName", &portfolioName) != B_OK ) {
 				return;
 			}
-	
+
 			if (Portfolio *portfolio = CurrentSelectedPortfolio()) {
 				portfolio->SetName(portfolioName);
 				fPortfolioManager->Save();
