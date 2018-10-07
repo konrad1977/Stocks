@@ -93,9 +93,9 @@ PortfolioManagerWindow::InitLayout()
 
 	BLayoutBuilder::Menu<>(fMenuBar = new BMenuBar(Bounds(), "Menu"))
 		.AddMenu(B_TRANSLATE("File"))
-			.AddItem(B_TRANSLATE("New..."), kNewPortfolio, 'N')
+			.AddItem(B_TRANSLATE("New"B_UTF8_ELLIPSIS), kNewPortfolio, 'N')
 			.AddSeparator()
-			.AddItem(B_TRANSLATE("About..."), B_ABOUT_REQUESTED, 'A')
+			.AddItem(B_TRANSLATE("About" B_UTF8_ELLIPSIS), B_ABOUT_REQUESTED, 'A')
 			.AddItem(B_TRANSLATE("Quit"), B_QUIT_REQUESTED, 'Q')
 		.End()
 		.AddMenu(B_TRANSLATE("Edit"))
@@ -293,7 +293,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		case B_ABOUT_REQUESTED: {
-			printf("Todo not implemented\n");
+			be_app->PostMessage(message);
 			break;
 		}
 		case kNewPortfolio: {

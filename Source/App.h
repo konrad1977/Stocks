@@ -14,6 +14,7 @@ public:
 	~App();
 	
 	virtual void MessageReceived(BMessage *message);
+	virtual void AboutRequested();
 	
 private:	
 };

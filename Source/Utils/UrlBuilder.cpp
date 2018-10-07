@@ -105,7 +105,7 @@ UrlBuilder::CreateCompanyPath(RequestType type) {
 
 	switch (type) {
 		case Company:
-			fBuffer << "/batch?types=quote,company";
+			fBuffer << "/batch?types=quote,company,logo";
 			break;
 		case Chart:
 			fBuffer << "/chart";

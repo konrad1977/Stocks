@@ -96,9 +96,9 @@ PortfolioWindow::InitLayout()
 	
 	BButton *button;
 	if (fIsRenaming) {
-		button = new BButton("Rename", "Rename", new BMessage(kRenamePortfolioMessage));
+		button = new BButton("Rename", B_TRANSLATE("Rename"), new BMessage(kRenamePortfolioMessage));
 	} else {
-		button = new BButton("Create", "Create", new BMessage(kCreateNewPortfolioMessage));
+		button = new BButton("Create", B_TRANSLATE("Create"), new BMessage(kCreateNewPortfolioMessage));
 	}
 		
 	button->SetTarget(this);

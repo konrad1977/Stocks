@@ -27,3 +27,5 @@ Add to portfolio	QuoteView		Add to portfolio
 Settings	MainWindow		Settings
 Create new portfolio	PortfolioManagerWindow		Create new portfolio
 Rename portfolio	PortfolioManagerWindow		Rename portfolio
+Rename		PortfolioManagerWindow		Rename
+Create		PortfolioManagerWindow		Create

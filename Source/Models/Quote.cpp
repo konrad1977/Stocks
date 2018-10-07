@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 Quote::Quote(BMessage message) {
-
+	
 	message.FindString("companyName", &companyName);
 	message.FindString("symbol", &symbol);
 	message.FindString("primaryExchange", &primaryExchange);

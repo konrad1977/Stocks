@@ -13,6 +13,7 @@
 #include <ScrollView.h>
 #include <MessageRunner.h>
 #include <Alert.h>
+#include <Application.h>
 
 #include <NetworkRoster.h>
 #include <NetworkInterface.h>
@@ -309,10 +310,7 @@ ContainerView::MessageReceived(BMessage *message)
 		}
 
 		case B_ABOUT_REQUESTED: {
-			ShowAlert("Stocks",
-			"Written by Mikael Konradsson, 2018\n"
-			"Icon design by Humdinger\n\n"
-			"Thanks for downloading!\n");
+			be_app->PostMessage(message);
 			break;
 		}
 

@@ -17,11 +17,11 @@
 #include <Alert.h>
 #include <Application.h>
 #include <Catalog.h>
+#include <Locale.h>
 
 #include <Messenger.h>
 #include <MenuBar.h>
 #include <MenuItem.h>
-#include <Locale.h>
 
 #include <LayoutBuilder.h>
 #include <stdio.h>

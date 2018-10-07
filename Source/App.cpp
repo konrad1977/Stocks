@@ -9,29 +9,37 @@
 #include "PortfolioManager.h"
 #include "PortfolioManagerWindow.h"
 #include "Portfolio.h"
-#include <stdio.h>
 #include "ImageView.h"
+
+#include <stdio.h>
+#include <AboutWindow.h>
+#include <Catalog.h>
+#include <Locale.h>
+
 
 const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "App"
+
 App::App(void)
 	:BApplication(kAppSignature)
-{		
-	BWindow *window = new BWindow(BRect(0,0,200,200), "WIndow", B_TITLED_WINDOW, B_QUIT_ON_WINDOW_CLOSE);
-
-	BString url("http://files.softicons.com/download/system-icons/beos-icons-by-studiotwentyeight/png/128/BeOS_Logo.png");
-	ImageView *view = new ImageView(window->Bounds(), url);
-
-	window->AddChild(view);
-	window->Show();
-		
-	
-	//PortfolioManagerWindow *window = new PortfolioManagerWindow();	
-	//window->Show();	
+{			
+	PortfolioManagerWindow *window = new PortfolioManagerWindow();	
+	window->Show();	
 }
 
 App::~App() {
 
+}
+
+void
+App::AboutRequested()  {
+	BAboutWindow* window = new BAboutWindow("Stocks", kAppSignature);
+	window->AddCopyright(2018, "Mikael Konradsson");
+	window->AddDescription("Loose or win?");
+	window->AddExtraInfo(B_TRANSLATE("Distributed on MIT license terms."));
+	window->Show();
 }
 
 void
