@@ -12,7 +12,7 @@ Latest price	QuoteView		Senaste pris
 Settings…	MainWindow		Inställningar…
 Items found	SearchView		Antal träffar:
 Rename portfolio	PortfolioWindow		Byt namn på portfölj
-Replicant transparency	SettingsWindow		Replicant transparency
+Replicant transparency	SettingsWindow		Transparens
 Name or symbol	SearchView		Namn eller symbol
 Edit	PortfolioManagerWindow		Redigera
 Find stocks…	StockSymbolWindow		Sök aktier…
