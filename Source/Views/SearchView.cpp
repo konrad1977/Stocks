@@ -26,30 +26,30 @@ SearchView::SearchView()
 	:BView("SearchView", B_SUPPORTS_LAYOUT)
 	,fSearchTextControl(NULL)
 	,fHitsView(NULL)
-	,fMessenger(NULL) 
-{		
+	,fMessenger(NULL)
+{
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
-SearchView::~SearchView() 
+SearchView::~SearchView()
 {
 	delete fMessenger;
 }
 
 void
-SearchView::AttachedToWindow() 
+SearchView::AttachedToWindow()
 {
 	InitLayout();
 	BView::AttachedToWindow();
 }
 
 void
-SearchView::MessageReceived(BMessage *message) 
+SearchView::MessageReceived(BMessage *message)
 {
-	
+
 	switch (message->what) {
 		case kSearchTextChangedMessage: {
-			const char *text = TextControl()->Text();		
+			const char *text = TextControl()->Text();
 			BMessage msg(kSearchTextChangedMessage);
 			msg.AddString("searchText", text);
 			fMessenger->SendMessage(&msg);
@@ -61,25 +61,25 @@ SearchView::MessageReceived(BMessage *message)
 	}
 }
 
-void SearchView::SetNumberOfHits(int32 hits) 
+void SearchView::SetNumberOfHits(int32 hits)
 {
-	if (fHitsView == NULL) 
+	if (fHitsView == NULL)
 		return;
-	
+
 	BString str;
-	str << B_TRANSLATE("Items found: ") << hits;	
+	str << B_TRANSLATE("Items found") << hits;
 	fHitsView->SetText(str.String());
 }
 
 void
-SearchView::SetTarget(BHandler *handler) 
+SearchView::SetTarget(BHandler *handler)
 {
 	delete fMessenger;
 	fMessenger = new BMessenger(handler);
 }
 
 BTextControl *
-SearchView::TextControl() 
+SearchView::TextControl()
 {
 	if (fSearchTextControl == NULL) {
 		fSearchTextControl = new BTextControl("Filter", B_TRANSLATE("Filter"), B_TRANSLATE("Name or symbol"), NULL);
@@ -90,21 +90,21 @@ SearchView::TextControl()
 }
 
 void
-SearchView::AllAttached() 
+SearchView::AllAttached()
 {
 	TextControl()->MakeFocus();
 	BView::AllAttached();
 }
 
 void
-SearchView::InitLayout() 
-{	
+SearchView::InitLayout()
+{
 	SetExplicitMinSize(BSize(300, 50));
-	
+
 	fHitsView = new BStringView("HitsView", "");
 	fHitsView->SetAlignment(B_ALIGN_RIGHT);
 	fHitsView->SetExplicitMaxSize(BSize(100, B_SIZE_UNSET));
-	
+
 	BLayoutBuilder::Group<>(this, B_HORIZONTAL, 10)
 		.SetInsets(10,10,10,10)
 		.Add(TextControl())

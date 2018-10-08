@@ -1,31 +1,39 @@
-1	English	x-vnd.konradsson.Stocks	693118256
+1	English	x-vnd.konradsson.Stocks	2854543809
 52 week high	QuoteView		52 week high
-Find stocks	StockSymbolWindow		Find stocks
-Settings	MainWindow		Settings
-Refresh interval (in seconds) 	SettingsWindow		Refresh interval (in seconds):
+Stocks	PortfolioListItem		Stocks
+File	PortfolioManagerWindow		File
+Quit	PortfolioManagerWindow		Quit
 Network error	StockSymbolWindow		Network error
 Extended mode	MainWindow		Extended mode
+New…	PortfolioManagerWindow		New…
 Remove from portfolio	QuoteView		Remove from portfolio
+Name	PortfolioWindow		Name
 Latest price	QuoteView		Latest price
-File	MainWindow		File
+Settings…	MainWindow		Settings…
+Items found	SearchView		Items found
+Rename portfolio	PortfolioWindow		Rename portfolio
+Replicant transparency	SettingsWindow		Replicant transparency
 Name or symbol	SearchView		Name or symbol
-Quit	MainWindow		Quit
+Edit	PortfolioManagerWindow		Edit
+Find stocks…	StockSymbolWindow		Find stocks…
+Create new portfolio	PortfolioWindow		Create new portfolio
 Remove selected item	MainWindow		Remove selected item
-Find stocks	MainWindow		Find stocks
 Edit	MainWindow		Edit
+Rename	PortfolioWindow		Rename
+Refresh interval (in seconds)	SettingsWindow		Refresh interval (in seconds)
+Portfolio name	PortfolioWindow		Portfolio name
 Portfolio	MainWindow		Portfolio
-Items found	SearchView		Items found:
+Create	PortfolioWindow		Create
+Delete…	PortfolioManagerWindow		Delete…
 52 week low	QuoteView		52 week low
-Replicant transparency:	SettingsWindow		Replicant transparency:
 Mini mode	MainWindow		Mini mode
 Normal mode	MainWindow		Normal mode
+About…	PortfolioManagerWindow		About…
+Find stocks…	MainWindow		Find stocks…
 Settings	SettingsWindow		Settings
 Filter	SearchView		Filter
 Failed to parse data	StockSymbolWindow		Failed to parse data
-About	MainWindow		About
+PortfolioManager	PortfolioManagerWindow		PortfolioManager
 Add to portfolio	QuoteView		Add to portfolio
 Settings	MainWindow		Settings
-Create new portfolio	PortfolioManagerWindow		Create new portfolio
-Delete	PortfolioManagerWindow		Delete
-Rename	PortfolioManagerWindow		Rename
-Create	PortfolioManagerWindow		Create
+Rename…	PortfolioManagerWindow		Rename…

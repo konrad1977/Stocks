@@ -97,12 +97,12 @@ SettingsWindow::InitLayout()
 	BGroupLayout *groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
 
-	fTransparencyLabel = B_TRANSLATE("Replicant transparency:");
+	fTransparencyLabel = B_TRANSLATE("Replicant transparency");
 
 	fTransparencySlider = new BSlider("Transparency", fTransparencyLabel.String(), new BMessage(kTransparencyChangedMessage), 0, 255, B_HORIZONTAL);
 	fTransparencySlider->SetModificationMessage(new BMessage(kTransparenyModificationMessage));
 
-	fRefreshLabel = B_TRANSLATE("Refresh interval (in seconds): ");
+	fRefreshLabel = B_TRANSLATE("Refresh interval (in seconds)");
 
 	fRefreshRateSlider = new BSlider("Refresh", fRefreshLabel.String(), new BMessage(kRefreshChangedMessage), 1, 300, B_HORIZONTAL);
 	fRefreshRateSlider->SetModificationMessage(new BMessage(kRefreshModificationMessage));

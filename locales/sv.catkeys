@@ -1,0 +1,39 @@
+1	Swedish	x-vnd.konradsson.Stocks	2854543809
+52 week high	QuoteView		52 veckors högsta
+Stocks	PortfolioListItem		Antal aktier
+File	PortfolioManagerWindow		Fil
+Quit	PortfolioManagerWindow		Avsluta
+Network error	StockSymbolWindow		Nätverksfel
+Extended mode	MainWindow		Stor
+New…	PortfolioManagerWindow		Ny…
+Remove from portfolio	QuoteView		Remove from portfolio
+Name	PortfolioWindow		Namn
+Latest price	QuoteView		Senaste pris
+Settings…	MainWindow		Inställningar…
+Items found	SearchView		Antal träffar:
+Rename portfolio	PortfolioWindow		Byt namn på portfölj
+Replicant transparency	SettingsWindow		Replicant transparency
+Name or symbol	SearchView		Namn eller symbol
+Edit	PortfolioManagerWindow		Redigera
+Find stocks…	StockSymbolWindow		Sök aktier…
+Create new portfolio	PortfolioWindow		Skapa ny portfölj
+Remove selected item	MainWindow		Ta bort markerad
+Edit	MainWindow		Redigera
+Rename	PortfolioWindow		Byt namn
+Refresh interval (in seconds)	SettingsWindow		Hämtningsintervall (sekunder)
+Portfolio name	PortfolioWindow		Namn
+Portfolio	MainWindow		Portfölj
+Create	PortfolioWindow		Skapa
+Delete…	PortfolioManagerWindow		Ta bort…
+52 week low	QuoteView		52 veckors lägsta
+Mini mode	MainWindow		Mini
+Normal mode	MainWindow		Normal
+About…	PortfolioManagerWindow		Om…
+Find stocks…	MainWindow		Sök aktier…
+Settings	SettingsWindow		Inställningar
+Filter	SearchView		Filter
+Failed to parse data	StockSymbolWindow		Failed to parse data
+PortfolioManager	PortfolioManagerWindow		Portföljhanterare
+Add to portfolio	QuoteView		Lägg till i portfölj
+Settings	MainWindow		Inställningar
+Rename…	PortfolioManagerWindow		Byt namn…

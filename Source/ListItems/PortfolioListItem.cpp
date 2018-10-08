@@ -7,7 +7,11 @@
 #include "PortfolioListItem.h"
 #include "Portfolio.h"
 
+#include <Catalog.h>
 #include <interface/ListView.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "PortfolioListItem"
 
 PortfolioListItem::PortfolioListItem(Portfolio *portfolio)
 	:BListItem()
@@ -73,7 +77,7 @@ PortfolioListItem::DrawPortfolioInfo(BRect rect)
 	DrawItemSettings symbolSettings = { frame, &font, &textColor, B_ALIGN_LEFT };
 
 	BString stocks;
-	stocks << "Stocks: " << fPortfolio->CurrentSymbols()->CountItems();
+	stocks << B_TRANSLATE("Stocks") << ": " << fPortfolio->CurrentSymbols()->CountItems();
 	DrawText(stocks.String(), symbolSettings);
 
 	font = be_bold_font;
