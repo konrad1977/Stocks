@@ -1,4 +1,5 @@
-1	English	x-vnd.konradsson.Stocks	2854543809
+1	English	x-vnd.konradsson.Stocks	3989496207
+Avg. volume	QuoteListItem		Avg. volume
 52 week high	QuoteView		52 week high
 Stocks	PortfolioListItem		Stocks
 File	PortfolioManagerWindow		File
@@ -8,6 +9,7 @@ Extended mode	MainWindow		Extended mode
 New…	PortfolioManagerWindow		New…
 Remove from portfolio	QuoteView		Remove from portfolio
 Name	PortfolioWindow		Name
+52w. high	QuoteListItem		52w. high
 Latest price	QuoteView		Latest price
 Settings…	MainWindow		Settings…
 Items found	SearchView		Items found
@@ -21,6 +23,8 @@ Remove selected item	MainWindow		Remove selected item
 Edit	MainWindow		Edit
 Rename	PortfolioWindow		Rename
 Refresh interval (in seconds)	SettingsWindow		Refresh interval (in seconds)
+52w. low	QuoteListItem		52w. low
+High	QuoteListItem		High
 Portfolio name	PortfolioWindow		Portfolio name
 Portfolio	MainWindow		Portfolio
 Create	PortfolioWindow		Create
@@ -31,6 +35,8 @@ Normal mode	MainWindow		Normal mode
 About…	PortfolioManagerWindow		About…
 Find stocks…	MainWindow		Find stocks…
 Settings	SettingsWindow		Settings
+Low	QuoteListItem		Low
+Open	QuoteListItem		Open
 Filter	SearchView		Filter
 Failed to parse data	StockSymbolWindow		Failed to parse data
 PortfolioManager	PortfolioManagerWindow		PortfolioManager

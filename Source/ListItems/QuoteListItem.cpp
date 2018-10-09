@@ -5,18 +5,23 @@
 
 
 #include "QuoteListItem.h"
-#include <ListView.h>
-#include <stdio.h>
-#include <string>
-#include <sstream>
 #include <iostream>
-#include <Screen.h>
-#include <Window.h>
 
 #include "Constants.h"
 #include "QuoteFormatter.h"
 
+#include <interface/Screen.h>
+#include <interface/Window.h>
+#include <interface/ListView.h>
+#include <locale/Catalog.h>
+
+#include <posix/stdio.h>
+#include <posix/string.h>
+#include <sstream>
 #include <posix/stdlib.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "QuoteListItem"
 
 QuoteListItem::QuoteListItem(Quote quote, bool isReplicant, QuoteType type)
 	:BListItem()
@@ -81,9 +86,10 @@ QuoteListItem::DrawChangePercent(BRect frame, alignment align)
 void
 QuoteListItem::DrawSymbol(BRect frame, alignment align)
 {
+
 	BFont font(be_bold_font);
 	font.SetSize(14);
-	
+
 	rgb_color titleColor = fDrawer->TextColor(IsSelected());
 
 	DrawItemSettings settings = { frame, &font, &titleColor, align };
@@ -91,7 +97,8 @@ QuoteListItem::DrawSymbol(BRect frame, alignment align)
 }
 
 void
-QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
+QuoteListItem::DrawChangeDollar(BRect frame, alignment align)
+{
 
 	BFont font(be_plain_font);
 	font.SetSize(13);
@@ -104,7 +111,8 @@ QuoteListItem::DrawChangeDollar(BRect frame, alignment align) {
 }
 
 void
-QuoteListItem::DrawCompanyName(BRect frame, alignment align) {
+QuoteListItem::DrawCompanyName(BRect frame, alignment align)
+{
 
 	BFont font(be_plain_font);
 	font.SetSize(13);
@@ -116,7 +124,8 @@ QuoteListItem::DrawCompanyName(BRect frame, alignment align) {
 }
 
 void
-QuoteListItem::DrawMarket(BRect frame, alignment align) {
+QuoteListItem::DrawMarket(BRect frame, alignment align)
+{
 
 	BFont font(be_plain_font);
 	font.SetSize(13);
@@ -258,13 +267,13 @@ QuoteListItem::DrawLargeItem( BRect frame)
 
 	//Row 3
 	DrawItemSettings dailyTitleSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
-	DrawText("Open", dailyTitleSettings);
+	DrawText(B_TRANSLATE("Open"), dailyTitleSettings);
 
 	dailyTitleSettings.align = B_ALIGN_CENTER;
-	DrawText("High", dailyTitleSettings);
+	DrawText(B_TRANSLATE("High"), dailyTitleSettings);
 
 	dailyTitleSettings.align = B_ALIGN_RIGHT;
-	DrawText("Low", dailyTitleSettings);
+	DrawText(B_TRANSLATE("Low"), dailyTitleSettings);
 
 	//Row 3 data
 	rect.OffsetBy(0, fDrawer->Height(dailyTitleSettings));
@@ -287,13 +296,13 @@ QuoteListItem::DrawLargeItem( BRect frame)
 	font = be_plain_font;
 	font.SetSize(11);
 	DrawItemSettings volumeTitleSettings = { rect, &font, &titleColor, B_ALIGN_LEFT };
-	DrawText("Avg. volume", volumeTitleSettings);
+	DrawText(B_TRANSLATE("Avg. volume"), volumeTitleSettings);
 
 	volumeTitleSettings.align = B_ALIGN_CENTER;
-	DrawText("52w. high", volumeTitleSettings);
+	DrawText(B_TRANSLATE("52w. high"), volumeTitleSettings);
 
 	volumeTitleSettings.align = B_ALIGN_RIGHT;
-	DrawText("52w. low", volumeTitleSettings);
+	DrawText(B_TRANSLATE("52w. low"), volumeTitleSettings);
 
 	rect.OffsetBy(0, fDrawer->Height(volumeTitleSettings));
 
