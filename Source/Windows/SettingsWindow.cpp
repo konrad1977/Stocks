@@ -53,14 +53,14 @@ SettingsWindow::SetTarget(BHandler *handler)
 	fMessenger = new BMessenger(handler);
 }
 
-bool
-SettingsWindow::QuitRequested()
+void
+SettingsWindow::Quit()
 {
 	BMessage message(kQuitSettingsWindowMessage);
 	if (fMessenger && fMessenger->IsValid()) {
 		fMessenger->SendMessage(&message);
 	}
-	return true;
+	BWindow::Quit();
 }
 
 void

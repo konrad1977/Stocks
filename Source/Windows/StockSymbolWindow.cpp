@@ -84,13 +84,15 @@ StockSymbolWindow::SetStockSymbols(BList *symbols) {
 	SetItems(fStockSymbolListItems);
 }
 
-bool
-StockSymbolWindow::QuitRequested() {
+void
+StockSymbolWindow::Quit() {
+
 	BMessage message(kHideSearchWindowMessaage);
 	if (fMessenger) {
 		fMessenger->SendMessage(&message);
 	}
-	return BWindow::QuitRequested();
+
+	BWindow::Quit();
 }
 
 void

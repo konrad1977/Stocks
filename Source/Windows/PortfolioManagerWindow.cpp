@@ -297,7 +297,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 			break;
 		}
 		case kNewPortfolio: {
-			if (fPortfolioWindow == NULL) {
+			if (fPortfolioWindow == nullptr) {
 				fPortfolioWindow = new PortfolioWindow(this, false);
 			}
 			fPortfolioWindow->Show();
@@ -310,11 +310,7 @@ PortfolioManagerWindow::MessageReceived(BMessage *message) {
 		}
 
 		case kPortfolioQuitMessage: {
-			if (fPortfolioWindow) {
-				fPortfolioWindow->Lock();
-				fPortfolioWindow->Quit();
-				fPortfolioWindow = NULL;
-			}
+			fPortfolioWindow = nullptr;
 			break;
 		}
 

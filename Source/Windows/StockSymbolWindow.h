@@ -19,14 +19,14 @@ class SearchView;
 class StockListExtendedView;
 class StockSymbolWindow: public BWindow {
 public:
-	StockSymbolWindow();	
+	StockSymbolWindow();
 	~StockSymbolWindow();
-	
-	virtual	bool QuitRequested();
-	virtual void MessageReceived(BMessage *message);	
-			void SetTarget(BHandler *handler);		
+
+			void Quit();
+	virtual void MessageReceived(BMessage *message);
+			void SetTarget(BHandler *handler);
 			void SetSymbolTarget(BHandler *handler);
-			void SetStockSymbols(BList *symbols);	
+			void SetStockSymbols(BList *symbols);
 private:
 	const char*  SymbolAtIndex(int32 index);
 			void InitLayout();
@@ -34,25 +34,25 @@ private:
 			void ShowAlert(const char *title, const char *message);
 			void ApplyFilter(BString filter);
 			bool HasSymbolInPortfolio(const char *symbol);
-				
-			
+
+
 			void HandleAddToPortfolio(BMessage *message);
 			void HandleSelection(BMessage *message);
 			void HandleCompanyInformation(BMessage *message);
 			void HandleSearch(BMessage *message);
 			void HandleQuoteInformation(BMessage *message);
-			
-			BList 			*Filtered(BString filter);			
-			
+
+			BList 			*Filtered(BString filter);
+
 	SearchView 				*fSearchView;
 	StockListExtendedView 	*fStockListExtendedView;
 	BListView 				*fSymbolListView;
 	BList 					*fStockSymbolListItems;
 	BList 					*fCurrentFilter;
-	
+
 	BMessenger 				*fMessenger;
 	BMessenger				*fSymbolMessenger;
-	bool 					fHasFilter;	
+	bool 					fHasFilter;
 };
 
 #endif // _H

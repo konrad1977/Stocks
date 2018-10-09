@@ -162,11 +162,7 @@ MainWindow::MessageReceived(BMessage *message)
 		}
 
 		case kQuitSettingsWindowMessage: {
-			if (fSettingsWindow) {
-				fSettingsWindow->Lock();
-				fSettingsWindow->Quit();
-				fSettingsWindow = NULL;
-			}
+			fSettingsWindow = nullptr;
 			break;
 		}
 

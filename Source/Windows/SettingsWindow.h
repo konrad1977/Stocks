@@ -18,18 +18,18 @@ class SettingsWindow : public BWindow {
 public:
 	SettingsWindow(Portfolio *portfolio);
 	~SettingsWindow();
-			
+
 			void ShowWithPortfolioName(const char *name);
 	virtual void MessageReceived(BMessage *message);
-	virtual bool QuitRequested();
+			void Quit();
 			void SetTarget(BHandler *handler);
 private:
 			void InitLayout();
 			void InitSavedValues();
 			void UpdateTransparencyLabel(uint8 value);
 			void UpdateRefrehLabel(uint8 value);
-			
-	BMessenger 	*fMessenger;	
+
+	BMessenger 	*fMessenger;
 	BSlider 	*fTransparencySlider;
 	BSlider 	*fRefreshRateSlider;
 	Portfolio	*fPortfolio;
