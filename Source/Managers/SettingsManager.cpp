@@ -7,7 +7,7 @@
 #include "Constants.h"
 
 #include <support/Locker.h>
-#include <support/String.h>
+
 #include <support/List.h>
 
 #include <app/Roster.h>
@@ -25,33 +25,50 @@
 #include <stdlib.h>
 
 SettingsManager::SettingsManager()
-	:fFileName(NULL)
-	,fLocker(NULL) 
-{	
-	fFileName = strdup("Stocks");
+	:fLocker(nullptr)
+{
+	fFileName = BString("Stocks");
 	fLocker = new BLocker("SettingsLocker");
 }
 
-SettingsManager::~SettingsManager() 
+SettingsManager::~SettingsManager()
 {
-	free(fFileName);
 	delete fLocker;
 }
 
-void 
-SettingsManager::StartMonitoring(BHandler *handler) 
+status_t
+SettingsManager::StartMonitoring(BHandler *handler)
 {
+    BPath path;
+    status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+	if (status != B_OK) {
+		return status;
+    }
+
+    status = path.Append(fFileName.String());
+    if (status != B_OK) {
+        return status;
+    }
+
 	BNode node;
-	node.SetTo( SavePath() );
-	
+	status = node.SetTo(path.Path());
+
+    if (status != B_OK) {
+        return status;
+    }
+
 	node_ref ref;
 	node.GetNodeRef( &ref );
-	
-	if (node.InitCheck() == B_OK) {
-		watch_node(&ref, B_WATCH_ALL, handler );
-	}
+
+    status = node.InitCheck();
+    if (status != B_OK) {
+        return status;
+    }
+
+    watch_node(&ref, B_WATCH_ALL, handler );
+    return B_OK;
 }
-	
+
 void
 SettingsManager::SaveWithLock(BMessage *message)
 {
@@ -61,24 +78,24 @@ SettingsManager::SaveWithLock(BMessage *message)
 }
 
 const char *
-SettingsManager::SavePath() const 
-{	
+SettingsManager::SavePath() const
+{
 	BPath path;
-	
+
 	if (find_directory(B_USER_SETTINGS_DIRECTORY, &path) != B_OK) {
 		return NULL;
 	}
-	
-	path.Append(fFileName);
+
+	path.Append(fFileName.String());
 	return path.Path();
 }
 
-BMessage* 
+BMessage*
 SettingsManager::MessageForPortfolio(BString name)
-{	
+{
 	BMessage loadMessage;
 	LoadSettings(loadMessage);
-	
+
 	int32 index = 0;
 	BMessage portfolioMsg;
 	while ( (loadMessage.FindMessage("Portfolios", index, &portfolioMsg) == B_OK )) {
@@ -89,38 +106,61 @@ SettingsManager::MessageForPortfolio(BString name)
 			}
 		}
 		index++;
-	}	
+	}
 	return NULL;
 }
 
-status_t 
-SettingsManager::SaveSettings(BMessage message) 
-{	
-	BFile file;
-	file.SetTo(SavePath(), B_WRITE_ONLY | B_ERASE_FILE | B_CREATE_FILE);
-	
-	if (file.InitCheck() != B_OK) {
-		return B_ERROR;
-	}
+status_t
+SettingsManager::SaveSettings(BMessage message)
+{
+    BPath path;
+    status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+	if (status != B_OK) {
+		return status;
+    }
 
-	if (message.Flatten(&file) != B_OK) {
-		return B_ERROR;
-	}
-	return B_OK;
+    status = path.Append(fFileName.String());
+    if (status != B_OK) {
+        return status;
+    }
+
+	BFile file;
+    status = file.SetTo(path.Path(), B_WRITE_ONLY | B_ERASE_FILE | B_CREATE_FILE);
+    if (status != B_OK) {
+        return status;
+    }
+
+    status = file.InitCheck();
+    if (status != B_OK) {
+        return status;
+    }
+
+    return message.Flatten(&file);
 }
 
 status_t
-SettingsManager::LoadSettings(BMessage &message) 
-{	
+SettingsManager::LoadSettings(BMessage &message)
+{
+    BPath path;
+    status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+	if (status != B_OK) {
+		return status;
+    }
+
+    status = path.Append(fFileName.String());
+    if (status != B_OK) {
+        return status;
+    }
+
 	BFile file;
-	
-	file.SetTo(SavePath(), B_READ_ONLY);
-	if (file.InitCheck() != B_OK) {
-		return B_ERROR;
-	}
-	
-	if (message.Unflatten(&file) != B_OK) {
-		return B_ERROR;
+    status = file.SetTo(path.Path(), B_READ_ONLY);
+    if (status != B_OK) {
+        return status;
+    }
+
+    status = message.Unflatten(&file);
+	if (status != B_OK) {
+		return status;
 	}
 	return B_OK;
 }

@@ -10,6 +10,7 @@
 #include "PortfolioManagerWindow.h"
 #include "Portfolio.h"
 #include "ImageView.h"
+#include "SettingsManager.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,8 +27,8 @@ const char *kAppSignature = "application/x-vnd.konradsson.Stocks";
 App::App(void)
 	:BApplication(kAppSignature)
 {
-	PortfolioManagerWindow *window = new PortfolioManagerWindow();
-	window->Show();
+    PortfolioManagerWindow *window = new PortfolioManagerWindow();
+    window->Show();
 }
 
 App::~App() {

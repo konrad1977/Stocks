@@ -5,11 +5,9 @@
 #ifndef SETTINGSLOADER_H
 #define SETTINGSLOADER_H
 
-
 #include <SupportDefs.h>
-#include <Message.h>
-#include <Path.h>
-#include "QuoteListItem.h"
+#include <app/Message.h>
+#include <support/String.h>
 
 class BList;
 class BLocker;
@@ -18,22 +16,22 @@ class SettingsManager {
 public:
 	SettingsManager();
 	~SettingsManager();
-	
+
 	void SetTarget(BHandler *handler);
-	
+
 	BMessage* MessageForPortfolio(BString name);
-	
-	void StartMonitoring(BHandler *handler);
-	
+
+	status_t StartMonitoring(BHandler *handler);
+
 	status_t LoadSettings(BMessage &message);
-	status_t SaveSettings(BMessage message);	
-	
+	status_t SaveSettings(BMessage message);
+
 private:
 
 	const char* SavePath() const;
 	void 	SaveWithLock(BMessage *message);
-	
-	char 	*fFileName;
+
+	BString  fFileName;
 	BLocker *fLocker;
 };
 
